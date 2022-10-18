@@ -1,0 +1,71 @@
+@mixin mobile-ui
+	@if &
+		@at-root .mobile-ui &
+			@content
+	@else
+		.mobile-ui
+			@content
+
+@mixin desktop-ui
+	@if &
+		@at-root .desktop-ui &
+			@content
+	@else
+		.desktop-ui
+			@content
+
+@mixin landscape
+	@media screen and (orientation: landscape)
+		@content
+
+@mixin portrait
+	@media screen and (orientation: portrait)
+		@content
+
+@mixin vp-width-lt($val)
+	@media screen and (max-width: $val)
+		@content
+
+@mixin popup-shadow
+	box-shadow: var(--dropdown-shadow)
+
+@mixin flex-center
+	display: flex
+	align-items: center
+	justify-content: center
+
+@mixin size($w, $h: $w)
+	width: $w
+	height: $h
+
+@mixin breakpoint($param)
+	$direction: str-slice($param, 1, 1)
+	$value: str-slice($param, 2)
+	@if ($direction == '>' or $direction == '<')
+		@if map-has-key($breakpoints, $value)
+			@if $direction == '>'
+				$value: map-get($breakpoints, $value)
+				@media screen and (min-width: $value)
+					@content
+			@else if $direction == '<'
+				$value: map-get($breakpoints, $value)
+				$value: $value - .02px
+				// https://getbootstrap.com/docs/5.0/layout/breakpoints/#max-width
+				@media screen and (max-width: $value)
+					@content
+		@else
+			@warn "No value could be retrieved from `#{$param}`. " + "Available breakpoints are: #{map-keys($breakpoints)}."
+	@else
+		@warn "No direction prefix specified ('>' or '<') in the beginning of `#{$param}`."
+
+@mixin full-height
+	min-height: 100vh
+	@supports (-webkit-touch-callout: none)
+		min-height: -webkit-fill-available
+		min-height: fill-available
+
+@function str-replace($string, $search, $replace: '')
+	$index: str-index($string, $search)
+	@if $index
+		@return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace)
+	@return $string

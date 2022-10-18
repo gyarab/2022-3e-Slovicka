@@ -1,0 +1,281 @@
+nav.header
+	position: sticky
+	top: 0
+	left: 0
+	width: 100%
+	z-index: 0
+	background-color: var(--nav-nav-bg)
+	color: var(--nav-on-nav)
+	transition: all var(--transition-time-short)
+	box-shadow: var(--drop-shadow)
+
+	.page-centered-container
+		min-height: 2rem
+		display: flex
+		align-items: center
+		justify-content: space-between
+
+		.app-logo
+			display: block
+			text-decoration: none
+			margin-right: 2.5rem
+			.title
+				+text-style-headline-h-5()
+				color: var(--nav-on-nav)
+				padding-top: 0.75rem
+				padding-bottom: 0.75rem
+
+		.tab-switcher
+			margin-bottom: 0
+			margin-right: auto
+			box-shadow: none
+			.item
+				padding-top: var(--tab-switcher-item-padding-y)
+			.item:not(.active):not(:hover)
+				color: inherit
+
+		.user-profile
+			display: flex
+			align-items: center
+			cursor: pointer
+			padding-top: 1rem
+			padding-bottom: 1rem
+			user-select: none
+			.icon
+				margin-right: .5rem
+
+
+.layout
+	display: grid
+	grid-template-columns: auto 1fr
+	grid-template-rows: auto 1fr
+	grid-column-gap: 0px
+	grid-row-gap: 0px
+	// max-height: calc(100vh - 70px)
+	min-height: 100vh
+	max-width: 100vw
+
+	grid-template-areas: 'header header' 'sidebar body'
+
+	> .header
+		grid-area: header
+
+	> .body
+		grid-area: body
+		padding: var(--body-padding)
+		max-width: 100vw
+		position: relative
+
+	> .sidebar
+		grid-area: sidebar
+		min-width: 220px
+		min-width: calc(200px + var(--body-padding))
+		padding: var(--body-padding) 0 var(--body-padding) var(--body-padding)
+
+.application
+	> *
+		+full-height
+		// > div
+
+.files-list
+	.layout-header
+		display: flex
+		justify-content: space-between
+		align-items: center
+		margin-top: 1rem
+		margin-bottom: 2rem
+
+		.title
+			margin-bottom: 0
+
+	.item-container
+		.item
+			display: flex
+			align-items: center
+			padding: .5rem
+			background-color: var(--panel-bg)
+			border-radius: var(--border-radius-lg)
+			margin-bottom: 0.5rem
+			box-shadow: var(--drop-shadow-sm)
+			.icon-container
+				+size(40px)
+				background-color: var(--surface-surface-i-3)
+				border-radius: var(--border-radius)
+				display: flex
+				justify-content: center
+				align-items: center
+				flex-shrink: 0
+				.icon
+					+size(20px)
+				margin-right: 1rem
+			.item-filename
+				margin-right: auto
+				white-space: nowrap
+				overflow: hidden
+				> *
+					overflow: hidden
+					text-overflow: ellipsis
+
+				> :first-child
+					+text-style-headline-h-6()
+				> :last-child:not(:first-child)
+					+text-style-body-text-sm-medium()
+					color: var(--surface-on-surface-subtle)
+			.item-size
+				margin-left: 1rem
+				white-space: nowrap
+				+text-style-body-text-md-medium()
+				color: var(--surface-on-surface-subtle)
+				margin-right: 1rem
+
+.drop-zone
+	display: none
+
+	.drop-zone-title
+		margin-bottom: .5rem
+
+	&.drop-zone-active
+		display: flex
+		flex-direction: column
+		align-items: center
+		justify-content: center
+		width: 100%
+		height: 100%
+		position: fixed
+		top: 0
+		bottom: 0
+		left: 0
+		right: 0
+		pointer-events: none
+		color: var(--primary-on-primary)
+		&::before
+			content: ''
+			position: absolute
+			top: 0
+			bottom: 0
+			left: 0
+			right: 0
+			background: var(--primary-primary)
+			opacity: 0.8
+			z-index: -1
+
+[sword-comp="EmailsScreen"]
+	display: flex
+	align-items: center
+	max-width: fit-content
+	margin: auto
+	margin-top: 10%
+	&.emails-screen
+		background-color: var(--panel-bg)
+		padding: 5rem
+		border-radius: var(--border-radius-lg)
+		box-shadow: var(--drop-shadow-sm)
+		display: flex
+		flex-direction: column
+		align-items: stretch
+		+breakpoint(">sm")
+			flex-direction: row
+			align-items: center
+		flex-wrap: wrap
+		gap: $pad
+		max-width: 640px
+		width: 100%
+		.form-fields
+			flex-grow: 1
+			[sword-comp="TextField"]
+				display: block
+				width: 100%
+		.form-message
+			+breakpoint(">sm")
+				order: 1
+				max-width: fit-content
+			width: 100%
+			margin-bottom: 0
+			&:empty
+				display: none
+		.form-buttons
+			margin-top: 0
+			button
+				width: 100%
+				+breakpoint(">sm")
+					width: auto
+
+[sword-comp="LoginForm"],
+[sword-comp="SignupForm"],
+[sword-comp="ForgottenPasswordForm"],
+[sword-comp="ForgottenPasswordEmailSentScreen"],
+[sword-comp="PasswordRestoreForm"],
+[sword-comp="AccountActivationResend"],
+	display: flex
+	flex-direction: column
+	flex-grow: 1
+	position: relative
+	width: 100%
+	padding: 96px 40px 30px
+	+breakpoint(">md")
+		padding: 140px 60px 40px
+	+breakpoint(">lg")
+		padding: 180px 80px 50px
+	+breakpoint(">xl")
+		padding: 200px 120px 60px
+	transition: padding var(--transition-time-long)
+	background-color: var(--surface-surface-i-1)
+
+	+breakpoint(">sm")
+		width: 75%
+		&::after
+			content: ""
+			display: block
+			width: 33.333%
+			height: 100%
+			position: absolute
+			top: 0
+			left: 100%
+			transform: translateZ(-1px)
+			background-color: var(--color-lt-surface-on-surface)
+			background-image: url(/images/sword.svg)
+			background-repeat: no-repeat
+			background-position: center bottom
+			background-size: auto
+	+breakpoint(">lg")
+		width: 50%
+		&::after
+			width: 100%
+
+	&.form
+		&.form-reduced-width
+			> *
+				max-width: 400px
+
+		.form-icon
+			+size(100px)
+			background-color: var(--secondary-secondary-i-1)
+			color: var(--primary-primary)
+			border-radius: 50%
+			display: flex
+			align-items: center
+			justify-content: center
+			margin-bottom: 20px
+			.icon
+				+size(52px)
+
+		.form-title
+			+text-style-headline-h-3()
+			margin-bottom: 40px
+		
+		.form-subtitle
+			+text-style-body-text-xl-medium()
+			color: var(--surface-on-surface-subtle)
+			margin-top: -2rem
+			margin-bottom: 40px
+
+		.form-links
+			flex-direction: column
+			flex-wrap: wrap
+			align-items: center
+
+		.form-buttons
+			margin-bottom: $pad
+
+		hr
+			margin-bottom: 40px

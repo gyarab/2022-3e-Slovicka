@@ -1,0 +1,559 @@
+.popup-menu
+	background: var(--dropdown-bg)
+	+popup-shadow
+	border: none
+	border-radius: var(--dropdown-radius)
+	overflow: auto
+	display: inline-block
+	font-size: var(--dropdown-font-size)
+	padding-top: $pad_2
+	+desktop-ui
+		max-width: 350px
+		min-width: 120px
+		padding-top: $pad_1_2
+		padding-bottom: $pad_1_2
+		z-index: 1
+
+	&:focus
+		outline: 0
+
+	.option
+		display: flex
+		align-items: center
+		text-decoration: none
+		color: var(--dropdown-fg)
+		--color: var(--dropdown-fg)
+		background: var(--dropdown-bg)
+		transition: background-color var(--transition-time-short)
+		border-radius: var(--border-radius-sm)
+		min-height: 32px
+		padding: .5rem
+		margin-left: 8px
+		margin-right: 8px
+		line-height: 1
+		&:not(:last-child)
+			margin-bottom: 2px
+
+		.option-icon,
+		.option-icon-right
+			> .icon
+				display: block
+				vertical-align: middle
+				+size(1rem)
+
+				&[data-name="check"]
+					--thickness: 2
+
+		.option-icon
+			margin-right: 6px
+			transition: background-color var(--transition-time-short)
+			display: flex
+			align-items: center
+			color: var(--icon-static-color)
+			--color: var(--icon-static-color)
+
+		.option-submenu
+			> .icon
+				+size(1rem)
+				display: block
+
+		.option-text
+			font-weight: var(--dropdown-font-weight)
+			padding-right: 15px
+			flex: 1
+
+		&:hover:not(:disabled)
+			color: var(--dropdown-fg-hover)
+			--color: var(--dropdown-fg-hover)
+			background: var(--dropdown-bg-hover)
+
+			.option-icon
+				color: var(--dropdown-fg-hover)
+				--color: var(--dropdown-fg-hover)
+
+		&.active,
+		&.active:hover
+			background-color: var(--primary-primary-hover)
+			color: var(--primary-on-primary)
+			--color: var(--primary-on-primary)
+
+			.option-icon
+				color: var(--primary-on-primary)
+				--color: var(--primary-on-primary)
+
+		&.disabled
+			pointer-events: none
+			color: var(--table-muted-color)
+			--color: var(--table-muted-color)
+
+	&.no-icons
+		.option
+			.option-icon
+				display: none
+
+			.option-text
+				padding-right: 0
+
+	.note
+		color: var(--app-grey)
+		font-size: 14px
+		margin-top: 15px
+
+.profile-popup
+	+ .popup-menu
+		min-width: 200px
+
+	.option.name,
+	.option.logout
+		position: relative
+		&::after,
+		&::before
+			content: ''
+			position: absolute
+			left: 0
+			right: 0
+
+	.option.name
+		pointer-events: none
+		padding-bottom: 1rem
+		margin-bottom: .5rem
+		.option-text
+			color: $table-muted-color
+		&::after
+			bottom: 0
+			border-bottom: 1px solid var(--border-default-color)
+
+		+breakpoint('>md')
+			display: none
+	
+	.option.logout
+		margin-top: 14px
+		&::before
+			top: -0.5rem
+			border-top: 1px solid var(--border-default-color)
+
+.mobile-ui
+	.popup-menu
+		> .popup-button-close
+			+ a
+				margin-top: 2rem
+
+.desktop-ui .profile-popup
+	max-width: 450px
+	width: 280px
+
+.smart-table
+	position: relative
+	overflow: auto
+	font-size: var(--font-size-base)
+	flex-grow: 1
+	max-height: 100%
+
+	table
+		width: 100%
+		min-height: calc(var(--table-row-min-height) * 2)
+		border-spacing: 0
+		border-radius: var(--table-border-radius)
+
+		thead tr th
+			z-index: 1
+	// Required due to sticky header and tbody containing icon using masks
+
+	td, th
+		height: var(--table-row-min-height)
+		padding: var(--table-padding-y) var(--table-padding-x)
+		text-align: left
+
+	th
+		border-bottom: var(--border-default-width) solid var(--border-default-color)
+
+	td
+		font-weight: var(--font-weight-bold)
+
+	tbody
+		tr
+			background-color: var(--table-bg)
+
+	thead
+		tr:first-child
+			th:first-child
+				border-top-left-radius: var(--table-border-radius)
+
+			th:last-child
+				border-top-right-radius: var(--table-border-radius)
+
+	tr:last-child
+		td:first-child
+			border-bottom-left-radius: var(--table-border-radius)
+
+		td:last-child
+			border-bottom-right-radius: var(--table-border-radius)
+
+	td.right, th.right
+		text-align: right
+
+	td.center, th.center
+		text-align: center
+
+	thead tr th
+		position: sticky
+		top: 0
+		background: var(--panel-bg)
+		font-weight: var(--font-weight-bolder)
+		white-space: nowrap
+
+	tbody:empty
+		display: block
+	// Fixes Firefox forced tbody height 0
+
+	.empty-message
+		position: absolute
+		top: 0
+		left: 0
+		right: 0
+		bottom: 0
+		display: flex
+		align-items: center
+		justify-content: center
+		font-weight: bold
+		font-size: 24px
+		color: #868F9C
+		padding-top: var(--table-row-min-height)
+
+	&.selectable
+		tbody
+			tr
+				cursor: pointer
+
+			tr.selected
+				td, th
+					background: var(--table-row-selected-bg)
+					color: var(--table-row-selected-fg)
+
+	&.selectable,
+	&.hoverable
+		tbody
+			tr:not(.selected):hover
+				td, th
+					background: var(--table-row-hover-bg)
+					color: var(--table-row-hover-fg)
+
+	td[data-col="ctl"]
+		white-space: nowrap
+		text-align: right
+
+		.button,
+		button,
+			margin-left: 0.25rem
+			margin-right: 0.25rem
+
+			&:first-child
+				margin-left: 0
+
+			&:last-child
+				margin-right: 0
+
+	&[data-overflowed="1"]
+		[data-col="ctl"]
+			position: sticky
+			right: 0
+			box-shadow: 0 0 32px 0px rgba(0, 0, 0, var(--drop-shadow-hardness))
+			clip-path: inset(0px 0px 0px -32px)
+
+		.no-data
+			[data-col="ctl"]:empty
+				box-shadow: none
+
+		tr:nth-child(even) td:last-child
+			background-color: inherit
+
+		tr:nth-child(odd) td:last-child
+			background-color: inherit
+
+	&[data-gw="FilterableSmartTable"]
+		tr
+			th.filterable
+				cursor: pointer
+
+		th
+			.filter-icon
+				margin-left: $pad_1_4
+				vertical-align: sub
+				+size(16px)
+				color: var(--icon-static-color)
+
+		th:hover,
+		th:focus,
+		.filter-icon
+			color: var(--icon-hover-color)
+
+		th:active
+			.filter-icon
+				color: var(--icon-active-color)
+
+		th.filtered
+			.filter-icon
+				color: var(--icon-selected-static-color)
+
+		th.filtered:hover,
+		th.filtered:focus
+			.filter-icon
+				color: var(--icon-selected-hover-color)
+
+		th.filtered:active
+			.filter-icon
+				color: var(--icon-selected-active-color)
+
+.admin-dialog-mask
+	z-index: 100
+	position: fixed
+	top: 0
+	left: 0
+	bottom: 0
+	right: 0
+	background: rgba(0, 0, 0, 0.4)
+	display: flex
+	align-items: center
+	justify-content: center
+
+	> .dialog
+		padding: 1rem
+		background: var(--panel-bg)
+		border-radius: var(--border-radius)
+		box-shadow: var(--drop-shadow-lg)
+		width: auto
+		min-width: 33vw
+		max-width: 98vw
+		max-height: 90vh
+		overflow: auto
+
+		> .header
+			position: relative
+			display: flex
+			justify-content: space-between
+
+			> h1
+				padding: 5px 0 32px
+				margin: 0
+				font-size: 24px
+				text-align: left
+				+breakpoint(">md")
+					padding: 5px 1rem 32px
+
+			> .center
+				&:empty
+					display: none
+
+			> .close
+				cursor: pointer
+				+size(40px)
+				padding: 5px
+				+flex-center
+
+				&:hover
+					--color: black
+
+		> .subtitle
+			margin-bottom: 2.25rem
+			padding: 0 1rem
+
+		> .body
+			+breakpoint(">md")
+				padding-left: 1rem
+				padding-right: 1rem
+				.form-buttons
+					margin-right: -1rem
+
+			.form-buttons
+				margin-top: 2rem
+
+	&.fullscreen
+		> .dialog
+			height: calc(100vh - 60px)
+			width: calc(100vw - 60px)
+			display: grid
+			grid-template-columns: minmax(0, 1fr)
+			grid-template-rows: auto minmax(0, 1fr) auto
+
+.mask-overlay
+	position: fixed
+	top: 0
+	bottom: 0
+	left: 0
+	right: 0
+	z-index: 2000
+	display: flex
+	flex-direction: column
+	align-items: center
+	justify-content: center
+	background: var(--overlay-mask-color)
+
+	> .pad-top
+		flex: 1
+
+	> .pad-bottom
+		flex: 6
+
+.mobile-mask-overlay
+	position: fixed
+	top: 0
+	bottom: 0
+	left: 0
+	right: 0
+	z-index: 2000
+	display: flex
+	background: var(--overlay-mask-color)
+
+	&.align-left
+		flex-direction: row
+		align-items: stretch
+		justify-content: flex-start
+
+		> *
+			height: 100%
+			border-top-left-radius: 0 !important
+			border-bottom-left-radius: 0 !important
+			max-width: calc(100% - 75px)
+			overflow: auto
+			position: relative
+
+	&.align-bottom
+		flex-direction: column
+		align-items: stretch
+		justify-content: flex-end
+
+		> *
+			width: auto !important
+			border-bottom-right-radius: 0 !important
+			border-bottom-left-radius: 0 !important
+			max-height: calc(100% - 75px)
+			overflow: auto
+			position: relative
+
+	&.align-fullscreen
+		flex-direction: column
+		align-items: stretch
+		justify-content: flex-end
+
+		> *
+			width: auto !important
+			border-radius: 0 !important
+			overflow: auto
+			position: relative
+			flex: 1 0 auto
+			min-height: 0
+
+	.popup-button-close
+		display: block
+		width: 2rem
+		height: 2rem
+		border: none
+		padding: 0
+		font-size: 0
+		margin-left: auto
+		position: absolute
+		z-index: 1
+		top: $pad
+		right: $pad
+		background-color: transparent
+		background-repeat: no-repeat
+		background-size: 1.75rem 1.75rem
+		background-position: center
+		background-image: url(icons/close.svg)
+		cursor: pointer
+
+.notify-bar
+	position: fixed
+	display: inline-flex
+	align-items: center
+	overflow: hidden
+	min-height: 3rem
+	top: .7rem
+	border-radius: var(--border-radius)
+	font-size: var(--font-size-lg)
+	font-weight: var(--font-weight-bold)
+
+	.text
+		flex: 1
+		text-align: center
+		max-width: calc(70vw)
+		padding: 4px 15px
+		line-height: 1.5
+		font-weight: var(--font-weight-bolder)
+
+		strong, b
+			font-weight: bold
+
+	.status-icon
+		margin-left: 1rem
+		border-radius: 50px
+		+size(24px)
+		+flex-center
+		background: white
+
+		> .icon
+			+size(16px)
+
+	.pad
+		width: 20px
+		height: 1px
+		display: inline-block
+
+	a.close
+		line-height: 1
+		margin: 0 10px
+		padding: 10px
+		text-decoration: none
+		font-size: 18px
+		--color: var(--danger-on-danger)
+		margin-top: -1rem
+		margin-bottom: -1rem
+		margin-right: -0.5rem
+
+		+mobile-ui
+			padding: 15px
+
+	a:not(.close)
+		font-weight: bold
+		text-decoration: underline
+		cursor: pointer
+
+		&:hover
+			text-decoration: none
+
+	&[data-kind=error]
+		background: var(--danger-danger)
+		&, a
+			color: var(--danger-on-danger)
+		.status-icon .icon
+			--color: var(--danger-danger)
+
+	&[data-kind=success]
+		background: var(--success-success)
+		&, a
+			color: var(--success-on-success)
+		.status-icon .icon
+			--color: var(--success-success)
+
+	&[data-kind=warning]
+		background: var(--warning-warning)
+		&, a
+			color: var(--warning-on-warning)
+		.status-icon .icon
+			--color: var(--warning-warning)
+
+	&[data-kind=info]
+		background: var(--info)
+		&, a
+			color: var(--info-text)
+
+.password-field
+	position: relative
+
+	button
+		position: absolute
+		top: 50%
+		right: $pad_1_2
+		transform: translate(0, -50%)
+		color: var(--input-placeholder)
+		--color: var(--input-placeholder)
