@@ -44,11 +44,10 @@ CREATE TABLE courses (
     type TEXT NOT NULL CHECK (type IN ('ADVENTURE', 'USER')),
     visible_to TEXT CHECK (visible_to IN ('ME', 'EVERYONE')),
     owner INTEGER REFERENCES users ON DELETE CASCADE,
-    state TEXT CHECK (state IN ('creating', 'paused', 'closed', 'published')),
+    state TEXT NOT NULL CHECK (state IN ('creating', 'paused', 'closed', 'published')),
 
     CONSTRAINT visible_to_valid CHECK (type = 'ADVENTURE' OR visible_to IS NOT NULL),
-    CONSTRAINT owned_by_valid CHECK (type = 'ADVENTURE' OR owner IS NOT NULL),
-    CONSTRAINT state_valid CHECK (type = 'USER' OR state IS NOT NULL)
+    CONSTRAINT owned_by_valid CHECK (type = 'ADVENTURE' OR owner IS NOT NULL)
 );
 
 CREATE INDEX courses_language_idx ON courses(language);
@@ -58,11 +57,11 @@ CREATE INDEX courses_type_idx ON courses(type);
 CREATE TABLE course_nodes (
     id SERIAL PRIMARY KEY,
     course INTEGER NOT NULL REFERENCES courses NOT NULL,
-    name TEXT NOT NULL,
+    name TEXT,
     description TEXT,
     level INTEGER NOT NULL,
-    number_of_completion INTEGER NOT NULL DEFAULT 1,
-    state TEXT NOT NULL CHECK (state IN ('creating', 'published'))
+    number_of_completion INTEGER,
+    state TEXT CHECK (state IN ('creating', 'published'))
 );
 
 CREATE INDEX course_nodes_level_idx ON course_nodes(level);
@@ -75,10 +74,12 @@ CREATE TABLE course_node_state (
 );
 
 CREATE TABLE word_groups (
+    id SERIAL PRIMARY KEY,
     course_node INTEGER NOT NULL REFERENCES course_nodes REFERENCES course_nodes,
-    word INTEGER NOT NULL REFERENCES words REFERENCES course_nodes,
+    word INTEGER NOT NULL REFERENCES words REFERENCES words,
     definition TEXT,
     translation TEXT,
+    phonetic TEXT,
     sentence TEXT
 );
 

@@ -36,7 +36,7 @@ class Conflict extends ApiError {
 	}
 }
 
-class Unathorized extends ApiError {
+class Unauthorized extends ApiError {
 	constructor(msg, code, detail) {
 		super(401, msg, code, detail);
 	}
@@ -133,4 +133,4 @@ express.application.allx = function (path, callback) {
 	})
 };
 
-module.exports = {express, ApiError, FallThrough, BadRequest, NotFound, Conflict, Unathorized};
+module.exports = {express, ApiError, FallThrough, BadRequest, NotFound, Conflict, Unauthorized};

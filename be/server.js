@@ -12,9 +12,12 @@ const usersAdministration = require('./users-administration');
 const usersWithoutSession = require('./users-without-session')
 const users = require('./users');
 const languages = require('./languages');
+const courses = require('./courses');
+const SQLBuilder = require('./utils/SQLBuilder');
 
 startup.startUp();
 
+const db = new SQLBuilder();
 const app = express();
 const server = http.createServer(app);
 
@@ -27,6 +30,7 @@ app.use(express.json());
 
 app.use('/api', sessions.app);
 app.use('/api', usersWithoutSession.app);
+app.get_json('/api/languages/list', async req => await db.select('languages').getList());
 
 /* ALL OTHER MODULES NEED SESSION */
 
@@ -40,6 +44,7 @@ app.all_json('/api/*', async req => {
 	return FallThrough;
 });
 
+app.use('/api', courses.app);
 app.use('/api', users.app);
 
 app.all_json('/api/*', async req => {

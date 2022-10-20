@@ -66,6 +66,4 @@ app.put_json('/languages/:id([0-9])', async req => {
 		.oneOrNone();
 });
 
-app.get_json('/languages/list', async req => await db.select('languages').getList());
-
 module.exports = {app, validateLanguageExists};
