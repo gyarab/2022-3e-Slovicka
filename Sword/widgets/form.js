@@ -459,7 +459,7 @@ class SelectField extends FormField {
 		return {
 			ref: 'input',
 			nodeName: 'select',
-			'on:input': () => this.fire('change'),
+			'on:input': () => this.fire('change', this.getValue()),
 			disabled: this.disabled,
 			tabIndex: this.disabled ? '-1' : '0',
 			autofocus: this.autofocus,

@@ -87,7 +87,7 @@ class Home extends SectionScreen {
 		},{
 			nodeName: 'a',
 			href: Routes.courses,
-			screen: WillBeAdded,
+			screen: Courses,
 		}]
 	}
 
@@ -117,6 +117,7 @@ const Routes = {
 	adventure_mode: '/administration/adventure_mode',
 	terms_of_service: '/terms-of-service',
 	privacy_policy: '/privacy-policy',
+	courses_editor: '/courses/editor'
 }
 
 new Startup(async match => {
@@ -178,6 +179,23 @@ new Startup(async match => {
 		APP.show({
 			class: MyProfile,
 			section: captures.screen
+		});
+	}
+},{
+	group: 'auth',
+	path: Routes.courses_editor,
+	async handler({captures}) {
+		APP.show({
+			class: CourseEditor
+		});
+	}
+},{
+	group: 'auth',
+	path: Routes.courses_editor + '/{course:int}',
+	async handler({captures}) {
+		APP.show({
+			class: CourseEditor,
+			id: captures.course
 		});
 	}
 }, {

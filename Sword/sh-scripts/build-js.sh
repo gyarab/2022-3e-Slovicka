@@ -29,6 +29,7 @@ MAIN_PKG=(
     fe/Forms.js
     fe/MyProfile.js
     fe/Administration.js
+    fe/Courses.js
 	fe/main.js
 )
 

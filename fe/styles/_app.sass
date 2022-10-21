@@ -279,3 +279,68 @@ nav.header
 
 		hr
 			margin-bottom: 40px
+
+[sword-comp=CourseNodeEditor], [sword-comp=CourseEditor]
+	.body
+		padding: 20px
+
+		.node-info
+
+			.header
+				display: flex
+				align-items: center
+				margin-bottom: 30px
+
+				.title
+					flex: 1
+					margin: 0
+
+				.course-state
+					margin-right: 10px
+
+				.visibility
+					margin-right: 10px
+
+				.course-delete
+					display: flex
+					align-items: center
+
+		.words
+			.header
+				margin: 20px 0 30px
+				display: flex
+				align-items: center
+
+				.title
+					margin: 0
+					flex: 1
+
+			.word-list
+
+				.word
+					margin-bottom: 20px
+					.word-header
+						display: flex
+
+						.word-name
+							font-weight: 600
+							font-size: 18px
+							flex: 1
+
+						.edit
+							margin-right: 10px
+
+[sword-comp=Courses]
+	.header
+		display: flex
+
+
+	.courses
+		display: grid
+		grid-template-columns: auto auto auto auto
+
+		.course
+			width: 100px
+			height: 100px
+			border: 1px solid black
+
