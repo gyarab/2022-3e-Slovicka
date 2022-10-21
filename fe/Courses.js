@@ -125,7 +125,6 @@ class CourseNodeEditor extends Sword {
 									'on:success': (obj, word) => {
 										me.words.push(word);
 										me.renderWord(word)
-										me.afterCreateNode();
 									}
 								})
 							}
@@ -138,16 +137,13 @@ class CourseNodeEditor extends Sword {
 			}]
 		}, this);
 
-		if (this.id) {
-			this.loadData();
-		}
+		this.loadData();
 	}
 
 	onSave() {}
 	loadData() {}
 	handleError() {}
 	getHeader() {}
-	afterCreateNode() {}
 
 	async loadWords() {
 		this.words = await REST.GET(`courses/${this.data.course}/nodes/${this.data.id}/words`);
@@ -240,6 +236,7 @@ class CourseEditor extends CourseNodeEditor {
 		NOTIFICATION.showStandardizedSuccess(i18n._('Course saved'));
 		const url = new URL(Routes.courses_editor + '/' + this.data.course, location.href)
 		history.pushState({}, '', url.toString());
+		this.setHeaderSwitchDisability(false);
 	}
 
 	handleError(ex) {
@@ -250,12 +247,19 @@ class CourseEditor extends CourseNodeEditor {
 	}
 
 	async loadData() {
-		this.data = await REST.GET(`courses/${this.id}`);
-		this.data.course = this.data.id;
-		this.data.id = this.data.node;
+		try {
+			if (this.id) {
+				this.data = await REST.GET(`courses/${this.id}`);
+				this.data.course = this.data.id;
+				this.data.id = this.data.node;
 
-		this.nodeInfo.setFormValues(this.data);
-		this.loadWords();
+				this.nodeInfo.setFormValues(this.data);
+				await this.loadWords();
+			}
+		} catch (ignored) {}
+		finally {
+			this.setHeaderSwitchDisability(!this.data?.course);
+		}
 	}
 
 	deleteCourseDialog() {
@@ -280,29 +284,12 @@ class CourseEditor extends CourseNodeEditor {
 		})
 	}
 
-	afterCreateNode() {
-		this.setHeaderSwitchDisability(false);
-	}
-
 	setHeaderSwitchDisability(disabled) {
 		this.courseState.setDisabled(disabled);
 		this.courseVisibility.setDisabled(disabled);
 	}
 
-	connect() {
-		this.setHeaderSwitchDisability(!this.data?.course);
-	}
-
 	getHeader() {
-		const userCanEdit = () => {
-			if (!this.data.course) {
-				NOTIFICATION.showStandardizedINFO(i18n._('Create and save new course first'));
-				return false;
-			}
-
-			return true;
-		}
-
 		return [{
 			className: 'title',
 			nodeName: 'h4',
