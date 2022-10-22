@@ -47,6 +47,7 @@ module.exports = (grunt) => {
 	}
 
 	const logsEnv = env.grunt.logs;
+	const dontUseBashBuild = grunt.option('USE_BASH') === false;
 
 	grunt.initConfig({
 		/**
@@ -54,19 +55,19 @@ module.exports = (grunt) => {
 		 */
 		shell: {
 			js: {
-				command: 'npm run build-js',
+				command: `npm run ${dontUseBashBuild ? 'win-' : ''}build-js`,
 				options: {
 					stdout: logsEnv.js || logsEnv.all
 				}
 			},
 			styles: {
-				command: 'npm run build-styles',
+				command: `npm run ${dontUseBashBuild ? 'win-' : ''}build-styles`,
 				options: {
 					stdout: logsEnv.sass || logsEnv.all
 				}
 			},
 			icons: {
-				command: `npm run build-icons`,
+				command: `npm run ${dontUseBashBuild ? 'win-' : ''}build-icons`,
 				options: {
 					stdout: logsEnv.icons || logsEnv.all
 				}

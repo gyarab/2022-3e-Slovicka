@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./be/server.js",
-    "dev": "grunt watch --gruntfile be/utils/Gruntfile.js & nodemon ./be/server.js",
+    "dev": "npm run auto-rebuild & nodemon ./be/server.js",
     "build": "Sword/scripts/build.sh",
     "build-js": "Sword/scripts/build-js.sh",
     "build-styles": "Sword/scripts/build-styles.sh",
@@ -14,6 +14,8 @@
     "build-icons": "Sword/scripts/build-icons.sh",
 
     "//": "These npm scripts should be used when you cannot use bash ones",
+    "win-dev": "npm run win-auto-rebuild & nodemon ./be/server.js",
+    "win-auto-rebuild": "grunt --USE_BASH=false watch --gruntfile ./be/utils/Gruntfile.js",
     "win-build": "node Sword/scripts/build.js",
     "win-build-js": "Sword/scripts/build-js.sh",
     "win-build-icons": "ICONS_DIR='fe/icons' ICONS_OUT_JS='gen/fe/icon-data.js' ICONS_OUT_SVG='gen/fe/icon-symbols.svg' ICONS_OUT_SASS='gen/fe/_icon-data.sass' node Sword/utils/icons/generate.js",
