@@ -12,7 +12,7 @@ git clone -b $BRANCH . "$TMP/src"
 
 pushd "$TMP/src"
 npm i
-./Sword/sh-scripts/build.sh
+./Sword/scripts/build.sh
 VERSION=`git describe --always`
 DATE=`date +%F-%H%M`
 echo "$BRANCH-$DATE-$VERSION" > version
