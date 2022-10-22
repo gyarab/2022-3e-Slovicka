@@ -14,7 +14,7 @@ module.exports = {
 	proxy_url: process.env.APP_PROXY_URL || `http://${process.env.APP_BIND_HOST || "localhost"}:${process.env.APP_BIND_PORT || 3331}/`,
 	reload_css_onsave: false,
 
-	websocket_port: process.env.APP_WEBSOCKET_BIND_PORT || 4449,
+	websocket_port: process.env.APP_WEBSOCKET_BIND_PORT || 3332,
 	websocket_url: process.env.APP_WEBSOCKET_BIND_URL || `ws://localhost:${process.env.APP_WEBSOCKET_BIND_PORT || 3332}/ws`,
 
 	//Postgresql database
@@ -67,7 +67,7 @@ module.exports = {
 	/**
 	 * FE envs
 	 */
-	title: 'Sword demo',
+	title: 'Vocabulary',
 
 	// TODO here should be websockets for css refresh
 	importedScripts: [],
