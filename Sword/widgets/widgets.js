@@ -285,6 +285,11 @@ class ValidateChangesFormDialog extends Dialog {
 		return this.useValidateChangesForm ? !this.form.showUnsavedChanges() : true;
 	}
 
+	getFormFields() {}
+	onSave() {}
+	handleError() {}
+	getButtons = null;
+
 	closeForm() {
 		this.form.ignoreBeforeDestroyValidation = true;
 		this.close()
@@ -294,6 +299,10 @@ class ValidateChangesFormDialog extends Dialog {
 		this.useValidateChangesForm ??= true;
 		super.connect();
 
+		const appendButtons = this.getButtons ? {
+			getButtons: () => this.getButtons()
+		} : {};
+
 		this.form = this.append({
 			class: this.useValidateChangesForm ? ValidateChangesForm : Form,
 			'on:data-saved': () => this.closeForm(),
@@ -302,6 +311,7 @@ class ValidateChangesFormDialog extends Dialog {
 			data: this.data,
 			submitText: this.submitText,
 			getFormFields: () => this.getFormFields(),
+			...appendButtons,
 			onSave: async data => await this.onSave(data),
 			afterSave: () => this.closeForm(),
 			handleError: (ex) => this.handleError(ex)

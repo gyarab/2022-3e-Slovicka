@@ -13,6 +13,7 @@ const usersWithoutSession = require('./users-without-session')
 const users = require('./users');
 const languages = require('./languages');
 const courses = require('./courses');
+const adventures = require('./adventures-administration')
 const SQLBuilder = require('./utils/SQLBuilder');
 
 startup.startUp();
@@ -57,6 +58,7 @@ app.all_json('/api/*', async req => {
 
 app.use('/api', usersAdministration.app);
 app.use('/api', languages.app);
+app.use('/api', adventures.app);
 
 /**
  * Static files must be served in main file

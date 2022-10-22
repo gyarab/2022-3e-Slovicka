@@ -113,6 +113,7 @@ const Routes = {
 	my_profile_pass: '/my_profile/change-password',
 	administration: '/administration',
 	administration_users: '/administration/users',
+	administration_adventures: '/administration/adventures',
 	administration_languages: '/administration/languages',
 	adventure_mode: '/administration/adventure_mode',
 	terms_of_service: '/terms-of-service',

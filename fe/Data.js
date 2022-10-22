@@ -4,11 +4,17 @@ class AppDataManager extends Sword {
 		this.components = [];
 
 		this.el = this.createElement({});
+
 		this.languages = [];
+		this.languageMap = {};
 	}
 
 	async getLanguages() {
 		this.languages = await REST.GET('languages/list');
+
+		for (const l of this.languages) {
+			this.languageMap[l.id] = l.name;
+		}
 	}
 
 	async login(data) {

@@ -1,3 +1,19 @@
+class CourseStateSelect extends SelectField {
+	beforeRender() {
+		this.className = 'course-state';
+		this.options = [{
+			text: 'Paused',
+			value: 'paused'
+		},{
+			text: 'Published',
+			value: 'published'
+		},{
+			text: 'Closed',
+			value: 'closed'
+		}]
+	}
+}
+
 class WordCreateDialog extends ValidateChangesFormDialog {
 	beforeRender() {
 		this.data ??= {};
@@ -61,6 +77,8 @@ class WordCreateDialog extends ValidateChangesFormDialog {
 }
 
 class CourseNodeEditor extends Sword {
+	words = [];
+
 	render() {
 		const me = this;
 
@@ -296,9 +314,7 @@ class CourseEditor extends CourseNodeEditor {
 			textContent: i18n._(`Course information`)
 		},{
 			ref: 'courseState',
-			className: 'course-state',
-			class: SelectField,
-			options: ['paused', 'closed', 'published'].map(s => ({text: i18n._(s), value: s})),
+			class: CourseStateSelect,
 			'on:change': async (obj, value) => {
 				try {
 					await REST.PUT(`courses/${this.data.course}/state`, {state: value})

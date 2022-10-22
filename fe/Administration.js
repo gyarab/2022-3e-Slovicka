@@ -254,15 +254,170 @@ class LanguagesSection extends Sword {
 	}
 }
 
+class AdventureAdministrationFrom extends ValidateChangesFormDialog {
+	beforeRender() {
+		this.data ??= {};
+		this.submitText =  i18n._('save');
+		this.title =  i18n._(this.data.id ? 'edit_adventure' : 'create_adventure');
+		this.allowCloseButton = true;
+	}
+
+	getFormFields() {
+		return [{
+			class: TextField,
+			name: 'name',
+			label: i18n._('name'),
+			value: this.data?.name,
+			autofocus: true
+		}, {
+			class: TextField,
+			name: 'description',
+			label: i18n._('description'),
+			value: this.data?.description
+		}, {
+			class: SelectField,
+			value: this.data?.language,
+			name: 'language',
+			label: i18n._('language'),
+			options: Utils.convertArrayToOptions(DataManager.languages, 'id', 'name'),
+			defaultValue: DataManager.languages[0].id
+		}]
+	}
+
+	async onSave(data) {
+		const id = this.data?.id
+		const adventure = await REST[id ? 'PUT' : 'POST'](`adventures${id ? '/' + id : ''}`, data);
+		this.fire('success', adventure);
+	}
+
+	handleError(ex) {
+		NOTIFICATION.showStandardizedError({
+			404: i18n._('Adventure not found')
+		}[ex.status]);
+	}
+}
+
+class AdventureModeStateDialog extends ValidateChangesFormDialog {
+	beforeRender() {
+		this.title = i18n._('Course state');
+		this.subtitle = i18n._(`Changing course state will affect all users doing this course. Change it carefully.`)
+		this.allowCloseButton = true;
+	}
+
+	getButtons() {
+		return [{
+			nodeName: 'button',
+			type: 'button',
+			className: 'secondary',
+			textContent: i18n._('cancel')
+		},{
+			nodeName: 'button',
+			type: 'submit',
+			className: 'primary ' + this.submitButtonExtraClass,
+			textContent: i18n._('save')
+		}]
+	}
+
+	getFormFields() {
+		return [{
+			label: i18n._('state'),
+			class: CourseStateSelect,
+			name: 'state'
+		}]
+	}
+
+	async onSave(data) {
+		const course = await REST.POST(`adventures/${this.id}/state`, data);
+
+		this.fire('success', course);
+	}
+
+	handleError(ex) {
+		NOTIFICATION.showStandardizedError({
+			404: i18n._('Adventure not found')
+		}[ex.status]);
+	}
+}
+
+class AdventuresSection extends Sword {
+	async render() {
+		const me = this;
+
+		this.el = this.createElement({
+			className: 'panel-container',
+			children: [{
+				className: 'header',
+				children: [{
+					nodeName: 'h4',
+					textContent: i18n._('adventures')
+				},{
+					nodeName: 'button',
+					type: 'button',
+					children: ['icon:plus', {textContent: i18n._('add_adventure')}],
+					className: 'primary icon-left',
+					'on:click': async () => new AdventureAdministrationFrom(document.body, {
+						'on:success': (obj, adventure) => {
+							me.adventures.push(adventure);
+							me.table.setData(me.adventures);
+						}
+					})
+				}]
+			},{
+				class: SmartTable,
+				ref: 'table',
+				getColumns: () => {
+					return [{
+						name: i18n._('name'),
+						id: 'name'
+					}, {
+						name: i18n._('description'),
+						id: 'description'
+					},{
+						name: i18n._('language'),
+						id: 'language',
+						formatCell(table, td, v, row) {
+							td.textContent = DataManager.languageMap[v];
+						}
+					},{
+						name: i18n._('state'),
+						id: 'state'
+					},{
+						id: 'ctl',
+						formatCell(table, td, v, row) {
+							table.append(table.createEditButton(AdventureAdministrationFrom, row), null, td);
+							table.append({
+								nodeName: 'button',
+								type: 'button',
+								children: ['icon:pencil', {textContent: i18n._('change_state')}],
+								className: 'primary icon-left',
+								'on:click': () => new AdventureModeStateDialog(document.body, {
+									id: row.id,
+									'on:success': (obj, adventure) => {
+										me.adventures.updateByIndex(adventure, a => a.id === row.id);
+										me.table.setData(me.adventures);
+									}
+								})
+							}, null, td)
+						}
+					}]
+				}
+			}]
+		}, this);
+
+		this.adventures = await REST.GET('adventures/administration/list');
+		this.table.setData(this.adventures);
+	}
+}
 
 class Administration extends SectionScreen {
 	beforeRender() {
-		this.defaultSection = Routes.administration_languages;
+		this.defaultSection = Routes.administration_adventures;
 	}
 
 	getRoutes() {
 		const routes = {
-			languages: Routes.administration_languages
+			languages: Routes.administration_languages,
+			adventures: Routes.administration_adventures
 		};
 
 		if (DataManager.userIsAdmin()) {
@@ -274,6 +429,13 @@ class Administration extends SectionScreen {
 
 	getSidebarMenu() {
 		return [{
+			render: DataManager.userIsAtLeastEditor(),
+			nodeName: 'a',
+			className: 'item',
+			children: [this.useIcon('book'), i18n._('adventures')],
+			href: Routes.administration_adventures,
+			screen: AdventuresSection
+		},{
 			render: DataManager.userIsAtLeastEditor(),
 			nodeName: 'a',
 			className: 'item',

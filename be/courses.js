@@ -51,7 +51,7 @@ async function prepareCourseEditableData(data) {
 async function saveCourse(sessionId, adventure, data) {
 	const create = await prepareCourseEditableData(data);
 
-	const course = await db.insert('courses', {
+	return await db.insert('courses', {
 		...create,
 		type: adventure ? courseTypes.ADVENTURE.description : courseTypes.USER.description,
 		owner: adventure ? null : sessionId,
@@ -59,19 +59,6 @@ async function saveCourse(sessionId, adventure, data) {
 		state: 'creating'
 	})
 		.oneOrNone();
-
-	const rootNode = await db.insert('course_nodes', {
-			level: 0,
-			course: course.id,
-			state: adventure ? 'creating' : null,
-			number_of_completion: adventure ? 1 : null
-		})
-		.oneOrNone();
-
-	return {
-		...course,
-		node: rootNode.id
-	}
 }
 
 async function updateCourse(id, data, adventure, userId) {
@@ -83,12 +70,10 @@ async function updateCourse(id, data, adventure, userId) {
 
 	const update = await prepareCourseEditableData(data);
 
-	await db.update('courses')
+	return await db.update('courses')
 		.set(update)
 		.whereId(id)
 		.oneOrNone();
-
-	return await getCourseWithRootNode(id);
 }
 
 async function validateUserHasRightsToEditNode(id, courseId, userId) {
@@ -233,25 +218,45 @@ async function getCourseWithRootNode(id) {
 	}
 }
 
-app.post_json('/courses', async req => await saveCourse(req.session.id, false, req.body));
-app.put_json('/courses/:id([0-9]+)', async req => await updateCourse(parseId(req.params.id), req.body, false, req.session.id));
-
-app.put_json('/courses/:id([0-9]+)/state', async req => {
+async function updateCourseState(req, validate) {
 	const id = parseId(req.params.id);
 	const {state} = req.body;
 
 	validateStringNotEmpty(state);
-	await userHasAccessToEditCourse(id, req.session.id);
+	await validate(id, req);
 
 	if (!['published', 'paused', 'closed'].includes(state)) {
-		throw new NotFound();
+		throw new NotFound('State not found', 'state_not_found');
 	}
 
 	return await db.update('courses')
 		.set({state})
 		.whereId(id)
 		.oneOrNone();
-})
+}
+
+app.post_json('/courses', async req => {
+	const course = await saveCourse(req.session.id, false, req.body)
+
+	const rootNode = await db.insert('course_nodes', {
+			level: 0,
+			course: course.id
+		})
+		.oneOrNone();
+
+	course.node = rootNode.id;
+
+	return course
+});
+app.put_json('/courses/:id([0-9]+)', async req => {
+	const id = parseId(req.params.id);
+	await updateCourse(id, req.body, false, req.session.id);
+	return await getCourseWithRootNode(id);
+});
+
+app.put_json('/courses/:id([0-9]+)/state', async req => await updateCourseState(req, async (id, req) => {
+	await userHasAccessToEditCourse(id, req.session.id);
+}));
 
 app.delete_json('/courses/:id([0-9]+)', async req => {
 	const id = parseId(req.params.id);
@@ -352,4 +357,4 @@ app.get_json('/courses/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => {
 		.getList()
 });
 
-module.exports = {app, saveCourse, updateCourse, validateCourseExists};
+module.exports = {app, saveCourse, updateCourse, validateCourseExists, updateCourseState};
