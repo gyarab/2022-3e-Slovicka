@@ -4,6 +4,11 @@ class AppDataManager extends Sword {
 		this.components = [];
 
 		this.el = this.createElement({});
+		this.languages = [];
+	}
+
+	async getLanguages() {
+		this.languages = await REST.GET('languages/list');
 	}
 
 	async login(data) {
@@ -43,6 +48,7 @@ class AppDataManager extends Sword {
 	async initSession() {
 		try {
 			this.session = await REST.GET('session');
+			await this.getLanguages();
 		} catch (ignored) {
 		}
 
