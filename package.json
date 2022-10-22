@@ -5,13 +5,19 @@
   "scripts": {
     "start": "node ./be/server.js",
     "dev": "grunt watch --gruntfile be/utils/Gruntfile.js & nodemon ./be/server.js",
-    "build": "./Sword/sh-scripts/build.sh",
-    "build-js": "./Sword/sh-scripts/build-js.sh",
-    "build-styles": "./Sword/sh-scripts/build-styles.sh",
+    "build": "Sword/scripts/build.sh",
+    "build-js": "Sword/scripts/build-js.sh",
+    "build-styles": "Sword/scripts/build-styles.sh",
     "auto-rebuild": "grunt watch --gruntfile ./be/utils/Gruntfile.js",
-    "init": "rm -rf gen/{fe,be} && mkdir -p gen/{fe,be} && npm i && ./Sword/sh-scripts/init.sh && npm run build",
+    "init": "rm -rf gen/{fe,be} && mkdir -p gen/{fe,be} && npm i && Sword/scripts/init.sh && npm run build",
     "server-reload": "nodemon ./be/server.js",
-    "build-icons": "./Sword/sh-scripts/build-icons.sh"
+    "build-icons": "Sword/scripts/build-icons.sh",
+
+    "//": "These npm scripts should be used when you cannot use bash ones",
+    "win-build": "node Sword/scripts/build.js",
+    "win-build-js": "Sword/scripts/build-js.sh",
+    "win-build-icons": "ICONS_DIR='fe/icons' ICONS_OUT_JS='gen/fe/icon-data.js' ICONS_OUT_SVG='gen/fe/icon-symbols.svg' ICONS_OUT_SASS='gen/fe/_icon-data.sass' node Sword/utils/icons/generate.js",
+    "win-build-styles": "node-sass fe/styles/style.sass gen/fe/main.css --source-map gen/fe/main.css.map"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
