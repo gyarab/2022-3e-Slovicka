@@ -3,7 +3,9 @@ const SQLBuilder = require('./utils/SQLBuilder');
 const {validateStringNotEmpty, validateType} = require("./utils/validations");
 const {BadRequest, NotFound} = require("./utils/aexpress");
 const {parseId} = require("./utils/utils");
-const {saveCourse, updateCourse, validateCourseExists, updateCourseState} = require("./courses");
+const {saveCourse, updateCourse, validateCourseExists, updateCourseState, saveWordHandler,
+	deleteWord, getWords, updateWord
+} = require("./courses");
 const {courseTypes} = require("./constants");
 
 const app = express();
@@ -12,7 +14,7 @@ const db = new SQLBuilder();
 const validateAdventureCourse = async id => await validateCourseExists(id, courseTypes.ADVENTURE.description);
 
 async function validateNodeBelongsToCourse(id, nodeId) {
-	await validateAdventureCourse(id);
+	const course = await validateAdventureCourse(id);
 
 	const node = await db.select('course_nodes')
 		.where('id = ?', nodeId)
@@ -23,7 +25,7 @@ async function validateNodeBelongsToCourse(id, nodeId) {
 		throw new NotFound('Node not found', 'node_not_found');
 	}
 
-	return node;
+	return {node, course};
 }
 
 async function getNodesAtLevel(id, level) {
@@ -94,9 +96,10 @@ app.get_json('/adventures/:id([0-9]+)/node/list', async req => {
 
 app.get_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 	const id = parseId(req.params.id);
-	const node = parseId(req.params.node);
+	const nodeId = parseId(req.params.node);
+	const {node} = await validateNodeBelongsToCourse(id, nodeId);
 
-	return await validateNodeBelongsToCourse(id, node);
+	return node;
 })
 
 app.put_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
@@ -127,7 +130,7 @@ app.put_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 app.delete_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 	const id = parseId(req.params.id);
 	const nodeId = parseId(req.params.node);
-	const node = await validateNodeBelongsToCourse(id, nodeId);
+	const {node} = await validateNodeBelongsToCourse(id, nodeId);
 
 	const nodesAtLevel = await getNodesAtLevel(id, node.level);
 
@@ -148,5 +151,22 @@ app.put_json('/adventures/:id([0-9]+)/node/:node([0-9]+)/publish', async req => 
 		.whereId(node)
 		.oneOrNone();
 });
+
+app.post_json('/adventures/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => saveWordHandler(req, async (node, courseId, userId) => {
+	const {course} = await validateNodeBelongsToCourse(courseId, node);
+	return course;
+}));
+
+app.put_json('/adventures/:id([0-9]+)/words/:group([0-9]+)', async req => await updateWord(req, async (nodeId, courseId, userId) => {
+	await validateNodeBelongsToCourse(courseId, nodeId);
+}));
+
+app.delete_json('/adventures/:id([0-9]+)/words/:group([0-9]+)', async req => await deleteWord(req, async (nodeId, courseId, userId) => {
+	await validateNodeBelongsToCourse(courseId, nodeId);
+}));
+
+app.get_json('/adventures/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => await getWords(req, async (node, courseId, userId) => {
+	await validateNodeBelongsToCourse(courseId, node);
+}));
 
 module.exports = {app};

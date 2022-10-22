@@ -206,6 +206,55 @@ async function saveWord(nodeId, data) {
 		.oneOrNone();
 }
 
+async function saveWordHandler(req, validate) {
+	const courseId = parseId(req.params.id);
+	const node = parseId(req.params.node);
+	const course = await validate(node, courseId, req.session.id);
+	const data = req.body;
+
+	data.language = course.language;
+	data.wordId = req.body.wordId ? parseId(req.body.wordId) : null;
+
+	return await saveWord(node, data);
+}
+
+async function updateWord(req, validate) {
+	const courseId = parseId(req.params.id);
+	const groupId = parseId(req.params.group);
+	const group = await validateWordGroupExists(groupId);
+
+	await validate(group.course_node, courseId, req.session.id);
+
+	await db.update('word_groups')
+		.set(prepareGroupWordUpdate(req.body))
+		.whereId(groupId)
+		.oneOrNone();
+
+	return prepareGetWordWithGroupQuery()
+		.where('gr.id = ?', groupId)
+		.oneOrNone();
+}
+
+async function deleteWord(req, validate) {
+	const courseId = parseId(req.params.id);
+	const groupId = parseId(req.params.group);
+	const group = await validateWordGroupExists(groupId);
+
+	await validate(group.course_node, courseId, req.session.id);
+	await db.deleteById('word_groups', groupId);
+}
+
+async function getWords(req, validate) {
+	const courseId = parseId(req.params.id);
+	const node = parseId(req.params.node);
+
+	await validate(node, courseId, req.session.id);
+
+	return prepareGetWordWithGroupQuery()
+		.where('gr.course_node = ?', node)
+		.getList()
+}
+
 async function getCourseWithRootNode(id) {
 	const course = await db.oneOrNoneById('courses', id);
 	const node = await db.select('course_nodes')
@@ -308,53 +357,31 @@ app.get_json('/courses/list', async req => {
 	return await query.getList();
 });
 
-app.post_json('/courses/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => {
-	const courseId = parseId(req.params.id);
-	const node = parseId(req.params.node);
-	const {course} = await validateUserHasRightsToEditNode(node, courseId, req.session.id);
-	const data = req.body;
+app.post_json('/courses/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => await saveWordHandler(req, async (node, courseId, userId) => {
+	const {course} = await validateUserHasRightsToEditNode(node, courseId, userId);
+	return course;
+}));
 
-	data.language = course.language;
-	data.wordId = req.body.wordId ? parseId(req.body.wordId) : null;
+app.put_json('/courses/:id([0-9]+)/words/:group([0-9]+)', async req => await updateWord(req, async (nodeId, courseId, userId) => {
+	await validateUserHasRightsToEditNode(nodeId, courseId, userId);
+}));
 
-	return await saveWord(node, data);
-});
+app.delete_json('/courses/:id([0-9]+)/words/:group([0-9]+)', async req => await deleteWord(req, async (nodeId, courseId, userId) => {
+	await validateUserHasRightsToEditNode(nodeId, courseId, userId);
+}));
 
-app.put_json('/courses/:id([0-9]+)/words/:group([0-9]+)', async req => {
-	const courseId = parseId(req.params.id);
-	const groupId = parseId(req.params.group);
-	const group = await validateWordGroupExists(groupId);
+app.get_json('/courses/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => await getWords(req, async (node, courseId, userId) => {
+	await validateUserHasAccessToNode(node, courseId, userId);
+}));
 
-	await validateUserHasRightsToEditNode(group.course_node, courseId, req.session.id);
-
-	await db.update('word_groups')
-		.set(prepareGroupWordUpdate(req.body))
-		.whereId(groupId)
-		.oneOrNone();
-
-	return prepareGetWordWithGroupQuery()
-		.where('gr.id = ?', groupId)
-		.oneOrNone();
-});
-
-app.delete_json('/courses/:id([0-9]+)/words/:group([0-9]+)', async req => {
-	const courseId = parseId(req.params.id);
-	const groupId = parseId(req.params.group);
-	const group = await validateWordGroupExists(groupId);
-
-	await validateUserHasRightsToEditNode(group.course_node, courseId, req.session.id);
-	await db.deleteById('word_groups', groupId);
-});
-
-app.get_json('/courses/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => {
-	const courseId = parseId(req.params.id);
-	const node = parseId(req.params.node);
-
-	await validateUserHasAccessToNode(node, courseId, req.session.id);
-
-	return prepareGetWordWithGroupQuery()
-		.where('gr.course_node = ?', node)
-		.getList()
-});
-
-module.exports = {app, saveCourse, updateCourse, validateCourseExists, updateCourseState};
+module.exports = {
+	app,
+	saveCourse,
+	updateCourse,
+	validateCourseExists,
+	updateCourseState,
+	saveWordHandler,
+	updateWord,
+	deleteWord,
+	getWords
+};
