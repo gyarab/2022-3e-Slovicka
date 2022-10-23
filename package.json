@@ -17,8 +17,8 @@
     "win-dev": "npm run win-auto-rebuild & nodemon ./be/server.js",
     "win-auto-rebuild": "grunt --USE_BASH=false watch --gruntfile ./be/utils/Gruntfile.js",
     "win-build": "node Sword/scripts/build.js",
-    "win-build-js": "Sword/scripts/build-js.sh",
-    "win-build-icons": "ICONS_DIR='fe/icons' ICONS_OUT_JS='gen/fe/icon-data.js' ICONS_OUT_SVG='gen/fe/icon-symbols.svg' ICONS_OUT_SASS='gen/fe/_icon-data.sass' node Sword/utils/icons/generate.js",
+    "win-build-js": "node Sword/scripts/build-js.js",
+    "win-build-icons": "node Sword/scripts/build-icons.js",
     "win-build-styles": "node-sass fe/styles/style.sass gen/fe/main.css --source-map gen/fe/main.css.map"
   },
   "dependencies": {
