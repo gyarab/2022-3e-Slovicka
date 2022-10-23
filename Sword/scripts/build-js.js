@@ -34,6 +34,7 @@ const MAIN_PKG=[
     'fe/MyProfile.js',
     'fe/Administration.js',
     'fe/Courses.js',
+    'fe/Adventures.js',
 	'fe/main.js'
 ]
 

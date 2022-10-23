@@ -61,8 +61,8 @@ class WordCreateDialog extends ValidateChangesFormDialog {
 
 	async onSave(data) {
 		let word = await (this.data.group ?
-			REST.PUT(`courses/${this.data.course}/words/${this.data.group}`, data) :
-			REST.POST(`courses/${this.data.course}/nodes/${this.data.node}/words`, data)
+			REST.PUT(`${this.saveEndpointPrefix}/${this.data.course}/words/${this.data.group}`, data) :
+			REST.POST(`${this.saveEndpointPrefix}/${this.data.course}/nodes/${this.data.node}/words`, data)
 		);
 
 		this.fire('success', word);
@@ -92,7 +92,7 @@ class CourseNodeEditor extends Sword {
 					className: 'node-info',
 					children: [{
 						className: 'header',
-						children: this.getHeader()
+						ref: 'header'
 					},{
 						ref: 'nodeInfo',
 						class: Form,
@@ -106,14 +106,12 @@ class CourseNodeEditor extends Sword {
 								class: TextField,
 								name: 'description',
 								label: i18n._('description'),
-							}, {
-								class: SelectField,
-								name: 'language',
-								label: i18n._('language'),
-								options: Utils.convertArrayToOptions(DataManager.languages, 'id', 'name')
-							}]
+							}].concat(me.getFields())
 						},
-						onSave: data => this.onSave(data),
+						onSave: async data => {
+							await this.onSave(data);
+							this.addWordBtn.disabled = false;
+						},
 						handleError: ex => this.handleError(ex)
 					}]
 				},{
@@ -125,6 +123,8 @@ class CourseNodeEditor extends Sword {
 							className: 'title',
 							textContent: i18n._('words')
 						},{
+							disabled: !this.data?.id,
+							ref: 'addWordBtn',
 							nodeName: 'button',
 							type: 'button',
 							children: ['icon:plus', {textContent: i18n._('add_word')}],
@@ -136,6 +136,7 @@ class CourseNodeEditor extends Sword {
 								}
 
 								new WordCreateDialog(document.body, {
+									saveEndpointPrefix: this.wordEndpointPrefix,
 									data: {
 										course: me.data.course,
 										node: me.data.id
@@ -155,16 +156,23 @@ class CourseNodeEditor extends Sword {
 			}]
 		}, this);
 
-		this.loadData();
+		this.init();
 	}
 
 	onSave() {}
 	loadData() {}
 	handleError() {}
-	getHeader() {}
+	renderHeader() {}
+	getFields() { return []; }
+
+	async init() {
+		await this.loadData();
+		this.renderHeader();
+		this.addWordBtn.disabled = !this.data?.id;
+	}
 
 	async loadWords() {
-		this.words = await REST.GET(`courses/${this.data.course}/nodes/${this.data.id}/words`);
+		this.words = await REST.GET(`${this.wordEndpointPrefix}/${this.data.course}/nodes/${this.data.id}/words`);
 
 		this.renderWords()
 	}
@@ -186,7 +194,7 @@ class CourseNodeEditor extends Sword {
 			cancelText: i18n._('no'),
 			onSave: async () => {
 				try {
-					await REST.DELETE(`courses/${me.data.course}/words/${word.group}`);
+					await REST.DELETE(`${me.wordEndpointPrefix}/${me.data.course}/words/${word.group}`);
 					me.words.deleteByIndex(w => w.group === word.group);
 					me.renderWords();
 				} catch (ex) {
@@ -213,6 +221,7 @@ class CourseNodeEditor extends Sword {
 					className: 'edit',
 					children: ['icon:pencil'],
 					'on:click': () => new WordCreateDialog(document.body, {
+						saveEndpointPrefix: this.wordEndpointPrefix,
 						data: {
 							...word,
 							group: word.group,
@@ -246,15 +255,27 @@ class CourseNodeEditor extends Sword {
 }
 
 class CourseEditor extends CourseNodeEditor {
+	beforeRender() {
+		this.wordEndpointPrefix = 'courses';
+	}
+
 	async onSave(data) {
-		this.data = await REST[this.data?.course ? 'PUT' : 'POST'](`courses${this.data?.course ? '/' + this.data.course : ''}`, data);
+		const newNode = !this.data?.id;
+		const course = this.data?.course;
+		this.data = await REST[course ? 'PUT' : 'POST'](`courses${course ? '/' + course : ''}`, data);
+
 		this.data.course = this.data.id;
 		this.data.id = this.data.node;
 
-		NOTIFICATION.showStandardizedSuccess(i18n._('Course saved'));
-		const url = new URL(Routes.courses_editor + '/' + this.data.course, location.href)
-		history.pushState({}, '', url.toString());
-		this.setHeaderSwitchDisability(false);
+		NOTIFICATION.showStandardizedSuccess(i18n._(newNode ? 'Course saved' : 'Course updated'));
+
+		if (newNode) {
+			const url = new URL(Routes.courses_editor + '/' + this.data.course, location.href)
+			history.pushState({}, '', url.toString());
+			this.courseState.setDisabled(false);
+			this.courseVisibility.setDisabled(false);
+			this.deleteBtn.disabled = false;
+		}
 	}
 
 	handleError(ex) {
@@ -262,6 +283,15 @@ class CourseEditor extends CourseNodeEditor {
 			404: i18n._('Course not found'),
 			401: i18n._('You don\'t have access to this course')
 		}[ex.status]);
+	}
+
+	getFields() {
+		return [{
+			class: SelectField,
+			name: 'language',
+			label: i18n._('language'),
+			options: Utils.convertArrayToOptions(DataManager.languages, 'id', 'name')
+		}]
 	}
 
 	async loadData() {
@@ -275,9 +305,6 @@ class CourseEditor extends CourseNodeEditor {
 				await this.loadWords();
 			}
 		} catch (ignored) {}
-		finally {
-			this.setHeaderSwitchDisability(!this.data?.course);
-		}
 	}
 
 	deleteCourseDialog() {
@@ -307,12 +334,13 @@ class CourseEditor extends CourseNodeEditor {
 		this.courseVisibility.setDisabled(disabled);
 	}
 
-	getHeader() {
-		return [{
+	renderHeader() {
+		this.replaceChildren([{
 			className: 'title',
 			nodeName: 'h4',
 			textContent: i18n._(`Course information`)
 		},{
+			disabled: !this.data?.id,
 			ref: 'courseState',
 			class: CourseStateSelect,
 			'on:change': async (obj, value) => {
@@ -325,6 +353,7 @@ class CourseEditor extends CourseNodeEditor {
 				}
 			}
 		},{
+			disabled: !this.data?.id,
 			ref: 'courseVisibility',
 			className: 'visibility',
 			class: SelectField,
@@ -339,19 +368,14 @@ class CourseEditor extends CourseNodeEditor {
 				}
 			}
 		},{
+			disabled: !this.data?.id,
+			ref: 'deleteBtn',
 			nodeName: 'button',
 			type: 'button',
 			className: 'course-delete error',
 			children: ['icon:delete'],
-			'on:click': async () => {
-				if (!this.data?.course) {
-					NOTIFICATION.showStandardizedINFO(i18n._('Create and save new course first'));
-					return false;
-				}
-
-				this.deleteCourseDialog();
-			}
-		}]
+			'on:click': async () => this.deleteCourseDialog()
+		}], this, this.header);
 	}
 }
 

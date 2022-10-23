@@ -241,6 +241,7 @@ class ConfirmDialog extends Dialog {
 
 	renderFormButtons() {
 		return [{
+			render: !!this.cancelText,
 			nodeName: 'button',
 			type: 'button',
 			className: this.cancelCls || 'secondary',

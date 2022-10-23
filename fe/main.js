@@ -118,7 +118,9 @@ const Routes = {
 	adventure_mode: '/administration/adventure_mode',
 	terms_of_service: '/terms-of-service',
 	privacy_policy: '/privacy-policy',
-	courses_editor: '/courses/editor'
+	courses_editor: '/courses/editor',
+	adventure_editor: '/adventures/editor',
+	adventure_node_editor: '/adventures/editor/node'
 }
 
 new Startup(async match => {
@@ -183,11 +185,42 @@ new Startup(async match => {
 		});
 	}
 },{
+	group: 'auth-administration',
+	path: Routes.adventure_editor + '/{adventure:int}',
+	async handler({captures}) {
+		APP.show({
+			class: AdventureNodesEditor,
+			id: captures.adventure
+		});
+	}
+},{
 	group: 'auth',
 	path: Routes.courses_editor,
 	async handler({captures}) {
 		APP.show({
 			class: CourseEditor
+		});
+	}
+},{
+	group: 'auth-administration',
+	path: Routes.adventure_node_editor + '/{course:int}',
+	async handler({captures}) {
+		const level = BrowserUtils.getSearchParam('level') || 0;
+
+		APP.show({
+			class: AdventureNodeEditor,
+			course: captures.course,
+			level
+		});
+	}
+},{
+	group: 'auth-administration',
+	path: Routes.adventure_node_editor + '/{course:int}/{node:int}',
+	async handler({captures}) {
+		APP.show({
+			class: AdventureNodeEditor,
+			course: captures.course,
+			node: captures.node
 		});
 	}
 },{

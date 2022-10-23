@@ -397,7 +397,15 @@ class AdventuresSection extends Sword {
 										me.table.setData(me.adventures);
 									}
 								})
-							}, null, td)
+							}, null, td);
+
+							table.append({
+								nodeName: 'button',
+								type: 'button',
+								children: ['icon:list', {textContent: i18n._('nodes')}],
+								className: 'primary icon-left',
+								'on:click': () => ROUTER.pushRoute(Routes.adventure_editor + '/' + row.id)
+							}, null, td);
 						}
 					}]
 				}
