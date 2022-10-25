@@ -398,6 +398,14 @@ class Courses extends Sword {
 					textContent: 'Here will be filters...'
 				}]
 			},{
+				className: 'tutorial',
+				children: [{
+					textContent: i18n._('Don\'t know where to go?')
+				},{
+					textContent: i18n._('Go quickly threw our tutorial')
+				}],
+				'on:click': () => ROUTER.pushRoute(Routes.tutorial)
+			},{
 				className: 'courses',
 				ref: 'coursesList'
 			}]
@@ -418,3 +426,13 @@ class Courses extends Sword {
 		}
 	}
 }
+
+class Tutorial extends Sword {
+	render() {
+		this.el = this.createElement({
+			textContent: 'Here will be tutorial'
+		}, this);
+	}
+}
+
+

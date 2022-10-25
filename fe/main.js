@@ -120,7 +120,8 @@ const Routes = {
 	privacy_policy: '/privacy-policy',
 	courses_editor: '/courses/editor',
 	adventure_editor: '/adventures/editor',
-	adventure_node_editor: '/adventures/editor/node'
+	adventure_node_editor: '/adventures/editor/node',
+	tutorial: '/tutorial'
 }
 
 new Startup(async match => {
@@ -200,6 +201,14 @@ new Startup(async match => {
 		APP.show({
 			class: CourseEditor
 		});
+	}
+},{
+	group: 'public',
+	path: Routes.tutorial,
+	async handler({}) {
+		APP.show({
+			class: Tutorial
+		})
 	}
 },{
 	group: 'auth-administration',
