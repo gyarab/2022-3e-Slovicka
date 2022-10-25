@@ -4,7 +4,7 @@ const {validateStringNotEmpty, validateType} = require("./utils/validations");
 const {BadRequest, NotFound} = require("./utils/aexpress");
 const {parseId} = require("./utils/utils");
 const {saveCourse, updateCourse, validateCourseExists, updateCourseState, saveWordHandler,
-	deleteWord, getWords, updateWord
+	deleteWord, getWords, updateWord, validateNodeBelongsToCourse
 } = require("./courses");
 const {courseTypes} = require("./constants");
 
@@ -13,19 +13,8 @@ const db = new SQLBuilder();
 
 const validateAdventureCourse = async id => await validateCourseExists(id, courseTypes.ADVENTURE.description);
 
-async function validateNodeBelongsToCourse(id, nodeId) {
-	const course = await validateAdventureCourse(id);
-
-	const node = await db.select('course_nodes')
-		.where('id = ?', nodeId)
-		.where('course = ?', id)
-		.oneOrNone();
-
-	if (!node) {
-		throw new NotFound('Node not found', 'node_not_found');
-	}
-
-	return {node, course};
+async function validateNodeBelongsToAdventure(id, nodeId) {
+	return await validateNodeBelongsToCourse(id, nodeId, courseTypes.ADVENTURE.description);
 }
 
 async function getNodesAtLevel(id, level) {
@@ -97,7 +86,7 @@ app.get_json('/adventures/:id([0-9]+)/node/list', async req => {
 app.get_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 	const id = parseId(req.params.id);
 	const nodeId = parseId(req.params.node);
-	const {node} = await validateNodeBelongsToCourse(id, nodeId);
+	const {node} = await validateNodeBelongsToAdventure(id, nodeId);
 
 	return node;
 })
@@ -115,7 +104,7 @@ app.put_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 		throw new BadRequest('Number of completion cannot be smaller than 1');
 	}
 
-	await validateNodeBelongsToCourse(id, node);
+	await validateNodeBelongsToAdventure(id, node);
 
 	return await db.update('course_nodes')
 		.set({
@@ -130,7 +119,7 @@ app.put_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 app.delete_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 	const id = parseId(req.params.id);
 	const nodeId = parseId(req.params.node);
-	const {node} = await validateNodeBelongsToCourse(id, nodeId);
+	const {node} = await validateNodeBelongsToAdventure(id, nodeId);
 
 	const nodesAtLevel = await getNodesAtLevel(id, node.level);
 
@@ -144,7 +133,7 @@ app.delete_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 app.put_json('/adventures/:id([0-9]+)/node/:node([0-9]+)/publish', async req => {
 	const id = parseId(req.params.id);
 	const node = parseId(req.params.node);
-	await validateNodeBelongsToCourse(id, node);
+	await validateNodeBelongsToAdventure(id, node);
 
 	return await db.update('course_nodes')
 		.set({state: 'published'})
@@ -153,20 +142,20 @@ app.put_json('/adventures/:id([0-9]+)/node/:node([0-9]+)/publish', async req => 
 });
 
 app.post_json('/adventures/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => saveWordHandler(req, async (node, courseId, userId) => {
-	const {course} = await validateNodeBelongsToCourse(courseId, node);
+	const {course} = await validateNodeBelongsToAdventure(courseId, node);
 	return course;
 }));
 
 app.put_json('/adventures/:id([0-9]+)/words/:group([0-9]+)', async req => await updateWord(req, async (nodeId, courseId, userId) => {
-	await validateNodeBelongsToCourse(courseId, nodeId);
+	await validateNodeBelongsToAdventure(courseId, nodeId);
 }));
 
 app.delete_json('/adventures/:id([0-9]+)/words/:group([0-9]+)', async req => await deleteWord(req, async (nodeId, courseId, userId) => {
-	await validateNodeBelongsToCourse(courseId, nodeId);
+	await validateNodeBelongsToAdventure(courseId, nodeId);
 }));
 
 app.get_json('/adventures/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => await getWords(req, async (node, courseId, userId) => {
-	await validateNodeBelongsToCourse(courseId, node);
+	await validateNodeBelongsToAdventure(courseId, node);
 }));
 
-module.exports = {app};
+module.exports = {app, getNodesAtLevel};

@@ -1,7 +1,7 @@
 const express = require('express');
 const SQLBuilder = require('./utils/SQLBuilder');
 const {validateStringNotEmpty} = require("./utils/validations");
-const {Unauthorized, NotFound} = require("./utils/aexpress");
+const {Unauthorized, NotFound, BadRequest} = require("./utils/aexpress");
 const {parseId} = require("./utils/utils");
 const {validateLanguageExists} = require("./languages");
 const {courseTypes} = require("./constants");
@@ -77,15 +77,9 @@ async function updateCourse(id, data, adventure, userId) {
 }
 
 async function validateUserHasRightsToEditNode(id, courseId, userId) {
-	const course = await validateCourseExists(courseId, courseTypes.USER.description);
+	const {course, node} = await validateNodeBelongsToCourse(courseId, id, courseTypes.USER.description);
 
 	if (course.owner !== userId) {
-		throw new Unauthorized();
-	}
-
-	const node = await db.oneOrNoneById('course_nodes', id);
-
-	if (node.course !== courseId) {
 		throw new Unauthorized();
 	}
 
@@ -100,18 +94,6 @@ async function validateUserHasAccessToCourse(courseId, userId) {
 	}
 
 	return course;
-}
-
-async function validateUserHasAccessToNode(id, courseId, userId) {
-	const course = await validateUserHasAccessToCourse(courseId, userId);
-
-	const node = await db.oneOrNoneById('course_nodes', id);
-
-	if (node.course !== courseId) {
-		throw new Unauthorized();
-	}
-
-	return {course, node};
 }
 
 async function validateWordExists(id) {
@@ -284,6 +266,21 @@ async function updateCourseState(req, validate) {
 		.oneOrNone();
 }
 
+async function validateNodeBelongsToCourse(id, nodeId, state) {
+	const course = await validateCourseExists(id, state);
+
+	const node = await db.select('course_nodes')
+		.where('id = ?', nodeId)
+		.where('course = ?', id)
+		.oneOrNone();
+
+	if (!node) {
+		throw new NotFound('Node not found', 'node_not_found');
+	}
+
+	return {node, course}
+}
+
 app.post_json('/courses', async req => {
 	const course = await saveCourse(req.session.id, false, req.body)
 
@@ -370,9 +367,64 @@ app.delete_json('/courses/:id([0-9]+)/words/:group([0-9]+)', async req => await 
 	await validateUserHasRightsToEditNode(nodeId, courseId, userId);
 }));
 
-app.get_json('/courses/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => await getWords(req, async (node, courseId, userId) => {
-	await validateUserHasAccessToNode(node, courseId, userId);
+async function validateUserHasAccessToAdventureNode(courseId, level) {
+	const nodes = await db.select()
+		.from('course_nodes AS cn', 'LEFT JOIN course_node_state cns on cns.course_nodes = cn.id')
+		.fields('cn.number_of_completion AS required, cns.number_of_completion AS completed')
+		.where('cn.course = ?', courseId)
+		.where('level = ?', level - 1)
+		.getList();
+
+	for (const n of nodes) {
+		if (n.required > n.completed) {
+			throw new Unauthorized();
+		}
+	}
+}
+
+async function validateUserHasAccessToNode(courseId, nodeId, userId) {
+	const {course, node} = await validateNodeBelongsToCourse(courseId, nodeId);
+
+	if (course.type === courseTypes.USER.description) {
+		await validateUserHasAccessToCourse(courseId, userId);
+	} else {
+		if (course.state !== 'published' || node.state === 'creating') {
+			throw new Unauthorized();
+		}
+
+		if (node.level > 0) {
+			await validateUserHasAccessToAdventureNode(courseId, node.level);
+		}
+	}
+}
+
+app.get_json('/courses/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => await getWords(req, async (nodeId, courseId, userId) => {
+	await validateUserHasAccessToNode(courseId, nodeId, userId);
 }));
+
+app.state_json('/courses/:id([0-9]+)/words/:group([0-9]+)/state', async req => {
+	const id = parseId(req.params.id);
+	const groupId = parseId(req.params.group);
+	const {state} = req.body;
+
+	validateStringNotEmpty(state, 'State');
+
+	if (state !== 'known' && state !== 'unknown') {
+		throw new NotFound('State', 'state_not_found')
+	}
+
+	const group = await validateWordGroupExists(groupId);
+	await validateUserHasAccessToNode(id, group.node, req.session.id);
+
+	return await db.insert('word_state', {
+			state,
+			"user": req.session.id,
+			group: groupId
+		})
+		.more(`ON CONFLICT ON CONSTRAINT word_group_user_unique 
+			DO UPDATE SET state = ?`, state)
+		.oneOrNone();
+});
 
 module.exports = {
 	app,
@@ -383,5 +435,6 @@ module.exports = {
 	saveWordHandler,
 	updateWord,
 	deleteWord,
-	getWords
+	getWords,
+	validateNodeBelongsToCourse
 };
