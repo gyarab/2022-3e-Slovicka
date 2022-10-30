@@ -63,7 +63,7 @@ app.post_json('/users/user-edit/:id', async req => {
 	validateStringNotEmpty(name, 'Name');
 	validateType(active, 'boolean');
 
-	if (role !== 'ADMIN' && role !== 'USER') {
+	if (role !== 'ADMIN' && role !== 'EDITOR') {
 		throw new ApiError(404, 'Role not found');
 	}
 
@@ -106,7 +106,7 @@ app.get_json('/users/list', async req => {
 	const roles = Array.isArray(req.query.role) ? req.query.role : [req.query.role];
 
 	const rolesAvailable = {
-		'USER': 'ADMIN',
+		'EDITOR': 'ADMIN',
 		'ADMIN': 'ADMIN'
 	};
 

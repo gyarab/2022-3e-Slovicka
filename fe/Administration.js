@@ -30,10 +30,10 @@ class AdministrationUserForm extends ValidateChangesFormDialog {
 			label: i18n._('role'),
 			class: SelectField,
 			value: this.data.role,
-			defaultValue: this.data.role || 'USER',
+			defaultValue: this.data.role || 'EDITOR',
 			options: [{
-				value: 'USER',
-				text: i18n._('user')
+				value: 'EDITOR',
+				text: i18n._('editor')
 			},{
 				value: 'ADMIN',
 				text: i18n._('admin')
@@ -157,7 +157,7 @@ class UsersSection extends Sword {
 			}]
 		}, this);
 
-		this.users = await REST.GET('users/list?role=USER&role=ADMIN');
+		this.users = await REST.GET('users/list?role=EDITOR&role=ADMIN');
 		this.table.setData(this.users);
 	}
 }
