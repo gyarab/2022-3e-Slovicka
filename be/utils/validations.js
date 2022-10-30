@@ -55,6 +55,22 @@ function isNotNull(val, label) {
 	}
 }
 
+function validateTypeIfNotNull(val, type) {
+	if (val) {
+		validateType(val, type);
+	}
+
+	return val;
+}
+
+function validateStringIfNotNull(val, label) {
+	if (val) {
+		validateStringNotEmpty(val, label);
+	}
+
+	return val;
+}
+
 module.exports = {
 	validateValuesAreUnique,
 	validateObjectNotEmpty,
@@ -62,5 +78,7 @@ module.exports = {
 	validateArrayNotEmpty,
 	validateType,
 	isNotNull,
-	isInstanceOf
+	isInstanceOf,
+	validateTypeIfNotNull,
+	validateStringIfNotNull
 }

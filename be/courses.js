@@ -1,6 +1,6 @@
 const express = require('express');
 const SQLBuilder = require('./utils/SQLBuilder');
-const {validateStringNotEmpty} = require("./utils/validations");
+const {validateStringNotEmpty, validateStringIfNotNull} = require("./utils/validations");
 const {Unauthorized, NotFound, BadRequest} = require("./utils/aexpress");
 const {parseId} = require("./utils/utils");
 const {validateLanguageExists} = require("./languages");
@@ -114,14 +114,6 @@ async function validateWordGroupExists(id) {
 	}
 
 	return group;
-}
-
-function validateStringIfNotNull (val, label) {
-	if (val) {
-		validateStringNotEmpty(val, label);
-	}
-
-	return val;
 }
 
 const prepareGroupWordUpdate = data => ({
@@ -402,7 +394,7 @@ app.get_json('/courses/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => awai
 	await validateUserHasAccessToNode(courseId, nodeId, userId);
 }));
 
-app.state_json('/courses/:id([0-9]+)/words/:group([0-9]+)/state', async req => {
+app.get_json('/courses/:id([0-9]+)/words/:group([0-9]+)/state', async req => {
 	const id = parseId(req.params.id);
 	const groupId = parseId(req.params.group);
 	const {state} = req.body;
@@ -436,5 +428,6 @@ module.exports = {
 	updateWord,
 	deleteWord,
 	getWords,
-	validateNodeBelongsToCourse
+	validateNodeBelongsToCourse,
+	validateUserHasAccessToCourse
 };
