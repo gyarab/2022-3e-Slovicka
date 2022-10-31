@@ -90,12 +90,12 @@ class SQLBuilder {
 	}
 
 	fields(fields) {
-		this.fieldsClause += this.fieldsClause + fields;
+		this.fieldsClause += (this.fieldsClause.length > 0 ? ', ' : '') + fields;
 		return this;
 	}
 
 	from(...tables) {
-		this.fromClause = tables.join(' ');
+		this.fromClause += ' ' + tables.join(' ');
 		return this;
 	}
 

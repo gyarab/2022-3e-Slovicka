@@ -75,7 +75,7 @@ app.post_json('/folders/:id([0-9]+)/course/:course([0-9]+)', async req => {
 	const courseId = parseId(req.params.course);
 
 	await validateUserCanEditFolder(id);
-	await validateUserHasAccessToCourse(courseId);
+	await validateUserHasAccessToCourse(courseId, req.session.id);
 
 	await db.insert('course_folders', {
 		course: courseId,
@@ -89,7 +89,7 @@ app.delete_json('/folders/:id([0-9]+)/course/:course([0-9]+)', async req => {
 	const courseId = parseId(req.params.course);
 
 	await validateUserCanEditFolder(id);
-	await validateUserHasAccessToCourse(courseId);
+	await validateUserHasAccessToCourse(courseId, req.session.id);
 
 	await db.delete('course_folders AS cf USING folders f')
 		.where('f.id = cf.folder')

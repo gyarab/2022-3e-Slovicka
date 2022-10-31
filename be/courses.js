@@ -1,10 +1,10 @@
 const express = require('express');
 const SQLBuilder = require('./utils/SQLBuilder');
-const {validateStringNotEmpty, validateStringIfNotNull} = require("./utils/validations");
+const {validateStringNotEmpty, validateStringIfNotNull, validateType} = require("./utils/validations");
 const {Unauthorized, NotFound, BadRequest} = require("./utils/aexpress");
 const {parseId} = require("./utils/utils");
 const {validateLanguageExists} = require("./languages");
-const {courseTypes} = require("./constants");
+const {courseTypes, COURSE_RATING_LIMIT} = require("./constants");
 
 const app = express();
 const db = new SQLBuilder();
@@ -325,6 +325,7 @@ app.put_json('/courses/:id([0-9]+)/visibility', async req => {
 
 app.get_json('/courses/list', async req => {
 	const editable = Boolean(req.query.onlyMy) === true;
+	const withRatings = Boolean(req.query.withRatings) === true;
 
 	const query = await db.select()
 		.fields('courses.*, cn.id AS node')
@@ -332,8 +333,14 @@ app.get_json('/courses/list', async req => {
 			'courses',
 			'INNER JOIN course_nodes AS cn ON cn.course = courses.id'
 		)
-		.where('courses.state = ?', courseTypes.USER.description)
+		.where('courses.type = ?', courseTypes.USER.description)
 
+	if (withRatings) {
+		query
+			.fields('AVG(cr.value)::numeric(2, 1)')
+			.from('LEFT JOIN course_ratings AS cr ON cr.course = courses.id')
+			.more('GROUP BY courses.id, cn.id');
+	}
 
 	if (editable) {
 		query.where('owner = ?', req.session.id);
@@ -416,6 +423,34 @@ app.get_json('/courses/:id([0-9]+)/words/:group([0-9]+)/state', async req => {
 		.more(`ON CONFLICT ON CONSTRAINT word_group_user_unique 
 			DO UPDATE SET state = ?`, state)
 		.oneOrNone();
+});
+
+app.post_json('/courses/:id([0-9]+)/ratings', async req => {
+	const id = parseId(req.params.id);
+	const {rating} = req.body;
+
+	await validateUserHasAccessToCourse(id, req.params.id);
+	validateType(rating, 'number');
+
+	if (Number.isInteger(rating)) {
+		throw new BadRequest('Rating is not integer', 'rating_integer');
+	}
+
+	if (rating < 0) {
+		throw new BadRequest('Rating cannot be lower than 0', 'negative_rating');
+	}
+
+	if (rating > COURSE_RATING_LIMIT) {
+		throw new BadRequest(`Rating cannot be higher than ${COURSE_RATING_LIMIT}`, 'too_high_rating');
+	}
+
+	return await db.insert('course_ratings', {
+			"user": req.session.id,
+			course: id,
+			value: rating
+		})
+		.more('ON CONFLICT ("user", course) DO UPDATE SET value = ?', rating)
+		.oneOrNone()
 });
 
 module.exports = {
