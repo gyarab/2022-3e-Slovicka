@@ -12,5 +12,7 @@ const courseTypes = {
 	USER: Symbol('USER')
 }
 
-module.exports = {courseTypes, roles}
+const COURSE_RATING_LIMIT = 10;
+
+module.exports = {courseTypes, roles, COURSE_RATING_LIMIT}
 
