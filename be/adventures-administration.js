@@ -158,4 +158,4 @@ app.get_json('/adventures/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => a
 	await validateNodeBelongsToAdventure(courseId, node);
 }));
 
-module.exports = {app, getNodesAtLevel};
+module.exports = {app, getNodesAtLevel, validateAdventureCourse};

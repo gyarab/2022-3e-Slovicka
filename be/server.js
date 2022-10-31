@@ -15,6 +15,7 @@ const languages = require('./languages');
 const courses = require('./courses');
 const adventures = require('./adventures-administration')
 const SQLBuilder = require('./utils/SQLBuilder');
+const adventuresPublic = require('./adventures-public');
 
 startup.startUp();
 
@@ -47,6 +48,7 @@ app.all_json('/api/*', async req => {
 
 app.use('/api', courses.app);
 app.use('/api', users.app);
+app.use('/api', adventuresPublic.app);
 
 app.all_json('/api/*', async req => {
 	if (req.session.role !== 'ADMIN') {
