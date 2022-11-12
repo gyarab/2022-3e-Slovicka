@@ -233,6 +233,30 @@ new Startup(async match => {
 			id: captures.id
 		})
 	}
+},{
+	group: 'auth',
+	path: '/tutorial/{section:str}',
+	async handler({captures}) {
+		let tut = null;
+
+		switch (captures.section) {
+			case '0':
+				tut = Tutorial1;
+				break;
+			case '1':
+				tut = Tutorial2;
+				break;
+			case '2':
+				tut = Tutorial3;
+				break;
+			default:
+				tut = Tutorial1
+		}
+
+		APP.show({
+			class: tut
+		})
+	}
 }, {
 	group: 'auth',
 	path: '/my_profile',
