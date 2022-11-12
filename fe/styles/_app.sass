@@ -205,7 +205,7 @@ nav.header
 [sword-comp="ForgottenPasswordForm"],
 [sword-comp="ForgottenPasswordEmailSentScreen"],
 [sword-comp="PasswordRestoreForm"],
-[sword-comp="AccountActivationResend"],
+[sword-comp="AccountActivationResend"]
 	display: flex
 	flex-direction: column
 	flex-grow: 1
@@ -233,7 +233,7 @@ nav.header
 			left: 100%
 			transform: translateZ(-1px)
 			background-color: var(--color-lt-surface-on-surface)
-			background-image: url(/images/sword.svg)
+			background-image: url(../images/sword.svg)
 			background-repeat: no-repeat
 			background-position: center bottom
 			background-size: auto
@@ -369,33 +369,39 @@ nav.header
 						width: 30px
 						height: 30px
 
-[sword-comp=Tutorial1]
-    .hlavicka
-        margin: 50px
-    .nadpis
-        margin: 50px
-    .popis
-        margin: 50px
-[sword-comp=Tutorial2]
-    .hlavicka
-        .poradi
-            margin-left: 50px
-            display: inline-block
-        .nazev
-            margin: 10px
-            display: inline-block
-    .nadpis
-        margin: 50px
-    .popis
-        margin: 50px
-    .primary icon-left
-        margin: 50px
-    .primary icon-right
-        margin: 250px
-[sword-comp=Tutorial3]
-    .hlavicka
-        margin: 50px
-    .nadpis
-        margin: 50px
-    .popis
-        margin: 50px
+[sword-comp=Tutorial1], [sword-comp=Tutorial2], [sword-comp=Tutorial3]
+	display: flex
+	flex-direction: column
+
+	.content
+		flex: 1
+		padding: 20px
+
+		.hlavicka
+			display: flex
+			justify-content: space-around
+			text-align: center
+
+		.nadpis
+			margin: 50px
+
+		.popis
+			margin: 50px
+
+	.actions
+		position: sticky
+		bottom: 0
+		left: 0
+		width: 100%
+		z-index: 0
+		background-color: var(--nav-nav-bg)
+		color: var(--nav-on-nav)
+		transition: all var(--transition-time-short)
+		box-shadow: var(--drop-shadow)
+		position: -webkit-sticky
+		display: flex
+		padding: 10px 20px
+
+		.next
+			display: flex
+			margin-left: auto

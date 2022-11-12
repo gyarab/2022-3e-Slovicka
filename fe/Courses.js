@@ -447,40 +447,46 @@ class Tutorial extends Sword {
 		    children: [{
                 class: AppHeader
             },{
-               	className: 'hlavicka',
-                children: sections.map((s, i) => {
-               	    return {
-               	 	    'on*:click': () => ROUTER.pushRoute(`/tutorial/${i}`),
-                		children: [{
-                    	    className: 'poradi',
-                   	    	textContent: i18n._(i + 1)
-           	    		},{
-           		    	    className: 'nazev',
-           			    	textContent: i18n._(s.name)
-           			    }]
-           		    }
-           	    })
-            },{
-               	className: 'nadpis',
-               	textContent: this.heading
-            },{
-               	className: 'popis',
-               	children: this.text
-            },{
-               	render: this.idx > 0,
-               	nodeName: 'button',
-               	type: 'button',
-               	children: ['icon:plus', {textContent: i18n._('back')}],
-               	className: 'primary icon-left',
-               	'on*:click': () => ROUTER.pushRoute(`/tutorial/${(this.idx - 1)}`)
-            },{
-                render: this.idx < 2,
-               	nodeName: 'button',
-               	type: 'button',
-               	children: ['icon:plus', {textContent: i18n._('next')}],
-               	className: 'primary icon-right',
-               	'on*:click': () => ROUTER.pushRoute(`/tutorial/${(this.idx + 1)}`)
-            }]
+				className: 'content',
+				children: [{
+					className: 'hlavicka',
+					children: sections.map((s, i) => {
+						return {
+							'on*:click': () => ROUTER.pushRoute(`/tutorial/${i}`),
+							children: [{
+								className: 'poradi',
+								textContent: i18n._(i + 1)
+							},{
+								className: 'nazev',
+								textContent: i18n._(s.name)
+							}]
+						}
+					})
+				},{
+					className: 'nadpis',
+					textContent: this.heading
+				},{
+					className: 'popis',
+					children: this.text
+				}]
+		    },{
+			    className: 'actions',
+			    children: [{
+				    render: this.idx > 0,
+				    nodeName: 'button',
+				    type: 'button',
+				    children: ['icon:arrow-left', {textContent: i18n._('back')}],
+				    className: 'primary icon-left',
+				    'on*:click': () => ROUTER.pushRoute(`/tutorial/${(this.idx - 1)}`)
+			    },{
+				    render: this.idx < 2,
+				    nodeName: 'button',
+				    type: 'button',
+				    children: [{textContent: i18n._('next')}, 'icon:arrow-right'],
+				    className: 'primary icon-right next',
+				    'on*:click': () => ROUTER.pushRoute(`/tutorial/${(this.idx + 1)}`)
+			    }]
+		    }]
         });
 	}
 }
