@@ -302,6 +302,9 @@ class AdventureModeStateDialog extends ValidateChangesFormDialog {
 		this.title = i18n._('Course state');
 		this.subtitle = i18n._(`Changing course state will affect all users doing this course. Change it carefully.`)
 		this.allowCloseButton = true;
+		this.data = {
+			state: this.state
+		};
 	}
 
 	getButtons() {
@@ -322,7 +325,8 @@ class AdventureModeStateDialog extends ValidateChangesFormDialog {
 		return [{
 			label: i18n._('state'),
 			class: CourseStateSelect,
-			name: 'state'
+			name: 'state',
+			value: this.state
 		}]
 	}
 
@@ -392,6 +396,7 @@ class AdventuresSection extends Sword {
 								className: 'primary icon-left',
 								'on:click': () => new AdventureModeStateDialog(document.body, {
 									id: row.id,
+									state: row.state,
 									'on:success': (obj, adventure) => {
 										me.adventures.updateByIndex(adventure, a => a.id === row.id);
 										me.table.setData(me.adventures);
