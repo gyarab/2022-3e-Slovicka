@@ -230,3 +230,99 @@ class AdventureNodesEditor extends Sword {
 	}
 }
 
+class AdventureNodes extends Sword {
+	render() {
+		this.el = this.createElement({
+			children: [{
+				class: AppHeader
+			},{
+				ref: 'header'
+			},{
+				className: 'nodes',
+				ref: 'nodesList'
+			}]
+		}, this);
+
+		this.init();
+	}
+
+	async init() {
+		try {
+			this.adventure = await REST.GET(`adventures/${this.id}`);
+			this.nodes = await REST.GET(`adventures/${this.id}/nodes`);
+
+			this.header = this.adventure.name;
+
+			this.renderNodes();
+		} catch (ex) {
+			NOTIFICATION.showStandardizedError();
+		}
+	}
+
+	renderNodes() {
+		const nodes = {};
+		const levelsCompletion = {};
+
+		for (const n of this.nodes) {
+			const completed = n.completed || 0;
+			const levelCompleted = n.number_of_completion <= completed;
+
+			levelsCompletion[n.level] ??= true;
+			levelsCompletion[n.level] = levelsCompletion[n.level] && levelCompleted;
+
+			const unlocked = n.level === 0 || levelsCompletion[n.level - 1] === true;
+
+			nodes[n.level] ??= [];
+			nodes[n.level].push({
+				children: [{
+					children: [this.useIcon(levelCompleted ? 'success' : (unlocked ? 'un' : '') + 'lock')]
+				},{
+					textContent: n.name
+				},{
+					textContent: completed + '/' + n.number_of_completion
+				}]
+			});
+		}
+
+		for (const level of Object.values(nodes)) {
+			this.append({
+				className: 'level',
+				children: level
+			}, null, this.nodesList)
+		}
+	}
+}
+
+class Adventures extends Sword {
+	render() {
+		this.el = this.createElement({
+			children: [{
+				children: [{
+					nodeName: 'h3',
+					textContent: i18n._('adventures')
+				}]
+			},{
+				ref: 'adventuresEl'
+			}]
+		}, this);
+
+		this.init();
+	}
+
+	async init() {
+		this.adventures = await REST.GET(`adventures/list`);
+
+		for (const a of this.adventures) {
+			this.append({
+				'on:click': () => ROUTER.pushRoute(Routes.adventures + '/' + a.id),
+				children: [{
+					textContent: a.name
+				},{
+					textContent: a.description
+				},{
+					textContent: DataManager.findLanguage(a.language).name
+				}]
+			}, null, this.adventuresEl);
+		}
+	}
+}

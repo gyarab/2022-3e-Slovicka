@@ -17,6 +17,10 @@ class AppDataManager extends Sword {
 		}
 	}
 
+	findLanguage(id) {
+		return this.languages.find(l => l.id === id);
+	}
+
 	async login(data) {
 		this.session = await REST.POST('session', data);
 		return this.session;

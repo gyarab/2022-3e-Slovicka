@@ -83,7 +83,7 @@ class Home extends SectionScreen {
 		},{
 			nodeName: 'a',
 			href: Routes.adventures,
-			screen: WillBeAdded,
+			screen: Adventures,
 		},{
 			nodeName: 'a',
 			href: Routes.courses,
@@ -164,6 +164,23 @@ new Startup(async match => {
 		APP.show({
 			class: Home,
 			section: captures.section
+		})
+	}
+},{
+	group: 'auth',
+	path: Routes.adventures,
+	async handler({captures}) {
+		APP.show({
+			class: Adventures
+		})
+	}
+},{
+	group: 'auth',
+	path: Routes.adventures + '/{id:int}',
+	async handler({captures}) {
+		APP.show({
+			class: AdventureNodes,
+			id: captures.id
 		})
 	}
 }, {

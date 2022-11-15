@@ -407,7 +407,7 @@ class Courses extends Sword {
 	}
 
 	async loadCourses() {
-		this.courses = await REST.GET('courses/list');
+		this.courses = await REST.GET('courses/list?withRatings=true');
 
 		for (const c of this.courses) {
 			this.append({
