@@ -8,6 +8,16 @@ const {validateAdventureCourse} = require("./adventures-administration");
 const app = express();
 const db = new SQLBuilder();
 
+async function validateUserCanAccessAdventure(id) {
+	const adventure = await validateAdventureCourse(id);
+
+	if (adventure.state !== 'published') {
+		throw new Unauthorized();
+	}
+
+	return adventure;
+}
+
 app.get_json('/adventures/list', async req => {
 	const withRatings =  Boolean(req.query.withRatings) === true;
 
@@ -27,19 +37,20 @@ app.get_json('/adventures/list', async req => {
 	return query.getList();
 });
 
+app.get_json('/adventures/:id([0-9]+)', async req => {
+	const id = parseId(req.params.id);
+	return await validateUserCanAccessAdventure(id);
+})
+
 app.get_json('/adventures/:id([0-9]+)/nodes', async req => {
 	const id = parseId(req.params.id);
-	const course = await validateAdventureCourse(id);
+	await validateUserCanAccessAdventure(id);
 
-	if (course.state !== 'published') {
-		throw new Unauthorized();
-	}
-
-	return await db.select('course_nodes')
-		.fields('cn.*, cns.number_of_completion')
+	return await db.select()
+		.fields('cn.*, cns.number_of_completion AS completed')
 		.from(
 			'course_nodes AS cn',
-			'LEFT JOIN course_node_state AS cns ON cns.course_node = cn.id'
+			'LEFT JOIN course_node_state AS cns ON cns.course_nodes = cn.id'
 		)
 		.where('cn.state = ?', 'published')
 		.where('course = ?', id)
