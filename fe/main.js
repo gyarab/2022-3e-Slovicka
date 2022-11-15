@@ -43,6 +43,12 @@ class AppHeader extends Sword {
 						text: i18n._('courses'),
 						href: Routes.courses,
 						activeOnRoutes: [Routes.courses]
+					},{
+						render: DataManager.userIsAtLeastEditor(),
+						class: NavigationLink,
+						text: i18n._('administration'),
+						href: Routes.administration,
+						activeOnRoutes: [Routes.administration]
 					}]
 				}, {
 					class: UserProfile
