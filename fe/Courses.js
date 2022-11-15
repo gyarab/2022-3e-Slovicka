@@ -478,6 +478,20 @@ class Tutorial extends Sword {
 				    children: ['icon:arrow-left', {textContent: i18n._('back')}],
 				    className: 'primary icon-left',
 				    'on*:click': () => ROUTER.pushRoute(`/tutorial/${(this.idx - 1)}`)
+				},{
+                	render: this.idx === 2,
+                    nodeName: 'button',
+                    type: 'button',
+                    children: [{textContent: i18n._('go-adventure')}, 'icon:arrow-right'],
+                    className: 'primary icon-right go-adventure',
+                    'on*:click': () => ROUTER.pushRoute(`/home/adventures`)
+    		    },{
+    		        render: this.idx === 1,
+                    nodeName: 'button',
+                    type: 'button',
+                    children: [{textContent: i18n._('go-courses')}, 'icon:arrow-right'],
+                    className: 'primary icon-right go-courses',
+                    'on*:click': () => ROUTER.pushRoute(`/home/courses`)
 			    },{
 				    render: this.idx < 2,
 				    nodeName: 'button',
@@ -485,13 +499,7 @@ class Tutorial extends Sword {
 				    children: [{textContent: i18n._('next')}, 'icon:arrow-right'],
 				    className: 'primary icon-right next',
 				    'on*:click': () => ROUTER.pushRoute(`/tutorial/${(this.idx + 1)}`)
-				},{
-				    render: this.idx === 2,
-                    nodeName: 'button',
-                    type: 'button',
-                    children: [{textContent: i18n._('back to courses')}, 'icon:arrow-right'],
-                    className: 'primary icon-right courses',
-                    'on*:click': () => ROUTER.pushRoute(`/home/courses`)
+
 			    }]
 		    }]
         });
