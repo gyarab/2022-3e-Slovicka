@@ -381,13 +381,12 @@ class CourseEditor extends CourseNodeEditor {
 
 class Courses extends Sword {
 	render() {
-		const me = this;
-
 		this.el = this.createElement({
 			children: [{
 				className: 'header',
 				children: [{
-					textContent: 'Courses'
+					nodeName: 'h3',
+					textContent: i18n._('courses')
 				},{
 					nodeName: 'button',
 					type: 'button',
@@ -408,12 +407,29 @@ class Courses extends Sword {
 
 	async loadCourses() {
 		this.courses = await REST.GET('courses/list?withRatings=true');
+		const coursesByLanguages = {};
 
 		for (const c of this.courses) {
+			coursesByLanguages[c.language] ??= [];
+			coursesByLanguages[c.language].push(c);
+		}
+
+		for (const l of Object.keys(coursesByLanguages)) {
+			const courses = coursesByLanguages[l];
+
 			this.append({
-				className: 'course',
-				textContent: c.name,
-				'on:click': () => ROUTER.pushRoute(Routes.courses_editor + '/' + c.id)
+				className: 'courses-by-language',
+				children: [{
+					className: 'language',
+					textContent: DataManager.findLanguage(Number(l)).name
+				},{
+					className: 'list',
+					children: courses.map(c => ({
+						className: 'course',
+						textContent: c.name,
+						'on:click': () => ROUTER.pushRoute(Routes.courses_editor + '/' + c.id)
+					}))
+				}]
 			}, null, this.coursesList);
 		}
 	}
