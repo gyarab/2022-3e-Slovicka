@@ -449,24 +449,24 @@ class Tutorial extends Sword {
             },{
 				className: 'content',
 				children: [{
-					className: 'hlavicka',
+					className: 'head',
 					children: sections.map((s, i) => {
 						return {
 							'on*:click': () => ROUTER.pushRoute(`/tutorial/${i}`),
 							children: [{
-								className: 'poradi',
+								className: 'order',
 								textContent: i18n._(i + 1)
 							},{
-								className: 'nazev',
+								className: 'name',
 								textContent: i18n._(s.name)
 							}]
 						}
 					})
 				},{
-					className: 'nadpis',
+					className: 'chapter',
 					textContent: this.heading
 				},{
-					className: 'popis',
+					className: 'description',
 					children: this.text
 				}]
 		    },{
@@ -485,6 +485,13 @@ class Tutorial extends Sword {
 				    children: [{textContent: i18n._('next')}, 'icon:arrow-right'],
 				    className: 'primary icon-right next',
 				    'on*:click': () => ROUTER.pushRoute(`/tutorial/${(this.idx + 1)}`)
+				},{
+				    render: this.idx === 2,
+                    nodeName: 'button',
+                    type: 'button',
+                    children: [{textContent: i18n._('back to courses')}, 'icon:arrow-right'],
+                    className: 'primary icon-right courses',
+                    'on*:click': () => ROUTER.pushRoute(`/home/courses`)
 			    }]
 		    }]
         });
