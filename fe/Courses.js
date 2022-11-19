@@ -398,14 +398,6 @@ class Courses extends Sword {
 					textContent: 'Here will be filters...'
 				}]
 			},{
-				className: 'tutorial',
-				children: [{
-					textContent: i18n._('Don\'t know where to go?')
-				},{
-					textContent: i18n._('Go quickly threw our tutorial')
-				}],
-				'on:click': () => ROUTER.pushRoute(Routes.tutorial)
-			},{
 				className: 'courses',
 				ref: 'coursesList'
 			}]
@@ -479,19 +471,20 @@ class Tutorial extends Sword {
 				    className: 'primary icon-left',
 				    'on*:click': () => ROUTER.pushRoute(`/tutorial/${(this.idx - 1)}`)
 				},{
+
                 	render: this.idx === 2,
                     nodeName: 'button',
                     type: 'button',
                     children: [{textContent: i18n._('go-adventure')}, 'icon:arrow-right'],
                     className: 'primary icon-right go-adventure',
-                    'on*:click': () => ROUTER.pushRoute(`/home/adventures`)
+                    'on*:click': () => ROUTER.pushRoute(Routes.adventures)
     		    },{
     		        render: this.idx === 1,
                     nodeName: 'button',
                     type: 'button',
                     children: [{textContent: i18n._('go-courses')}, 'icon:arrow-right'],
                     className: 'primary icon-right go-courses',
-                    'on*:click': () => ROUTER.pushRoute(`/home/courses`)
+                    'on*:click': () => ROUTER.pushRoute(Routes.courses)
 			    },{
 				    render: this.idx < 2,
 				    nodeName: 'button',

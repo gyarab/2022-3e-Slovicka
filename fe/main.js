@@ -61,6 +61,25 @@ class WillBeAdded extends Sword {
 	}
 }
 
+class Dashboard extends Sword {
+	render() {
+		this.el = this.createElement({
+			children: [{
+				className: 'go-to-tutorial',
+				children: [{
+					nodeName: 'h5',
+					textContent: i18n._('Don\'t know where to go?')
+				},{
+					nodeName: 'button',
+					className: 'primary',
+					textContent: i18n._('Go quickly threw our tutorial')
+				}],
+				'on:click': () => ROUTER.pushRoute(Routes.tutorial)
+			}]
+		})
+	}
+}
+
 class Home extends SectionScreen {
 	beforeRender() {
 		this.defaultSection = Routes.dashboard;
@@ -79,7 +98,7 @@ class Home extends SectionScreen {
 		return [{
 			nodeName: 'a',
 			href: Routes.dashboard,
-			screen: WillBeAdded,
+			screen: Dashboard,
 		},{
 			nodeName: 'a',
 			href: Routes.adventures,
@@ -230,9 +249,7 @@ new Startup(async match => {
 	group: 'public',
 	path: Routes.tutorial,
 	async handler({}) {
-		APP.show({
-			class: Tutorial
-		})
+		ROUTER.pushRoute(Routes.tutorial + '/0');
 	}
 },{
 	group: 'auth-administration',
