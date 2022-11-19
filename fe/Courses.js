@@ -434,3 +434,126 @@ class Courses extends Sword {
 		}
 	}
 }
+
+class Tutorial extends Sword {
+	beforeRender() {
+		this.heading = '';
+		this.text = '';
+		this.idx = null;
+	}
+
+	render() {
+		const sections = [{
+			name: 'Introduction',
+		},{
+			name: 'Courses',
+		},{
+			name: 'Adventure mode',
+		}]
+
+		this.el = this.createElement({
+		    children: [{
+                class: AppHeader
+            },{
+				className: 'content',
+				children: [{
+					className: 'head',
+					children: sections.map((s, i) => {
+						return {
+							'on*:click': () => ROUTER.pushRoute(`/tutorial/${i}`),
+							children: [{
+								className: 'order',
+								textContent: i18n._(i + 1)
+							},{
+								className: 'name',
+								textContent: i18n._(s.name)
+							}]
+						}
+					})
+				},{
+					className: 'chapter',
+					textContent: this.heading
+				},{
+					className: 'description',
+					children: this.text
+				}]
+		    },{
+			    className: 'actions',
+			    children: [{
+				    render: this.idx > 0,
+				    nodeName: 'button',
+				    type: 'button',
+				    children: ['icon:arrow-left', {textContent: i18n._('back')}],
+				    className: 'primary icon-left',
+				    'on*:click': () => ROUTER.pushRoute(`/tutorial/${(this.idx - 1)}`)
+				},{
+
+                	render: this.idx === 2,
+                    nodeName: 'button',
+                    type: 'button',
+                    children: [{textContent: i18n._('go-adventure')}, 'icon:arrow-right'],
+                    className: 'primary icon-right go-adventure',
+                    'on*:click': () => ROUTER.pushRoute(Routes.adventures)
+    		    },{
+    		        render: this.idx === 1,
+                    nodeName: 'button',
+                    type: 'button',
+                    children: [{textContent: i18n._('go-courses')}, 'icon:arrow-right'],
+                    className: 'primary icon-right go-courses',
+                    'on*:click': () => ROUTER.pushRoute(Routes.courses)
+			    },{
+				    render: this.idx < 2,
+				    nodeName: 'button',
+				    type: 'button',
+				    children: [{textContent: i18n._('next')}, 'icon:arrow-right'],
+				    className: 'primary icon-right next',
+				    'on*:click': () => ROUTER.pushRoute(`/tutorial/${(this.idx + 1)}`)
+
+			    }]
+		    }]
+        });
+	}
+}
+
+class Tutorial1 extends Tutorial {
+	beforeRender() {
+		this.heading = 'Introduction';
+		this.text = [{
+			nodeName: 'p',
+			textContent: 'Here will be introduction',
+		},{
+			nodeName: 'p',
+			textContent: 'Introduction will be added later',
+		}];
+		this.idx = 0;
+	}
+}
+class Tutorial2 extends Tutorial {
+	beforeRender() {
+		this.heading = 'Courses';
+		this.text = [{
+        			nodeName: 'p',
+        			textContent: 'Here will be something about courses',
+        		},{
+        			nodeName: 'p',
+        			textContent: 'In the courses section you can find courses created by yourself or courses shared by someone else',
+        		}];
+		this.idx = 1;
+	}
+}
+class Tutorial3 extends Tutorial {
+	beforeRender() {
+		this.heading = 'Adventures';
+		this.text = [{
+        			nodeName: 'p',
+        			textContent: 'Here will be information about adventure mode',
+        		},{
+        			nodeName: 'p',
+        			textContent: 'Adventure mode is a great way to learn english',
+        		}];
+		this.idx = 2;
+	}
+}
+
+
+

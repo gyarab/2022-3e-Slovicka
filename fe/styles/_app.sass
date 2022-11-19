@@ -205,7 +205,7 @@ nav.header
 [sword-comp="ForgottenPasswordForm"],
 [sword-comp="ForgottenPasswordEmailSentScreen"],
 [sword-comp="PasswordRestoreForm"],
-[sword-comp="AccountActivationResend"],
+[sword-comp="AccountActivationResend"]
 	display: flex
 	flex-direction: column
 	flex-grow: 1
@@ -398,7 +398,36 @@ nav.header
 						width: 30px
 						height: 30px
 
+[sword-comp=Tutorial1], [sword-comp=Tutorial2], [sword-comp=Tutorial3]
+	display: flex
+	flex-direction: column
 
+	.content
+		flex: 1
+		padding: 20px
+
+		.head
+			display: flex
+			justify-content: space-around
+			text-align: center
+
+	.actions
+		position: sticky
+		bottom: 0
+		left: 0
+		width: 100%
+		z-index: 0
+		background-color: var(--nav-nav-bg)
+		color: var(--nav-on-nav)
+		transition: all var(--transition-time-short)
+		box-shadow: var(--drop-shadow)
+		position: -webkit-sticky
+		display: flex
+		padding: 10px 20px
+		justify-content: space-between
+
+		.next:first-child
+			margin-left: auto
 [sword-comp=AdventureNodes]
 
 	.nodes

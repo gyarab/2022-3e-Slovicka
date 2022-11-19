@@ -67,6 +67,25 @@ class WillBeAdded extends Sword {
 	}
 }
 
+class Dashboard extends Sword {
+	render() {
+		this.el = this.createElement({
+			children: [{
+				className: 'go-to-tutorial',
+				children: [{
+					nodeName: 'h5',
+					textContent: i18n._('Don\'t know where to go?')
+				},{
+					nodeName: 'button',
+					className: 'primary',
+					textContent: i18n._('Go quickly threw our tutorial')
+				}],
+				'on:click': () => ROUTER.pushRoute(Routes.tutorial)
+			}]
+		})
+	}
+}
+
 class Home extends SectionScreen {
 	beforeRender() {
 		this.defaultSection = Routes.dashboard;
@@ -85,7 +104,7 @@ class Home extends SectionScreen {
 		return [{
 			nodeName: 'a',
 			href: Routes.dashboard,
-			screen: WillBeAdded,
+			screen: Dashboard,
 		},{
 			nodeName: 'a',
 			href: Routes.adventures,
@@ -126,9 +145,9 @@ const Routes = {
 	privacy_policy: '/privacy-policy',
 	courses_editor: '/courses/editor',
 	adventure_editor: '/adventures/editor',
-	adventure_node_editor: '/adventures/editor/node'
+	adventure_node_editor: '/adventures/editor/node',
+	tutorial: '/tutorial'
 }
-
 new Startup(async match => {
 	if (match.route.group === 'public') {
 		i18n.init();
@@ -189,6 +208,30 @@ new Startup(async match => {
 			id: captures.id
 		})
 	}
+},{
+	group: 'auth',
+	path: '/tutorial/{section:str}',
+	async handler({captures}) {
+		let tut = null;
+
+		switch (captures.section) {
+			case '0':
+				tut = Tutorial1;
+				break;
+			case '1':
+				tut = Tutorial2;
+				break;
+			case '2':
+				tut = Tutorial3;
+				break;
+			default:
+				tut = Tutorial1
+		}
+
+		APP.show({
+			class: tut
+		})
+	}
 }, {
 	group: 'auth',
 	path: '/my_profile',
@@ -223,6 +266,12 @@ new Startup(async match => {
 		APP.show({
 			class: CourseEditor
 		});
+	}
+},{
+	group: 'public',
+	path: Routes.tutorial,
+	async handler({}) {
+		ROUTER.pushRoute(Routes.tutorial + '/0');
 	}
 },{
 	group: 'auth-administration',
