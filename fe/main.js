@@ -148,7 +148,6 @@ const Routes = {
 	adventure_node_editor: '/adventures/editor/node',
 	tutorial: '/tutorial'
 }
-
 new Startup(async match => {
 	if (match.route.group === 'public') {
 		i18n.init();
@@ -190,30 +189,6 @@ new Startup(async match => {
 		APP.show({
 			class: Home,
 			section: captures.section
-		})
-	}
-},{
-	group: 'auth',
-	path: '/tutorial/{section:str}',
-	async handler({captures}) {
-		let tut = null;
-
-		switch (captures.section) {
-			case '0':
-				tut = Tutorial1;
-				break;
-			case '1':
-				tut = Tutorial2;
-				break;
-			case '2':
-				tut = Tutorial3;
-				break;
-			default:
-				tut = Tutorial1
-		}
-
-		APP.show({
-			class: tut
 		})
 	}
 },{
