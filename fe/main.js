@@ -146,7 +146,8 @@ const Routes = {
 	courses_editor: '/courses/editor',
 	adventure_editor: '/adventures/editor',
 	adventure_node_editor: '/adventures/editor/node',
-	tutorial: '/tutorial'
+	tutorial: '/tutorial',
+	flipCards: '/flip-cards'
 }
 new Startup(async match => {
 	if (match.route.group === 'public') {
@@ -303,6 +304,15 @@ new Startup(async match => {
 			class: CourseEditor,
 			id: captures.course
 		});
+	}
+},{
+	group: 'auth',
+	path: Routes.flipCards + '/{course:int}',
+	async handler({captures}) {
+		APP.show({
+			class: FlipCards,
+			id: captures.course
+		})
 	}
 }, {
 	group: 'auth-administration',

@@ -427,7 +427,7 @@ class Courses extends Sword {
 					children: courses.map(c => ({
 						className: 'course',
 						textContent: c.name,
-						'on:click': () => ROUTER.pushRoute(Routes.courses_editor + '/' + c.id)
+						'on:click': () => ROUTER.pushRoute(Routes.flipCards + '/' + c.id)
 					}))
 				}]
 			}, null, this.coursesList);
@@ -555,5 +555,189 @@ class Tutorial3 extends Tutorial {
 	}
 }
 
+class FlipCardsFinished extends Dialog {
+	beforeRender() {
+		this.title = i18n._('Flip cards completed');
+	}
 
+	renderBody() {
+		this.append({
+			textContent: 'XX'
+		}, null, this.body);
+	}
+}
 
+class FlipCards extends Sword {
+	render() {
+		this.el = this.createElement({
+			'key_ArrowRight': () => {
+				if (this.words.length - 1 > this.actualWordIdx) {
+					this.showWord(this.actualWordIdx + 1);
+				}
+			},
+			'key_ArrowLeft': () => {
+				if (this.actualWordIdx > 0) {
+					this.showWord(this.actualWordIdx - 1);
+				}
+			},
+			children: [{
+				class: AppHeader
+			},{
+				ref: 'body',
+				className: 'body'
+			}]
+		}, this);
+
+		this.init();
+	}
+
+	async init() {
+		this.course = await REST.GET(`courses/${this.id}`);
+		this.words = await REST.GET(`courses/${this.id}/nodes/${this.course.node}/words`);
+		const actualWord = 0;
+
+		this.append({
+			children: [{
+				className: 'header',
+				children: [{
+					nodeName: 'h5',
+					textContent: this.course.name
+				},{
+					className: 'word-count',
+					children: [{
+						nodeName: 'span',
+						ref: 'wordCount',
+						textContent: actualWord
+					},{
+						nodeName: 'span',
+						textContent: '/' + this.words.length
+					}]
+				},{
+					render: DataManager.session.id === this.course.owner,
+					nodeName: 'button',
+					className: 'edit secondary icon-left',
+					children: ['icon:pencil', i18n._('edit')],
+					'on:click': () => ROUTER.pushRoute(Routes.courses_editor + '/' + this.course.id)
+				}]
+			},{
+				ref: 'word',
+				className: `word ${this.words.length === 0 ? 'no-words' : ''}`
+			},{
+				ref: 'courseCompleted',
+				className: 'course-completed'
+			}]
+		}, this, this.body);
+
+		if (this.words.isEmpty()) {
+			this.noWords();
+		} else {
+			this.showWord(actualWord);
+		}
+	}
+
+	courseLastWord() {
+		this.replaceChildren(this.actualWordIdx !== this.words.length - 1 ? [] : [{
+			className: 'question',
+			textContent: i18n._('This is last word in this course. Do you wanna go?')
+		},{
+			className: 'actions',
+			children: [{
+				nodeName: 'button',
+				className: 'primary back-to-courses',
+				textContent: i18n._('Go again'),
+				'on:click': () => this.showWord(0)
+			},{
+				nodeName: 'button',
+				className: 'primary back-to-courses',
+				textContent: i18n._('Go back to courses list'),
+				'on:click': () => ROUTER.pushRoute(Routes.courses)
+			}]
+		}], null, this.courseCompleted);
+	}
+
+	showWord(idx) {
+		this.actualWordIdx = idx;
+		this.courseLastWord();
+
+		this.wordCount.textContent = idx + 1;
+		const word = this.words[idx];
+		let definitionDisplayed = false;
+		const me = this;
+
+		const wordEl = this.replaceChild({
+			ref: 'word',
+			className: 'word',
+			'on:click': () => {
+				const text = wordEl.querySelector('.text');
+
+				this.replaceChildren(definitionDisplayed ? [{
+					textContent: word.word,
+				}] : [{
+					textContent: word.definition,
+				},{
+					textContent: word.phonetic,
+				},{
+					textContent: word.translation,
+				}], null, text);
+
+				definitionDisplayed = !definitionDisplayed;
+			},
+			children: [{
+				className: 'actions',
+				children: [{
+					render: DataManager.session.id === this.course.owner,
+					nodeName: 'button',
+					className: 'edit secondary icon-only',
+					children: ['icon:pencil'],
+					'on:click': () => new WordCreateDialog(document.body, {
+						saveEndpointPrefix: 'courses',
+						data: {
+							...word,
+							group: word.group,
+							course: this.course.id
+						},
+						'on:success': (obj, word) => {
+							this.words[idx] = word;
+							me.showWord(idx);
+						}
+					})
+				}]
+			},{
+				className: 'text',
+				children: [{
+					textContent: word.word,
+				}]
+			},{
+				className: 'buttons',
+				children: [{
+					disabled: idx === 0,
+					nodeName: 'button',
+					type: 'button',
+					children: ['icon:arrow-left'],
+					className: 'primary',
+					'on:click': () => this.showWord(idx - 1)
+				},{
+					disabled: this.words.length - 1 === idx,
+					nodeName: 'button',
+					type: 'button',
+					children: ['icon:arrow-right'],
+					className: 'primary',
+					'on:click': () => this.showWord(idx + 1)
+				}]
+			}]
+		}, this.word, this);
+	}
+
+	noWords() {
+		this.replaceChildren([{
+			className: 'empty-course-title',
+			nodeName: 'h3',
+			textContent: i18n._('This course is empty')
+		},{
+			nodeName: 'button',
+			className: 'primary back-to-courses',
+			textContent: i18n._('Go back to courses list'),
+			'on:click': () => ROUTER.pushRoute(Routes.courses)
+		}], null, this.word);
+	}
+}

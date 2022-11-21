@@ -436,3 +436,72 @@ nav.header
 
 		.level
 			display: flex
+
+[sword-comp=FlipCards]
+	.body
+		max-width: 600px
+		margin: 0 auto
+
+		.header
+			display: flex
+			justify-content: space-between
+			margin: 20px 0
+			align-items: center
+
+			h5
+				margin: 0
+
+			.word-count
+				font-size: 20px
+				font-weight: 600
+				display: flex
+
+		.word
+			background: #B9C0DA
+			width: 100%
+			height: 400px
+			padding: 30px 20px
+			border-radius: 20px
+			display: flex
+			flex-direction: column
+
+			&.no-words
+				align-items: center
+				justify-content: center
+
+				.back-to-courses
+					width: 220px
+					display: block
+					margin: 0 auto
+
+			.actions
+				margin-left: auto
+				display: block
+
+			.text
+				flex: 1
+				display: flex
+				justify-content: center
+				align-items: center
+				flex-direction: column
+				font-size: 20px
+				font-weight: 600
+
+			.buttons
+				display: flex
+				gap: 20px
+
+				button
+					flex: 1
+
+		.course-completed
+			text-align: center
+
+			.question
+				margin: 10px 0
+				font-size: 18px
+
+			.actions
+				justify-content: center
+				display: flex
+				gap: 5px
