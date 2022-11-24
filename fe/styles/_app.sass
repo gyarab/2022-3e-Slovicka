@@ -362,6 +362,20 @@ nav.header
 					background: #B9C0DA
 					box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25)
 					border-radius: 20px
+					position: relative
+
+					.rating
+						font-size: 12px
+						display: flex
+						align-items: center
+						position: absolute
+						top: 8px
+						right: 8px
+						gap: 2px
+
+						svg
+							height: 12px
+							width: 12px
 
 			.language
 				display: inline-block
@@ -444,7 +458,6 @@ nav.header
 
 		.header
 			display: flex
-			justify-content: space-between
 			margin: 20px 0
 			align-items: center
 
@@ -452,9 +465,18 @@ nav.header
 				margin: 0
 
 			.word-count
+				justify-content: center
+				flex: 1
 				font-size: 20px
 				font-weight: 600
 				display: flex
+
+			.rate
+				margin-right: 10px
+
+				svg
+					margin-left: 2px
+					--color: #B9C0DA
 
 		.word
 			background: #B9C0DA
@@ -505,3 +527,19 @@ nav.header
 				justify-content: center
 				display: flex
 				gap: 5px
+
+[sword-comp=CourseRating]
+	.course-rating
+		display: flex
+		justify-content: center
+
+		.star
+			padding: 0 5px
+			color: white
+
+			svg
+				width: 40px
+				height: 40px
+
+			&.active
+				color: #B9C0DA

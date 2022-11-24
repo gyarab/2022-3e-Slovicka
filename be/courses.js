@@ -229,8 +229,13 @@ async function getWords(req, validate) {
 		.getList()
 }
 
-async function getCourseWithRootNode(id) {
-	const course = await db.oneOrNoneById('courses', id);
+async function getCourseWithRootNode(id, sessionId) {
+	const course = await db.select()
+		.fields('courses.*, cr.value AS rating')
+		.from('courses', `LEFT JOIN course_ratings AS cr ON cr.course = courses.id AND cr."user" = ${sessionId}`)
+		.whereId(id)
+		.oneOrNone();
+
 	const node = await db.select('course_nodes')
 		.where('course = ?', id)
 		.oneOrNone();
@@ -289,7 +294,7 @@ app.post_json('/courses', async req => {
 app.put_json('/courses/:id([0-9]+)', async req => {
 	const id = parseId(req.params.id);
 	await updateCourse(id, req.body, false, req.session.id);
-	return await getCourseWithRootNode(id);
+	return await getCourseWithRootNode(id, req.session.id);
 });
 
 app.put_json('/courses/:id([0-9]+)/state', async req => await updateCourseState(req, async (id, req) => {
@@ -304,8 +309,10 @@ app.delete_json('/courses/:id([0-9]+)', async req => {
 
 app.get_json('/courses/:id([0-9]+)', async req => {
 	const id = parseId(req.params.id);
-	await validateUserHasAccessToCourse(id, req.session.id);
-	return await getCourseWithRootNode(id);
+	const sessionId = req.session.id;
+
+	await validateUserHasAccessToCourse(id, sessionId);
+	return await getCourseWithRootNode(id, sessionId);
 });
 
 app.put_json('/courses/:id([0-9]+)/visibility', async req => {
@@ -337,7 +344,7 @@ app.get_json('/courses/list', async req => {
 
 	if (withRatings) {
 		query
-			.fields('AVG(cr.value)::numeric(2, 1)')
+			.fields('AVG(cr.value)::numeric(2, 1) AS rating')
 			.from('LEFT JOIN course_ratings AS cr ON cr.course = courses.id')
 			.more('GROUP BY courses.id, cn.id');
 	}
@@ -350,7 +357,11 @@ app.get_json('/courses/list', async req => {
 			'(owner = ? AND visible_to = ?)', 'EVERYONE', 'published', req.session.id, 'ME');
 	}
 
-	return await query.getList();
+	const res = await query.getList();
+
+	console.log(res);
+
+	return res;
 });
 
 app.post_json('/courses/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => await saveWordHandler(req, async (node, courseId, userId) => {
@@ -429,10 +440,10 @@ app.post_json('/courses/:id([0-9]+)/ratings', async req => {
 	const id = parseId(req.params.id);
 	const {rating} = req.body;
 
-	await validateUserHasAccessToCourse(id, req.params.id);
+	await validateUserHasAccessToCourse(id, req.session.id);
 	validateType(rating, 'number');
 
-	if (Number.isInteger(rating)) {
+	if (!Number.isInteger(rating)) {
 		throw new BadRequest('Rating is not integer', 'rating_integer');
 	}
 

@@ -426,8 +426,13 @@ class Courses extends Sword {
 					className: 'list',
 					children: courses.map(c => ({
 						className: 'course',
-						textContent: c.name,
-						'on:click': () => ROUTER.pushRoute(Routes.flipCards + '/' + c.id)
+						children: [{
+							className: 'rating',
+							children: [{textContent: `(${c.rating || '-'})`}, 'icon:star']
+						},{
+							textContent: c.name,
+							'on:click': () => ROUTER.pushRoute(Routes.flipCards + '/' + c.id)
+						}]
 					}))
 				}]
 			}, null, this.coursesList);
@@ -595,6 +600,7 @@ class FlipCards extends Sword {
 		this.course = await REST.GET(`courses/${this.id}`);
 		this.words = await REST.GET(`courses/${this.id}/nodes/${this.course.node}/words`);
 		const actualWord = 0;
+		const me = this;
 
 		this.append({
 			children: [{
@@ -612,6 +618,19 @@ class FlipCards extends Sword {
 						nodeName: 'span',
 						textContent: '/' + this.words.length
 					}]
+				},{
+					nodeName: 'button',
+					className: 'rate secondary icon-left',
+					ref: 'ratingBtn',
+					children: [this.course.rating ? this.course.rating + '' : '-', 'icon:star', i18n._('rate')],
+					'on:click': () => new CourseRating(document.body, {
+						id: this.course.id,
+						rating: this.course.rating,
+						'on:success': (obj, rating) => {
+							this.course.rating = rating;
+							me.replaceChildren([this.course.rating ? this.course.rating + '' : '-', 'icon:star', i18n._('rate')], null, this.ratingBtn)
+						}
+					})
 				},{
 					render: DataManager.session.id === this.course.owner,
 					nodeName: 'button',
@@ -739,5 +758,43 @@ class FlipCards extends Sword {
 			textContent: i18n._('Go back to courses list'),
 			'on:click': () => ROUTER.pushRoute(Routes.courses)
 		}], null, this.word);
+	}
+}
+
+class CourseRating extends Dialog {
+	beforeRender() {
+		this.title = i18n._('Course rating');
+		this.allowCloseButton = true;
+	}
+
+	updateStarsActive(idx, active) {
+		for (let i = 0; i <= idx; i++) {
+			this[`star-${i}`].classList[active ? 'add' : 'remove']('active');
+		}
+	}
+
+	async save(rating) {
+		await REST.POST(`courses/${this.id}/ratings`, {rating});
+		this.close();
+		NOTIFICATION.showStandardizedSuccess(i18n._('Thank you for rating this course'));
+		this.fire('success', rating);
+	}
+
+	renderBody() {
+		this.append({
+			className: 'course-rating',
+			children: [0, 1, 2, 3, 4].map(idx => ({
+				ref: `star-${idx}`,
+				className: 'star',
+				children: ['icon:star'],
+				'on:click': async () => await this.save(idx + 1),
+				'on:mouseover': () => this.updateStarsActive(idx, true),
+				'on:mouseleave': () => this.updateStarsActive(idx, false)
+			}))
+		}, this, this.bodyEl);
+
+		if (this.rating) {
+			this.updateStarsActive(this.rating - 1, true);
+		}
 	}
 }
