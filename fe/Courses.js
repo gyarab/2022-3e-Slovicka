@@ -101,7 +101,7 @@ class CourseNodeEditor extends Sword {
 							return [{
 								class: TextField,
 								name: 'name',
-								label: i18n._('name'),
+								label: i18n._('w_name'),
 							}, {
 								class: TextField,
 								name: 'description',
