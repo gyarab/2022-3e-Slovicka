@@ -520,10 +520,10 @@ class Tutorial1 extends Tutorial {
 		this.heading = 'Introduction';
 		this.text = [{
 			nodeName: 'p',
-			textContent: 'Here will be introduction',
+			textContent: 'tut1_p1',
 		},{
 			nodeName: 'p',
-			textContent: 'Introduction will be added later',
+			textContent: 'tut1_p2',
 		}];
 		this.idx = 0;
 	}
@@ -533,10 +533,10 @@ class Tutorial2 extends Tutorial {
 		this.heading = 'Courses';
 		this.text = [{
         			nodeName: 'p',
-        			textContent: 'Here will be something about courses',
+        			textContent: 'tut2_p1',
         		},{
         			nodeName: 'p',
-        			textContent: 'In the courses section you can find courses created by yourself or courses shared by someone else',
+        			textContent: 'tut2_p2',
         		}];
 		this.idx = 1;
 	}
@@ -546,10 +546,10 @@ class Tutorial3 extends Tutorial {
 		this.heading = 'Adventures';
 		this.text = [{
         			nodeName: 'p',
-        			textContent: 'Here will be information about adventure mode',
+        			textContent: 'tut3_p1',
         		},{
         			nodeName: 'p',
-        			textContent: 'Adventure mode is a great way to learn english',
+        			textContent: 'tut3_p2',
         		}];
 		this.idx = 2;
 	}
