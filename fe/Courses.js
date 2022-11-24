@@ -426,12 +426,12 @@ class Courses extends Sword {
 					className: 'list',
 					children: courses.map(c => ({
 						className: 'course',
+						'on:click': () => ROUTER.pushRoute(Routes.flipCards + '/' + c.id),
 						children: [{
 							className: 'rating',
 							children: [{textContent: `(${c.rating || '-'})`}, 'icon:star']
 						},{
-							textContent: c.name,
-							'on:click': () => ROUTER.pushRoute(Routes.flipCards + '/' + c.id)
+							textContent: c.name
 						}]
 					}))
 				}]
