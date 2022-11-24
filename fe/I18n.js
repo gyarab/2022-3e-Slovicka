@@ -172,7 +172,132 @@ class I18n {
 				 * Privacy policy illustrative
 				 */
 				'privacy_policy': 'Privacy Policy',
-				'privacy_policy_content': 'Here is written down illustrative privacy policy. This page will be removed or replaced with valid content in production.'
+				'privacy_policy_content': 'Here is written down illustrative privacy policy. This page will be removed or replaced with valid content in production.',
+
+                /**
+				 * CourseStateSelect
+				 */
+				 'paused': 'Paused',
+				 'published': 'Published',
+				 'closed':	'Closed',
+
+				/**
+				 * WordCreateDialog
+ 				 */
+				'edit_word': 'Edit word',
+				'add_word': 'Add word',
+				'word': 'Word',
+				'definition': 'Definition',
+				'translation': 'Translation',
+				'phonetic': 'Phonetic',
+				'sentence': 'Sentence',
+				'success': 'Success',
+				'Language not found': 'Language not found',
+ 				'You don\'t have access to this course': 'You don\'t have access to this course',
+
+				/**
+				 * CourseNodeEditor
+				 */
+				'w_name': 'Name',
+				'description': 'Description',
+				'words': 'Words',
+				'Create new node first': 'Create new node first',
+				'Are you sure you want to remove this word?': 'Are you sure you want to remove this word?',
+				'yes': 'Yes',
+				'no': 'No',
+				'Course was not found': 'Course was not found',
+				'You don\'t have access to this word': 'You don\'t have access to this word',
+
+				/**
+				 * CourseEditor
+				 */
+				'Course saved': 'Course saved',
+				'Course updated': 'Course updated',
+				'Course not found': 'Course not found',
+				'Are you sure you want to delete this course?': 'Are you sure you want to delete this course?',
+				'ME': 'ME',
+				'EVERYONE': 'EVERYONE',
+
+				/**
+				 * Courses
+				 */
+				'create_new_course': 'Create new course',
+				'Don\'t know where to go?': 'Don\'t know where to go?',
+				'Go quickly threw our tutorial': 'Go quickly threw our tutorial',
+
+				/**
+				 * Tutorial
+				 */
+				'introduction': 'Introduction',
+				'courses': 'Courses',
+				'adventure mode': 'Adventure mode',
+				'back': 'Back',
+				'go_adventure': 'Go to the adventure mode',
+				'go_courses': 'Go to the courses',
+				'next': 'Next',
+
+				/**
+  				 * Tutorial1
+   				 */
+  				'tut1_p1': 'Here will be something about courses',
+   				'tut1_p2': 'Introduction will be added later',
+
+				/**
+				 * Tutorial2
+				 */
+				'tut2_p1': 'Here will be something about courses',
+				'tut2_p2': 'In the courses section you can find courses created by yourself or courses shared by someone else',
+
+                /**
+                 * Tutorial3
+                 */
+                'tut3_p1': 'Here will be information about adventure mode',
+                'tut3_p2': 'Adventure mode is a great way to learn english',
+
+                /**
+                 * FlipCardsFinished
+                 */
+                'Flip cards completed': 'Flip cards completed',
+
+                /**
+                 * FlipCards
+                 */
+                'This is last word in this course. Do you wanna go?': 'This is last word in this course. Do you wanna go?',
+                'Go again': 'Go again',
+                'Go back to courses list': 'Go back to courses list',
+                'This course is empty': 'This course is empty',
+
+                /**
+                 * AdventureNodeEditor
+                 */
+                'There can be only three nodes at one level': 'There can be only three nodes at one level',
+                'Number of completions must be higher than 0': 'Number of completions must be higher than 0',
+                'Level cannot be lower than 0': 'Level cannot be lower than 0',
+                'Do you really want to delete this node?': 'Do you really want to delete this node?',
+                'cancel':'Cancel',
+                'Node was successfully deleted': 'Node was successfully deleted',
+                'Node not found': 'Node not found',
+                'This is last node on this level, thus cannot be deleted': 'This is last node on this level, thus cannot be deleted',
+                'Are you sure you want to publish this node?': 'Are you sure you want to publish this node?',
+                'This is only one was operation and cannot be undone. After publishing node cannot be back in state creating.': 'This is only one was operation and cannot be undone. After publishing node cannot be back in state creating.',
+                'go_back': 'Go back',
+                'Node editor': 'Node editor',
+                'publish': 'Publish',
+
+                /**
+                 * AdventureNodesEditor
+                 */
+                'We are really sorry but this adventure does not seem to exist.': 'We are really sorry but this adventure does not seem to exist.',
+                'Go back on adventures administration': 'Go back on adventures administration',
+
+                /**
+                 * AppHeader
+                 */
+                'dashboard': 'Dashboard',
+                'adventures': 'Adventures',
+                'signup_complete': 'Signup complete',
+                'signup_failure': 'Signup failure'
+
 			}
 		},
 		'cz': {
@@ -348,6 +473,131 @@ class I18n {
  				 */
 				'privacy_policy': 'Zásady ochrany osobních údajů',
 				'privacy_policy_content': 'Zde jsou sepsána ilustrativní zásady ochrany osobních údajů. Tato stránka bude odstraněna nebo nahrazena správným obsahem v porodukční verzi',
+
+                /**
+				 * CourseStateSelect
+				 */
+				 'paused': 'Pozastaveno',
+				 'published': 'Zveřejněno',
+				 'closed':	'Uzavřeno',
+
+				/**
+				 * WordCreateDialog
+				 */
+				'edit_word': 'Upravit slovo',
+				'add_word': 'Přidat slovo',
+				'word': 'Slovo',
+				'definition': 'Definice',
+				'translation': 'Překlad',
+				'phonetic': 'Fonetický přepis',
+				'sentence': 'Ve větě',
+				'success': 'Úspěch',
+				'Language not found': 'Jazyk nenalezen',
+				'You don\'t have access to this course': 'K tomuto kurzu nemáte přístup',
+
+				/**
+				 * CourseNodeEditor
+				 */
+				'w_name': 'Název',
+				'description': 'Popis',
+				'words': 'Slova',
+				'Create new node first': 'Nejdříve vytvořte uzel',
+				'Are you sure you want to remove this word?': 'Jste si jisti, že chcete smazat tento soubor?',
+				'yes': 'Ano',
+				'no': 'Ne',
+				'Course was not found': 'Kurz nenalezen',
+				'You don\'t have access to this word': 'K tomuto slovu nemáte přístup',
+
+				/**
+				 * CourseEditor
+				 */
+				'Course saved': 'Kurz uložen',
+				'Course updated': 'Kurz aktualizován',
+				'Course not found': 'Kurz nenalezen',
+				'Are you sure you want to delete this course?': 'Jste si jisti, že chcete smazat tento soubor?',
+				'ME': 'JÁ',
+				'EVERYONE': 'VŠICHNI',
+
+				/**
+				 * Courses
+				 */
+				'create_new_course': 'Vytvořit nový kurz',
+				'Don\'t know where to go?': 'Nevíte, kam dál?',
+				'Go quickly threw our tutorial': 'Podívejte se do našeho tutoriálu',
+
+				/**
+				 * Tutorial
+				 */
+				'introduction': 'Úvod',
+				'courses': 'Kurzy',
+				'adventure mode': 'Objevovací režim',
+				'back': 'Zpět',
+				'go_adventure': 'Objevovací režim',
+				'go_courses': 'Kurzy',
+				'next': 'Další',
+
+				/**
+  				 * Tutorial1
+   				 */
+  				'tut1_p1': 'Zde bude úvod',
+   				'tut1_p2': 'Úvod bude přidán později',
+
+				/**
+				 * Tutorial2
+				 */
+				'tut2_p1': 'Zde bude něco o kurzech',
+				'tut2_p2': 'V sekci Kurzy najdete Vaše soukromé kurzy nebo ty, které s Vámi někdo sdílel',
+
+                /**
+                 * Tutorial3
+                 */
+                'tut3_p1': 'Zde budou informace o objevovacím režimu',
+                'tut3_p2': 'Objevovací režim je skvělá cesta, jak se naučit anglicky',
+
+                /**
+                 * FlipCardsFinished
+                 */
+                'Flip cards completed': 'Flip karty dokončeny',
+
+                /**
+                 * FlipCards
+                 */
+                'This is last word in this course. Do you wanna go?': 'Toto je poslední slovo v tomto kuru. Chcete ho otevřít?',
+                'Go again': 'Znova',
+                'Go back to courses list': 'Zpět na seznam kurzů',
+                'This course is empty': 'Tento kurz je prázdný',
+
+                /**
+                 * AdventureNodeEditor
+                 */
+                'There can be only three nodes at one level': 'Zde mohou být pouze tři uzly v jednom levelu',
+                'Number of completions must be higher than 0': 'Číslo dokončených musí být větší než 0',
+                'Level cannot be lower than 0': 'Level nemůže být menší než 0',
+                'Do you really want to delete this node?': 'Jste si jisti, že chcete smazat tento uzel?',
+                'cancel':'Zrušit',
+                'Node was successfully deleted': 'Uzel byl úspěšně odstraněna',
+                'Node not found': 'Uzel nenalezen',
+                'This is last node on this level, thus cannot be deleted': 'Toto je poslední uzel v tomto levelu, proto nemůže být odstraněn',
+                'Are you sure you want to publish this node?': 'Jste si jisti, že chcete zveřejnit tento uzel?',
+                'This is only one was operation and cannot be undone. After publishing node cannot be back in state creating.': 'Toto je jediná operace, proto nemůže zůstat nedokončená. Po zveřejnění uzlu se již nebudete moct vrátit do stavu úprav.',
+                'go_back': 'Zpět',
+                'Node editor': 'Editor uzlu',
+                'publish': 'Zveřejnit',
+
+                /**
+                 * AdventureNodesEditor
+                 */
+                'We are really sorry but this adventure does not seem to exist.': 'Je nám líto, ale objevovací cesta pravděpodobně neexistuje.',
+                'Go back on adventures administration': 'Zpět k administraci objevovací cesty',
+
+                /**
+                 * AppHeader
+                 */
+                'dashboard': 'Nástěnka',
+                'adventures': 'Objevování',
+                'signup_complete': 'Přihlášení dokončeno',
+                'signup_failure': 'Přihlášení se nezdařilo'
+
 			}
 		}
 	}
