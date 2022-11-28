@@ -53,6 +53,17 @@ app.use('/api', adventuresPublic.app);
 app.use('/api', statistics.app);
 
 app.all_json('/api/*', async req => {
+	if (req.session.role !== 'ADMIN' && req.session.role !== 'EDITOR') {
+		throw new ApiError(401, 'Your role is too low to perform this operation');
+	}
+
+	return FallThrough;
+});
+
+app.use('/api', adventures.app);
+app.use('/api', languages.app);
+
+app.all_json('/api/*', async req => {
 	if (req.session.role !== 'ADMIN') {
 		throw new ApiError(401, 'Your role is too low to perform this operation');
 	}
@@ -61,8 +72,6 @@ app.all_json('/api/*', async req => {
 })
 
 app.use('/api', usersAdministration.app);
-app.use('/api', languages.app);
-app.use('/api', adventures.app);
 
 /**
  * Static files must be served in main file
