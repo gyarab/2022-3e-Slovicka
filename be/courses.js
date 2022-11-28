@@ -412,7 +412,7 @@ app.get_json('/courses/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => awai
 	await validateUserHasAccessToNode(courseId, nodeId, userId);
 }));
 
-app.get_json('/courses/:id([0-9]+)/words/:group([0-9]+)/state', async req => {
+app.post_json('/courses/:id([0-9]+)/words/:group([0-9]+)/state', async req => {
 	const id = parseId(req.params.id);
 	const groupId = parseId(req.params.group);
 	const {state} = req.body;
@@ -424,15 +424,40 @@ app.get_json('/courses/:id([0-9]+)/words/:group([0-9]+)/state', async req => {
 	}
 
 	const group = await validateWordGroupExists(groupId);
-	await validateUserHasAccessToNode(id, group.node, req.session.id);
+	await validateUserHasAccessToNode(id, group.course_node, req.session.id);
+
+	const numberOfCompletions = (await db.select()
+		.fields('cns.number_of_completion')
+		.from(
+			'course_node_state AS cns',
+			'INNER JOIN course_nodes cn on cn.id = cns.course_nodes'
+		)
+		.where('cns."user" = ?', req.session.id)
+		.where('cn.id = ?', group.course_node)
+		.oneOrNone()).number_of_completion;
+
+	const numberOfCompletionOfWord = Number((await db.select()
+		.fields('COUNT(*) AS word_completion')
+		.from(
+			'word_state',
+				'INNER JOIN word_groups wg on wg.id = word_state.word_group',
+				'INNER JOIN course_nodes cn on cn.id = wg.course_node and cn.id = wg.course_node'
+		)
+		.where('"user" = ?', req.session.id)
+		.where('cn.id = ?', group.course_node)
+		.where('word_group = ?', groupId)
+		.where('word_state.state = ?', 'known')
+		.oneOrNone()).word_completion);
+
+	if (numberOfCompletionOfWord !== numberOfCompletions) {
+		throw new BadRequest('Cannot complete same word again', 'inserting_same_word');
+	}
 
 	return await db.insert('word_state', {
 			state,
 			"user": req.session.id,
 			group: groupId
 		})
-		.more(`ON CONFLICT ON CONSTRAINT word_group_user_unique 
-			DO UPDATE SET state = ?`, state)
 		.oneOrNone();
 });
 

@@ -2,7 +2,7 @@ ALTER TABLE word_state DROP COLUMN word;
 ALTER TABLE word_state ADD COLUMN word_group INTEGER REFERENCES word_groups ON DELETE CASCADE;
 ALTER TABLE word_state ADD CONSTRAINT word_group_user_unique UNIQUE(word_group, "user");
 
-create function updatenodecompletioncount() returns trigger
+create or replace function updatenodecompletioncount() returns trigger
     language plpgsql
 as
 $$
@@ -19,12 +19,12 @@ BEGIN
         (SELECT COUNT(*)
          FROM word_groups
                   INNER JOIN word_state AS ws on word_groups.id = ws.word_group
-         WHERE word_groups.course_node = node AND state = 'known'
-        ) AS known INTO words_in_node, words_known
+         WHERE word_groups.course_node = node AND state = 'known' AND "user" = NEW."user"
+        ) AS known INTO words_known, words_in_node
     FROM word_groups
     WHERE word_groups.course_node = node;
 
-    IF words_in_node = words_known THEN
+    IF MOD(words_in_node, words_known) = 0 THEN
         SELECT cns.number_of_completion INTO number_of_completion_count FROM course_node_state AS cns
         WHERE "user" = NEW."user" AND course_nodes = node;
 
@@ -34,13 +34,6 @@ BEGIN
             UPDATE course_node_state AS cns SET number_of_completion = number_of_completion_count + 1
             WHERE "user" = NEW."user" AND course_nodes = node;
         END IF;
-
-        DELETE FROM word_state
-            USING word_groups, course_nodes
-        WHERE word_state.word_group = word_groups.id AND
-                word_groups.course_node = course_nodes.id AND
-                course_nodes.id = node;
-
         return NULL;
     END IF;
 
