@@ -29,7 +29,7 @@ class AppDataManager extends Sword {
 
 	async login(data) {
 		this.session = await REST.POST('session', data);
-		this.io.connect();
+		await this.io.connect();
 		return this.session;
 	}
 
@@ -67,7 +67,7 @@ class AppDataManager extends Sword {
 		try {
 			this.session = await REST.GET('session');
 			await this.getLanguages();
-			this.io.connect();
+			await this.io.connect();
 		} catch (ignored) {
 		}
 
