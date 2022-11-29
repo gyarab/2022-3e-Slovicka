@@ -203,9 +203,10 @@ class I18n {
 				/**
 				 * Course State Select
 				 */
-				'paused': 'Paused',
-				'published': 'Published',
-				'closed':	'Closed',
+				'Creating': 'Creating',
+				'Paused': 'Paused',
+				'Published': 'Published',
+				'Closed':	'Closed',
 
 				/**
 				 * Word Create Dialog
@@ -325,6 +326,7 @@ class I18n {
 				/**
 				 * App Header
 				 */
+				'courses': 'Courses',
 				'dashboard': 'Dashboard',
 				'adventures': 'Adventures',
 				'administration': 'Administration'
@@ -533,14 +535,15 @@ class I18n {
 				'privacy_policy_content': 'Zde jsou sepsána ilustrativní zásady ochrany osobních údajů. Tato stránka bude odstraněna nebo nahrazena správným obsahem v porodukční verzi',
 
 				/**
-				 * CourseStateSelect
+				 * Course State Select
 				 */
-				'paused': 'Pozastaveno',
-				'published': 'Zveřejněno',
-				'closed':	'Uzavřeno',
+				'Creating': 'V procesu',
+				'Paused': 'Pozastaveno',
+				'Published': 'Zveřejněno',
+				'Closed':	'Uzavřeno',
 
 				/**
-				 * WordCreateDialog
+				 * Word Create Dialog
 				 */
 				'edit_word': 'Upravit slovo',
 				'add_word': 'Přidat slovo',
@@ -554,7 +557,7 @@ class I18n {
 				'You don\'t have access to this course': 'K tomuto kurzu nemáte přístup',
 
 				/**
-				 * CourseNodeEditor
+				 * Course Node Editor
 				 */
 				'w_name': 'Název',
 				'description': 'Popis',
@@ -567,7 +570,7 @@ class I18n {
 				'You don\'t have access to this word': 'K tomuto slovu nemáte přístup',
 
 				/**
-				 * CourseEditor
+				 * Course Editor
 				 */
 				'Course saved': 'Kurz uložen',
 				'Course updated': 'Kurz aktualizován',
@@ -613,12 +616,7 @@ class I18n {
 				'tut3_p2': 'Adventure mode je skvělá cesta, jak se naučit anglicky',
 
 				/**
-				 * FlipCardsFinished
-				 */
-				'Flip cards completed': 'Flip karty dokončeny',
-
-				/**
-				 * FlipCards
+				 * Flip Cards
 				 */
 				'This is last word in this course. Do you wanna go?': 'Toto je poslední slovo v tomto kuru. Chcete ho otevřít?',
 				'Go again': 'Znova',
@@ -626,13 +624,13 @@ class I18n {
 				'This course is empty': 'Tento kurz je prázdný',
 
 				/**
-				 * CourseRating
+				 * Course Rating
 				 */
 				'Course rating': 'Hodnocení kurzu',
 				'Thank you for rating this course': 'Děkujeme za ohodnocení tohoto kurzu',
 
 				/**
-				 * AdventureNodeEditor
+				 * Adventure Node Editor
 				 */
 				'There can be only three nodes at one level': 'Zde mohou být pouze tři uzly v jednom levelu',
 				'Number of completions must be higher than 0': 'Číslo dokončených musí být větší než 0',
@@ -648,14 +646,15 @@ class I18n {
 				'publish': 'Zveřejnit',
 
 				/**
-				 * AdventureNodesEditor
+				 * Adventure Nodes Editor
 				 */
 				'We are really sorry but this adventure does not seem to exist.': 'Je nám líto, ale tento adventure pravděpodobně neexistuje.',
 				'Go back on adventures administration': 'Zpět k administraci adventures',
 
 				/**
-				 * AppHeader
+				 * App Header
 				 */
+				'courses': 'Kurzy',
 				'dashboard': 'Nástěnka',
 				'adventures': 'Adventures',
 				'administration': 'Administrace'
