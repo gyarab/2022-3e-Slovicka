@@ -4,6 +4,8 @@ const env = require('./env');
 const cookie = require('cookie');
 const sessions = require('./sessions');
 const {parseId} = require("./utils/utils");
+const {validateUserHasAccessToCourse} = require("./courses");
+const {Conflict, NotFound} = require("./utils/aexpress");
 
 const db = new SQLBuilder();
 const USER_INTERACTIONS = {
@@ -27,8 +29,6 @@ async function writeDaystreak(userId) {
 
 function startSocketServer(server) {
 	const io = new Server(server);
-
-	const connectedUsers = {};
 
 	io.onX = (event, callback) => {
 		io.on(event, async (socket) => {
@@ -57,11 +57,41 @@ function startSocketServer(server) {
 			})
 		}
 
-		socket.onX('topic_channel_read', async topicId => {
-			const id = parseId(topicId);
-			await userHasAccessToTopic(socket.session.id, id);
+		socket.onX('course_start_studying', async courseId => {
+			const id = parseId(courseId);
+			await validateUserHasAccessToCourse(id, socket.session.id);
 
-			await topicChannelRead(topicId, socket.session.id);
+			const courseInProgress = await db.select('course_study_time')
+				.where('"user" = ?', socket.session.id)
+				.where('"to" IS NULL')
+				.oneOrNone();
+
+			if (courseInProgress && id !== courseInProgress.id) {
+				throw new Conflict('Cannot study 2 courses at the same time', 'studying_two_courses');
+			}
+
+			if (!courseInProgress) {
+				await db.insert('course_study_time', {
+					course: id,
+					"user": socket.session.id
+				}).run()
+			}
+		})
+
+		socket.onX('course_end_studying', async () => {
+			const courseInProgress = await db.select('course_study_time')
+				.where('"user" = ?', socket.session.id)
+				.where('"to" IS NULL')
+				.oneOrNone();
+
+			if (!courseInProgress) {
+				throw new NotFound();
+			}
+
+			await db.update('course_study_time')
+				.set({to: new Date()})
+				.where('"user" = ?', socket.session.id)
+				.run();
 		})
 	});
 }

@@ -167,6 +167,15 @@ new Startup(async match => {
 		ROUTER.pushRoute(Routes.login);
 		return true;
 	}
+
+	if (session) {
+		if (match.route.studying) {
+			DataManager.io.emit('course_start_studying', match.captures.course);
+		} else {
+			// Error thrown if no session is active is ignored
+			DataManager.io.emit('course_end_studying');
+		}
+	}
 }, [{
 	group: 'auth',
 	path: '/',
@@ -306,6 +315,7 @@ new Startup(async match => {
 		});
 	}
 },{
+	studying: true,
 	group: 'auth',
 	path: Routes.flipCards + '/{course:int}',
 	async handler({captures}) {

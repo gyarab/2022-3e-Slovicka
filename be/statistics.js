@@ -1,5 +1,7 @@
 const {express, BadRequest} = require("./utils/aexpress");
 const SQLBuilder = require('./utils/SQLBuilder');
+const {parseId} = require("./utils/utils");
+const {validateUserHasAccessToCourse} = require("./courses");
 
 const app = express();
 const db = new SQLBuilder();
@@ -47,6 +49,24 @@ app.get_json('/statistics/daystreak', async req => {
 		ORDER BY length DESC
 		LIMIT 1`
 	)).length;
+});
+
+app.get_json('/statistics/learning_time', async req => {
+	const courseId = req.query.course && parseId(req.query.course);
+
+	if (courseId) {
+		await validateUserHasAccessToCourse(courseId, req.session.id);
+	}
+
+	const query = db.select(`course_study_time`)
+		.fields('SUM("to" - "from") AS learning')
+		.where('"user" = ?', 1);
+
+	if (courseId) {
+		query.where('course = ?', courseId)
+	}
+
+	return (await query.oneOrNone()).learning;
 })
 
 module.exports = {app};

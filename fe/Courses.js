@@ -560,18 +560,6 @@ class Tutorial3 extends Tutorial {
 	}
 }
 
-class FlipCardsFinished extends Dialog {
-	beforeRender() {
-		this.title = i18n._('Flip cards completed');
-	}
-
-	renderBody() {
-		this.append({
-			textContent: 'XX'
-		}, null, this.body);
-	}
-}
-
 class FlipCards extends Sword {
 	render() {
 		this.el = this.createElement({
