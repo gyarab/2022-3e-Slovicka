@@ -372,7 +372,7 @@ class AdventuresSection extends Sword {
 				ref: 'table',
 				getColumns: () => {
 					return [{
-						name: i18n._('name'),
+						name: i18n._('w_name'),
 						id: 'name'
 					}, {
 						name: i18n._('description'),
