@@ -5,7 +5,7 @@ const env = require("../env.js");
 const app = express();
 
 let icons = fs.readFileSync(path.join(path.resolve(), 'gen/fe/icon-symbols.svg'));
-const feWebsocket = env.reload_css_onsave ? `<script>${fs.readFileSync('./be/utils/cssRefreshWebsocket.js')}</script>`.replace('{{url}}', env.websocket_url) : '';
+const feWebsocket = env.css_refresh.reload_css_onsave ? `<script>${fs.readFileSync('./be/utils/cssRefreshWebsocket.js')}</script>`.replace('{{url}}', env.css_refresh.websocket_url) : '';
 let indexContent = fs.readFileSync(path.join(path.resolve(), './be/templates/_index.html'), 'utf8');
 indexContent = indexContent.replace('{{title}}', env.title);
 

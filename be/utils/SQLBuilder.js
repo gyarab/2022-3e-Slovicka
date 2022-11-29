@@ -389,7 +389,7 @@ class SQLBuilder {
 		}
 	}
 
-	async createTable(command) {
+	async runQuery(command) {
 		const client = await this.pool.connect();
 
 		let result;

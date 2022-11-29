@@ -28,6 +28,7 @@ MAIN_PKG=(
     fe/Data.js
     fe/Forms.js
     fe/MyProfile.js
+    node_modules/socket.io/client-dist/socket.io.js
     fe/Administration.js
     fe/Courses.js
     fe/Adventures.js

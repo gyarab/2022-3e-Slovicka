@@ -11,11 +11,17 @@ if (env.useProxy) {
 		target: env.proxy_url,
 		changeOrigin: true
 	}));
+
+	app.use('/socket.io/*', createProxyMiddleware({
+		target: env.proxy_url,
+		changeOrigin: true,
+		ws: true
+	}));
 }
 
-if (env.reload_css_onsave) {
+if (env.css_refresh.reload_css_onsave) {
 	const wss = new WebSocket.Server({
-		port: env.websocket_port
+		port: env.css_refresh.websocket_port
 	});
 
 	wss.on('connection', function connection(ws) {

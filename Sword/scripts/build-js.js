@@ -35,7 +35,8 @@ const MAIN_PKG=[
     'fe/Administration.js',
     'fe/Courses.js',
     'fe/Adventures.js',
-	'fe/main.js'
+	'fe/main.js',
+	'node_modules/socket.io/client-dist/socket.io.js'
 ]
 
 const files = {};

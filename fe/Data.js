@@ -7,7 +7,13 @@ class AppDataManager extends Sword {
 
 		this.languages = [];
 		this.languageMap = {};
+
+		this.io = io({autoConnect: false});
+
+		this.attachSocketEvents();
 	}
+
+	attachSocketEvents() {}
 
 	async getLanguages() {
 		this.languages = await REST.GET('languages/list');
@@ -23,6 +29,7 @@ class AppDataManager extends Sword {
 
 	async login(data) {
 		this.session = await REST.POST('session', data);
+		this.io.connect();
 		return this.session;
 	}
 
@@ -53,12 +60,14 @@ class AppDataManager extends Sword {
 	async logout() {
 		await REST.DELETE('session');
 		this.session = null;
+		this.io.disconnect();
 	}
 
 	async initSession() {
 		try {
 			this.session = await REST.GET('session');
 			await this.getLanguages();
+			this.io.connect();
 		} catch (ignored) {
 		}
 

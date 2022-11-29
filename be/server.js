@@ -17,6 +17,7 @@ const adventures = require('./adventures-administration')
 const SQLBuilder = require('./utils/SQLBuilder');
 const adventuresPublic = require('./adventures-public');
 const statistics = require('./statistics')
+const {startSocketServer} = require("./socket-actions");
 
 startup.startUp();
 
@@ -27,6 +28,10 @@ const server = http.createServer(app);
 server.listen(env.port, env.host, () => console.log(`Listening on ${env.url}`));
 
 app.use(proxy.app);
+
+if (!env.useProxy) {
+	startSocketServer(server);
+}
 
 app.use(cookieParser());
 app.use(express.json());

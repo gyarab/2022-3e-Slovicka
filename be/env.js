@@ -12,10 +12,12 @@ module.exports = {
 
 	useProxy: true,
 	proxy_url: process.env.APP_PROXY_URL || 'http://code.grouwe.cz:3331 ' || `http://${process.env.APP_BIND_HOST || "localhost"}:${process.env.APP_BIND_PORT || 3331}/`,
-	reload_css_onsave: false,
 
-	websocket_port: process.env.APP_WEBSOCKET_BIND_PORT || 3332,
-	websocket_url: process.env.APP_WEBSOCKET_BIND_URL || `ws://localhost:${process.env.APP_WEBSOCKET_BIND_PORT || 3332}/ws`,
+	css_refresh: {
+		reload_css_onsave: true,
+		websocket_port: process.env.APP_WEBSOCKET_BIND_PORT || 3332,
+		websocket_url: process.env.APP_WEBSOCKET_BIND_URL || `ws://localhost:${process.env.APP_WEBSOCKET_BIND_PORT || 3332}/ws`,
+	},
 
 	//Postgresql database
 	pg: {

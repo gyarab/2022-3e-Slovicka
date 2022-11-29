@@ -357,11 +357,7 @@ app.get_json('/courses/list', async req => {
 			'(owner = ? AND visible_to = ?)', 'EVERYONE', 'published', req.session.id, 'ME');
 	}
 
-	const res = await query.getList();
-
-	console.log(res);
-
-	return res;
+	return await query.getList();
 });
 
 app.post_json('/courses/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => await saveWordHandler(req, async (node, courseId, userId) => {
