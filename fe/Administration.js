@@ -331,9 +331,10 @@ class AdventureModeStateDialog extends ValidateChangesFormDialog {
 	}
 
 	async onSave(data) {
-		const course = await REST.POST(`adventures/${this.id}/state`, data);
-
-		this.fire('success', course);
+		if (data.state !== 'creating') {
+			const course = await REST.POST(`adventures/${this.id}/state`, data);
+			this.fire('success', course);
+		}
 	}
 
 	handleError(ex) {
@@ -398,8 +399,10 @@ class AdventuresSection extends Sword {
 									id: row.id,
 									state: row.state,
 									'on:success': (obj, adventure) => {
-										me.adventures.updateByIndex(adventure, a => a.id === row.id);
-										me.table.setData(me.adventures);
+										if (adventure) {
+											me.adventures.updateByIndex(adventure, a => a.id === row.id);
+											me.table.setData(me.adventures);
+										}
 									}
 								})
 							}, null, td);

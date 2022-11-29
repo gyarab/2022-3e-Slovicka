@@ -2,13 +2,16 @@ class CourseStateSelect extends SelectField {
 	beforeRender() {
 		this.className = 'course-state';
 		this.options = [{
-			text: 'Paused',
+			text: i18n._('Creating'),
+			value: 'creating'
+		},{
+			text: i18n._('Paused'),
 			value: 'paused'
 		},{
-			text: 'Published',
+			text: i18n._('Published'),
 			value: 'published'
 		},{
-			text: 'Closed',
+			text: i18n._('Closed'),
 			value: 'closed'
 		}]
 	}
