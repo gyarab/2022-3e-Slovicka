@@ -27,6 +27,22 @@ async function writeDaystreak(userId) {
 	}
 }
 
+async function endCourseStudyTime(userId) {
+	const courseInProgress = await db.select('course_study_time')
+		.where('"user" = ?', userId)
+		.where('"to" IS NULL')
+		.oneOrNone();
+
+	if (!courseInProgress) {
+		throw new NotFound();
+	}
+
+	await db.update('course_study_time')
+		.set({to: new Date()})
+		.where('"user" = ?', userId)
+		.run();
+}
+
 function startSocketServer(server) {
 	const io = new Server(server);
 
@@ -57,6 +73,10 @@ function startSocketServer(server) {
 			})
 		}
 
+		socket.onX('disconnect', async () => {
+			await endCourseStudyTime(socket.session.id);
+		});
+
 		socket.onX('course_start_studying', async courseId => {
 			const id = parseId(courseId);
 			await validateUserHasAccessToCourse(id, socket.session.id);
@@ -79,19 +99,7 @@ function startSocketServer(server) {
 		})
 
 		socket.onX('course_end_studying', async () => {
-			const courseInProgress = await db.select('course_study_time')
-				.where('"user" = ?', socket.session.id)
-				.where('"to" IS NULL')
-				.oneOrNone();
-
-			if (!courseInProgress) {
-				throw new NotFound();
-			}
-
-			await db.update('course_study_time')
-				.set({to: new Date()})
-				.where('"user" = ?', socket.session.id)
-				.run();
+			await endCourseStudyTime(socket.session.id);
 		})
 	});
 }
