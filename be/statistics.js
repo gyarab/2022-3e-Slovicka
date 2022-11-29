@@ -30,4 +30,23 @@ app.get_json('/statistics/words_known', async req => {
 		.oneOrNone()).count);
 });
 
+app.get_json('/statistics/daystreak', async req => {
+	return (await db.runQuery(`
+		WITH dates AS (
+			SELECT DISTINCT at::date created_date FROM user_interactions WHERE "user"="${req.session.id}" AND event = 'LOGIN'
+		),
+		date_groups AS (
+			SELECT
+				created_date,
+				created_date::DATE - CAST(row_number() OVER (ORDER BY created_date) as INT) AS grp
+			FROM dates
+		)
+		SELECT max(created_date) - min(created_date) + 1 AS length
+		FROM date_groups
+		GROUP BY grp
+		ORDER BY length DESC
+		LIMIT 1`
+	)).length;
+})
+
 module.exports = {app};
