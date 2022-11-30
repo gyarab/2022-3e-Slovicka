@@ -352,7 +352,7 @@ class SearchInput extends Sword {
 				nodeName: 'input',
 				type: 'search',
 				className: 'small',
-				'attr:placeholder': 'Vyhledat',
+				placeholder: i18n._('Vyhledat'),
 				'on:input': () => this.onInput(),
 				'on:keyup': (e) => {
 					if (e.key === "Escape") {

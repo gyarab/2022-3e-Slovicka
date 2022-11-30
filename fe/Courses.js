@@ -394,10 +394,14 @@ class Courses extends Sword {
 					nodeName: 'button',
 					type: 'button',
 					children: ['icon:plus', {textContent: i18n._('create_new_course')}],
-					className: 'primary icon-left',
+					className: 'primary icon-left new-course',
 					'on:click': () => ROUTER.pushRoute(Routes.courses_editor)
 				},{
-					textContent: 'Here will be filters...'
+					class: SearchInput,
+					onInputHandler: search => {
+						const filtered = Utils.filterRows(search, this.courses, ['name', 'language'], 'name');
+						this.renderCourses(filtered);
+					}
 				}]
 			},{
 				className: 'courses',
@@ -410,9 +414,19 @@ class Courses extends Sword {
 
 	async loadCourses() {
 		this.courses = await REST.GET('courses/list?withRatings=true');
-		const coursesByLanguages = {};
 
 		for (const c of this.courses) {
+			c.language = DataManager.findLanguage(Number(c.language)).name;
+		}
+
+		this.renderCourses(this.courses);
+	}
+
+	renderCourses(courses) {
+		this.coursesList.innerHTML = '';
+		const coursesByLanguages = {};
+
+		for (const c of courses) {
 			coursesByLanguages[c.language] ??= [];
 			coursesByLanguages[c.language].push(c);
 		}
@@ -424,7 +438,7 @@ class Courses extends Sword {
 				className: 'courses-by-language',
 				children: [{
 					className: 'language',
-					textContent: DataManager.findLanguage(Number(l)).name
+					textContent: l
 				},{
 					className: 'list',
 					children: courses.map(c => ({
