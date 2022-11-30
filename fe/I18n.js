@@ -168,6 +168,7 @@ class I18n {
 				 */
 				'change_state': 'Change state',
 				'nodes': 'Nodes',
+				'add_adventure': 'Add adventure',
 
 				/**
 				 * User popup
@@ -502,6 +503,7 @@ class I18n {
 				 */
 				'change_state': 'Změnit stav',
 				'nodes': 'Uzly',
+				'add_adventure': 'Přidat adventure',
 
 				/**
 				 * User popup
