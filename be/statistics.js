@@ -13,7 +13,7 @@ const validateValidDate = date => {
 };
 
 app.get_json('/statistics/words_known', async req => {
-	let from = new Date(req.query.from), to = req.query.to;
+	let from = req.query.from ? new Date(req.query.from) : new Date(0), to = req.query.to;
 
 	validateValidDate(from);
 
