@@ -48,7 +48,7 @@ app.get_json('/statistics/daystreak', async req => {
 		GROUP BY grp
 		ORDER BY length DESC
 		LIMIT 1`
-	)).length;
+	))?.length || 0;
 });
 
 app.get_json('/statistics/learning_time', async req => {
