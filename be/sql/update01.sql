@@ -24,7 +24,7 @@ BEGIN
     FROM word_groups
     WHERE word_groups.course_node = node;
 
-    IF MOD(words_in_node, words_known) = 0 THEN
+    IF NEW.state = 'known' AND MOD(words_in_node, words_known) = 0 THEN
         SELECT cns.number_of_completion INTO number_of_completion_count FROM course_node_state AS cns
         WHERE "user" = NEW."user" AND course_nodes = node;
 

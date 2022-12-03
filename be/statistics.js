@@ -35,7 +35,7 @@ app.get_json('/statistics/words_known', async req => {
 app.get_json('/statistics/daystreak', async req => {
 	return (await db.runQuery(`
 		WITH dates AS (
-			SELECT DISTINCT at::date created_date FROM user_interactions WHERE "user"="${req.session.id}" AND event = 'LOGIN'
+			SELECT DISTINCT at::date created_date FROM user_interactions WHERE "user" = ? AND event = 'LOGIN'
 		),
 		date_groups AS (
 			SELECT
@@ -47,8 +47,8 @@ app.get_json('/statistics/daystreak', async req => {
 		FROM date_groups
 		GROUP BY grp
 		ORDER BY length DESC
-		LIMIT 1`
-	))?.length || 0;
+		LIMIT 1`, [req.session.id]
+	))[0]?.length || 0;
 });
 
 app.get_json('/statistics/learning_time', async req => {

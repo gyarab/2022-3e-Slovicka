@@ -389,20 +389,30 @@ class SQLBuilder {
 		}
 	}
 
-	async runQuery(command) {
+	async runQuery(command, values) {
 		const client = await this.pool.connect();
+
+		const commandUpdated = this.replaceQuestionMarkWithValue(
+			command,
+			values,
+			''
+		);
 
 		let result;
 		try {
 			result = await client
 				.query(
-					command
+					commandUpdated,
+					values
 				);
-		} catch(err) {
+		} catch (err) {
 			console.error(err.stack)
 		}
 
 		await client.release();
+
+		this.reset();
+		return result.rows;
 	}
 }
 module.exports = SQLBuilder

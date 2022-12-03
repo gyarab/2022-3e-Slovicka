@@ -87,7 +87,7 @@ async function validateUserHasRightsToEditNode(id, courseId, userId) {
 }
 
 async function validateUserHasAccessToCourse(courseId, userId) {
-	const course = await validateCourseExists(courseId, courseTypes.USER.description);
+	const course = await validateCourseIsUSERType(courseId);
 
 	if (!(course.owner === userId || course.visible_to === 'EVERYONE' && course.state === 'published')) {
 		throw new Unauthorized();
@@ -224,9 +224,20 @@ async function getWords(req, validate) {
 
 	await validate(node, courseId, req.session.id);
 
-	return prepareGetWordWithGroupQuery()
-		.where('gr.course_node = ?', node)
-		.getList()
+	return (await db.runQuery(`
+        SELECT gr.id AS group, wo.word, wo.id, wo.language, COALESCE(gr.definition, wo.definition) AS definition,
+               COALESCE(gr.translation, wo.translation) AS translation, COALESCE(gr.phonetic, wo.phonetic) AS phonetic,
+               COALESCE(gr.sentence, wo.sentence) AS sentence, known_times, ws.state
+            FROM word_groups AS gr
+			INNER JOIN words AS wo ON gr.word = wo.id
+			LEFT JOIN word_state AS ws ON ws.word_group = gr.id
+			LEFT JOIN (
+	            SELECT MAX(changed), count(CASE when state = 'known' then 1 end) AS known_times, word_group FROM word_state
+	            WHERE "user" = ? GROUP BY ("user", "word_group")
+	        ) states ON states.word_group = gr.id
+        WHERE course_node = ? AND
+            (case when ws.state IS NULL THEN TRUE ELSE ws."user" = ? AND changed = states.max END);
+	`, [req.session.id, node, req.session.id]));
 }
 
 async function getCourseWithRootNode(id, sessionId) {
@@ -237,12 +248,17 @@ async function getCourseWithRootNode(id, sessionId) {
 		.oneOrNone();
 
 	const node = await db.select('course_nodes')
+		.from(
+			'course_nodes',
+			'LEFT JOIN course_node_state AS cns ON cns.course_nodes = course_nodes.id'
+		)
 		.where('course = ?', id)
 		.oneOrNone();
 
 	return {
 		...course,
-		node: node.id
+		node: node.id,
+		number_of_completion: node.number_of_completion
 	}
 }
 
@@ -422,38 +438,42 @@ app.post_json('/courses/:id([0-9]+)/words/:group([0-9]+)/state', async req => {
 	const group = await validateWordGroupExists(groupId);
 	await validateUserHasAccessToNode(id, group.course_node, req.session.id);
 
-	const numberOfCompletions = (await db.select()
-		.fields('cns.number_of_completion')
-		.from(
-			'course_node_state AS cns',
-			'INNER JOIN course_nodes cn on cn.id = cns.course_nodes'
-		)
-		.where('cns."user" = ?', req.session.id)
-		.where('cn.id = ?', group.course_node)
-		.oneOrNone()).number_of_completion;
+	const course = await db.oneOrNoneById('courses', id);
 
-	const numberOfCompletionOfWord = Number((await db.select()
-		.fields('COUNT(*) AS word_completion')
-		.from(
-			'word_state',
+	if (course.type === courseTypes.ADVENTURE.description) {
+		const numberOfCompletions = (await db.select()
+			.fields('cns.number_of_completion')
+			.from(
+				'course_node_state AS cns',
+				'INNER JOIN course_nodes cn on cn.id = cns.course_nodes'
+			)
+			.where('cns."user" = ?', req.session.id)
+			.where('cn.id = ?', group.course_node)
+			.oneOrNone()).number_of_completion;
+
+		const numberOfCompletionOfWord = Number((await db.select()
+			.fields('COUNT(*) AS word_completion')
+			.from(
+				'word_state',
 				'INNER JOIN word_groups wg on wg.id = word_state.word_group',
 				'INNER JOIN course_nodes cn on cn.id = wg.course_node and cn.id = wg.course_node'
-		)
-		.where('"user" = ?', req.session.id)
-		.where('cn.id = ?', group.course_node)
-		.where('word_group = ?', groupId)
-		.where('word_state.state = ?', 'known')
-		.oneOrNone()).word_completion);
+			)
+			.where('"user" = ?', req.session.id)
+			.where('cn.id = ?', group.course_node)
+			.where('word_group = ?', groupId)
+			.where('word_state.state = ?', 'known')
+			.oneOrNone()).word_completion);
 
-	if (numberOfCompletionOfWord !== numberOfCompletions) {
-		throw new BadRequest('Cannot complete same word again', 'inserting_same_word');
+		if (numberOfCompletionOfWord !== numberOfCompletions) {
+			throw new BadRequest('Cannot complete same word again', 'inserting_same_word');
+		}
 	}
 
 	return await db.insert('word_state', {
-			state,
-			"user": req.session.id,
-			group: groupId
-		})
+		state,
+		"user": req.session.id,
+		word_group: groupId
+	})
 		.oneOrNone();
 });
 
