@@ -297,9 +297,16 @@ class Adventures extends Sword {
 	render() {
 		this.el = this.createElement({
 			children: [{
+				className: 'header',
 				children: [{
 					nodeName: 'h3',
 					textContent: i18n._('adventures')
+				},{
+					class: SearchInput,
+					onInputHandler: search => {
+						const filtered = Utils.filterRows(search, this.adventures, ['name', 'language', 'description'], 'name');
+						this.renderAdventures(filtered);
+					}
 				}]
 			},{
 				ref: 'adventuresEl',
@@ -314,6 +321,16 @@ class Adventures extends Sword {
 		this.adventures = await REST.GET(`adventures/list?withRatings=true`);
 
 		for (const a of this.adventures) {
+			a.language = DataManager.findLanguage(a.language).name;
+		}
+
+		this.renderAdventures(this.adventures);
+	}
+
+	renderAdventures(adventures) {
+		this.adventuresEl.innerHTML = '';
+
+		for (const a of adventures) {
 			this.append({
 				className: 'adventure',
 				'on:click': () => ROUTER.pushRoute(Routes.adventures + '/' + a.id),
@@ -326,7 +343,7 @@ class Adventures extends Sword {
 					className: 'left-corner-info',
 					children: [{
 						className: 'language',
-						textContent: DataManager.findLanguage(a.language).name
+						textContent: a.language
 					},{
 						className: 'rating',
 						children: [{textContent: `(${a.rating || '-'})`}, 'icon:star']
