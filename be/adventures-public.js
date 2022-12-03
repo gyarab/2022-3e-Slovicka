@@ -29,7 +29,7 @@ app.get_json('/adventures/list', async req => {
 
 	if (withRatings) {
 		query
-			.fields('AVG(cr.value)::numeric(2, 1)')
+			.fields('AVG(cr.value)::numeric(2, 1) AS rating')
 			.from('LEFT JOIN course_ratings AS cr ON cr.course = courses.id')
 			.more('GROUP BY courses.id')
 	}

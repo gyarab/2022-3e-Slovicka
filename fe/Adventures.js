@@ -302,7 +302,8 @@ class Adventures extends Sword {
 					textContent: i18n._('adventures')
 				}]
 			},{
-				ref: 'adventuresEl'
+				ref: 'adventuresEl',
+				className: 'adventures'
 			}]
 		}, this);
 
@@ -310,17 +311,26 @@ class Adventures extends Sword {
 	}
 
 	async init() {
-		this.adventures = await REST.GET(`adventures/list`);
+		this.adventures = await REST.GET(`adventures/list?withRatings=true`);
 
 		for (const a of this.adventures) {
 			this.append({
+				className: 'adventure',
 				'on:click': () => ROUTER.pushRoute(Routes.adventures + '/' + a.id),
 				children: [{
 					textContent: a.name
 				},{
+					className: 'description',
 					textContent: a.description
 				},{
-					textContent: DataManager.findLanguage(a.language).name
+					className: 'left-corner-info',
+					children: [{
+						className: 'language',
+						textContent: DataManager.findLanguage(a.language).name
+					},{
+						className: 'rating',
+						children: [{textContent: `(${a.rating || '-'})`}, 'icon:star']
+					}]
 				}]
 			}, null, this.adventuresEl);
 		}
