@@ -46,7 +46,7 @@ class WordCreateDialog extends ValidateChangesFormDialog {
 			name: 'translation',
 			label: i18n._('translation'),
 			value: this.data.translation,
-			required: false
+			required: true
 		},{
 			class: TextField,
 			name: 'phonetic',

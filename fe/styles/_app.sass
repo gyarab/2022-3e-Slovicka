@@ -467,7 +467,7 @@ nav.header
 		.level
 			display: flex
 
-[sword-comp=FlipCards]
+[sword-comp=FlipCards], [sword-comp=TestWords]
 	.body
 		max-width: 600px
 		margin: 0 auto
@@ -493,6 +493,34 @@ nav.header
 				svg
 					margin-left: 2px
 					--color: #B9C0DA
+
+		.card
+			.word
+				background: #B9C0DA
+				width: 100%
+				height: 350px
+				padding: 30px 20px
+				border-radius: 20px
+				display: flex
+				justify-content: center
+				align-items: center
+
+			.translations
+				margin-top: 30px
+				display: grid
+				grid-gap: 25px
+				grid-template-columns: auto auto
+				grid-template-rows: auto auto
+
+				.translation
+					box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25)
+					border-radius: 20px
+					background: #9CADCE
+					padding: 30px 100px
+					display: flex
+					justify-content: center
+					align-items: center
+					border: 0
 
 		.word
 			background: #B9C0DA

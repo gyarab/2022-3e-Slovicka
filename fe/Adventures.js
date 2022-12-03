@@ -326,3 +326,254 @@ class Adventures extends Sword {
 		}
 	}
 }
+
+class WordKnownSuccessDialog extends Sword {
+	render() {
+		this.el = this.createElement({
+			children: [{
+				className: 'success-checkmark',
+				children: [{
+					className: 'check-icon',
+					children: [{
+						className: 'icon-line line-tip'
+					},{
+						className: 'icon-line line-long success'
+					},{
+						className: 'icon-circle'
+					},{
+						className: 'icon-fix'
+					}]
+				}]
+			}]
+		});
+
+		setTimeout(() => {
+			this.cb();
+			this.destroy();
+		}, 2 * 1000);
+	}
+}
+
+class WordKnownFailDialog extends Sword {
+	render() {
+		this.el = this.createElement({
+			children: [{
+				className: 'fail-checkmark',
+				children: [{
+					className: 'check-icon error',
+					children: [{
+						className: 'icon-line line-long error'
+					},{
+						className: 'icon-line line-long-error'
+					},{
+						className: 'icon-circle'
+					},{
+						className: 'icon-fix'
+					}]
+				}]
+			}]
+		})
+
+		setTimeout(() => {
+			this.cb();
+			this.destroy();
+		}, 2 * 1000);
+	}
+}
+
+class CourseCompleted extends Sword {
+	render() {
+		this.el = this.createElement({
+			'on:click': () => this.destroy(),
+			is: CUSTOM_ELEMENT.DIV,
+			children: [{
+				className: 'wrap',
+				children: [{
+					nodeName: 'h2',
+					textContent: i18n._('Congratulations!!!')
+				},{
+					nodeName: 'h4',
+					textContent: i18n._('You have successfully completed course \n Where do you want to go?')
+				},{
+					className: 'actions',
+					children: [{
+						nodeName: 'button',
+						className: 'primary back-to-courses',
+						textContent: i18n._('Go again threw course'),
+						'on:click': () => {
+							this.fire('go-again');
+							this.destroy();
+						}
+					},{
+						nodeName: 'button',
+						className: 'primary back-to-courses',
+						textContent: i18n._('Go back to courses list'),
+						'on:click': () => ROUTER.pushRoute(Routes.courses)
+					}]
+				},{
+					className: 'canvas',
+					nodeName: 'canvas',
+					ref: 'canvas'
+				}]
+			}]
+		}, this);
+	}
+
+	connect() {
+		const confetti = new ConfettiGenerator({
+			target: this.canvas,
+			max: 120
+		});
+		confetti.render();
+	}
+}
+
+class TestWords extends Sword {
+	async render() {
+		this.el = this.createElement({
+			children: [{
+				class: AppHeader
+			},{
+				className: 'body',
+				ref: 'body'
+			}]
+		}, this);
+
+		await this.init();
+		this.renderBody();
+	}
+
+	async init() {
+		this.course = await REST.GET(`courses/${this.id}`);
+		this.words = await REST.GET(`courses/${this.id}/nodes/${this.course.node}/words`)
+		this.notKnown = [];
+
+		for (const w of this.words) {
+			if (Number(w.known_times) === this.course.number_of_completion) {
+				this.notKnown.push(w);
+			}
+		}
+
+		this.notKnown = this.shuffle(this.notKnown);
+	}
+
+	renderBody() {
+		const me = this;
+
+		this.append({
+			children: [{
+				className: 'header',
+				children: [{
+					nodeName: 'h5',
+					textContent: this.course.name
+				},{
+					className: 'word-count',
+					children: [{
+						nodeName: 'span',
+						ref: 'wordCount',
+						textContent: (this.words.length - this.notKnown.length) + 1
+					},{
+						nodeName: 'span',
+						textContent: '/' + this.words.length
+					}]
+				},{
+					nodeName: 'button',
+					className: 'rate secondary icon-left',
+					ref: 'ratingBtn',
+					children: [this.course.rating ? this.course.rating + '' : '-', 'icon:star', i18n._('rate')],
+					'on:click': () => new CourseRating(document.body, {
+						id: this.course.id,
+						rating: this.course.rating,
+						'on:success': (obj, rating) => {
+							this.course.rating = rating;
+							me.replaceChildren([this.course.rating ? this.course.rating + '' : '-', 'icon:star', i18n._('rate')], null, this.ratingBtn)
+						}
+					})
+				},{
+					render: DataManager.session.id === this.course.owner,
+					nodeName: 'button',
+					className: 'edit secondary icon-left',
+					children: ['icon:pencil', i18n._('edit')],
+					'on:click': () => ROUTER.pushRoute(Routes.courses_editor + '/' + this.course.id)
+				}]
+			},{
+				className: 'card',
+				ref: 'card'
+			}]
+		}, this, this.body);
+
+		this.renderCard(this.notKnown[0]);
+	}
+
+	shuffle(arr) {
+		for (let i = 0; i < arr.length; i++) {
+			const idx = Math.floor(Math.random() * arr.length);
+			const itemA = arr[idx];
+			arr[idx] = arr[i];
+			arr[i] = itemA;
+		}
+
+		return arr;
+	}
+
+	reset() {
+		this.notKnown = [...this.words];
+		this.wordCount.textContent = 1;
+		this.renderCard(this.notKnown[0]);
+	}
+
+	renderCard(word) {
+		const getRandomWord = () => this.words[Math.floor(Math.random() * this.words.length)];
+		const randomAnswers = this.shuffle([word, getRandomWord(), getRandomWord(), getRandomWord()]);
+
+		this.replaceChildren([{
+			className: 'word',
+			textContent: word.word
+		},{
+			className: 'translations',
+			children: randomAnswers.map(a => ({
+				nodeName: 'button',
+				render: !!a.translation,
+				className: 'translation',
+				textContent: a.translation,
+				'on:click': async e => {
+					const notKnown = word.id !== a.id;
+					await REST.POST(`courses/${this.id}/words/${word.group}/state`, {
+						state: notKnown ? 'unknown' : 'known'
+					});
+
+					if (notKnown) {
+						this.wordSelectedUnsuccessfully();
+					} else {
+						this.wordSelectedSuccessfully();
+					}
+				}
+			}))
+		}], this, this.card);
+	}
+
+	wordSelectedUnsuccessfully() {
+		const testedWord = this.notKnown.shift();
+
+		new WordKnownFailDialog(document.body, {
+			cb: () => this.renderCard(this.notKnown[0])
+		});
+		this.notKnown.push(testedWord);
+	}
+
+	wordSelectedSuccessfully() {
+		this.notKnown.shift();
+
+		if (this.notKnown.length === 0) {
+			new CourseCompleted(document.body, {
+				'on:go-again': () => this.reset()
+			});
+		} else {
+			new WordKnownSuccessDialog(document.body, {
+				cb: () => this.renderCard(this.notKnown[0])
+			});
+
+			this.wordCount.textContent = 1 + (this.words.length - this.notKnown.length);
+		}
+	}
+}

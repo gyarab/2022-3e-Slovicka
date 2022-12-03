@@ -23,6 +23,7 @@ SWORD_CORE=(
 )
 
 MAIN_PKG=(
+    node_modules/confetti-js/dist/index.min.js
 	"${SWORD_CORE[@]}"
 	fe/I18n.js
     fe/Data.js

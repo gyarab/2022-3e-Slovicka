@@ -28,6 +28,7 @@ const SWORD_CORE = [
 ]
 
 const MAIN_PKG=[
+	'node_modules/confetti-js/dist/index.min.js',
 	'fe/I18n.js',
     'fe/Data.js',
     'fe/Forms.js',

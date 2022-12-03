@@ -147,7 +147,8 @@ const Routes = {
 	adventure_editor: '/adventures/editor',
 	adventure_node_editor: '/adventures/editor/node',
 	tutorial: '/tutorial',
-	flipCards: '/flip-cards'
+	flipCards: '/flip-cards',
+	testWordsCourses: '/courses/{course:int}/test-words',
 }
 new Startup(async match => {
 	if (match.route.group === 'public') {
@@ -250,6 +251,16 @@ new Startup(async match => {
 			class: MyProfile,
 			section: 'change-password'
 		});
+	}
+},{
+	studying: true,
+	group: 'auth',
+	path: Routes.testWordsCourses,
+	async handler({captures}) {
+		APP.show({
+			class: TestWords,
+			id: captures.course
+		})
 	}
 }, {
 	group: 'auth',
