@@ -147,8 +147,9 @@ const Routes = {
 	adventure_editor: '/adventures/editor',
 	adventure_node_editor: '/adventures/editor/node',
 	tutorial: '/tutorial',
-	flipCards: '/flip-cards',
+	flipCards: '/courses/{course:int}/flip-cards',
 	testWordsCourses: '/courses/{course:int}/test-words',
+	wordsGoThrewModeSelect: '/courses/{course:int}/mode'
 }
 new Startup(async match => {
 	if (match.route.group === 'public') {
@@ -217,6 +218,15 @@ new Startup(async match => {
 		APP.show({
 			class: AdventureNodes,
 			id: captures.id
+		})
+	}
+},{
+	group: 'auth',
+	path: Routes.wordsGoThrewModeSelect,
+	async handler({captures}) {
+		APP.show({
+			class: WordsGoThrewModeSelect,
+			course: captures.course
 		})
 	}
 },{
@@ -328,7 +338,7 @@ new Startup(async match => {
 },{
 	studying: true,
 	group: 'auth',
-	path: Routes.flipCards + '/{course:int}',
+	path: Routes.flipCards,
 	async handler({captures}) {
 		APP.show({
 			class: FlipCards,

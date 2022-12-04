@@ -443,7 +443,7 @@ class Courses extends Sword {
 					className: 'list',
 					children: courses.map(c => ({
 						className: 'course',
-						'on:click': () => ROUTER.pushRoute(Routes.flipCards + '/' + c.id),
+						'on:click': () => ROUTER.pushRoute(`/courses/${c.id}/mode`),
 						children: [{
 							className: 'rating',
 							children: [{textContent: `(${c.rating || '-'})`}, 'icon:star']
@@ -801,5 +801,41 @@ class CourseRating extends Dialog {
 		if (this.rating) {
 			this.updateStarsActive(this.rating - 1, true);
 		}
+	}
+}
+
+class WordsGoThrewModeSelect extends Sword {
+	render() {
+		this.el = this.createElement({
+			children: [{
+				class: AppHeader
+			},{
+				className: 'title',
+				nodeName: 'h3',
+				textContent: i18n._('Select mode of going threw words')
+			},{
+				className: 'modes',
+				children: [{
+					className: 'mode',
+					children: [{
+						textContent: 'Test words',
+						'on:click': () => ROUTER.pushRoute(`/courses/${this.course}/test-words`)
+					}]
+				},{
+					className: 'course-name',
+					ref: 'courseName'
+				},{
+					className: 'mode',
+					children: [{
+						textContent: 'Flip cards',
+						'on:click': () => ROUTER.pushRoute(`/courses/${this.course}/flip-cards`)
+					}]
+				}]
+			}]
+		}, this);
+
+		(async () => {
+			this.courseName.textContent = (await REST.GET(`courses/${this.course}`)).name;
+		})();
 	}
 }
