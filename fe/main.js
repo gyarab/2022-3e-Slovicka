@@ -67,7 +67,7 @@ class WillBeAdded extends Sword {
 	}
 }
 
-class Dashboard extends Sword {
+/*class Dashboard extends Sword {
 	render() {
 		this.el = this.createElement({
 			children: [{
@@ -84,7 +84,7 @@ class Dashboard extends Sword {
 			}]
 		})
 	}
-}
+}*/
 
 class Home extends SectionScreen {
 	beforeRender() {

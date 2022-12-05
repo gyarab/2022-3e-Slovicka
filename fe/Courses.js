@@ -839,3 +839,101 @@ class WordsGoThrewModeSelect extends Sword {
 		})();
 	}
 }
+
+class Dashboard extends Sword {
+	render() {
+		this.el = this.createElement({
+			children: [{
+				className: 'statistics',
+				children: [{
+					className: 'learnedMinutes',
+					children: [{
+						nodeName: 'h4',
+						textContent: i18n._('Learned minutes today')
+					},{
+						ref: 'learnedMinutes'
+					}]
+				},{
+					className: 'knownWords',
+					children: [{
+						nodeName: 'h4',
+						textContent: i18n._('Number of known words today')
+					},{
+						ref: 'knownWords'
+					}]
+				},{
+					className: 'dayStreak',
+					children: [{
+						nodeName: 'h4',
+						textContent: i18n._('Day streak')
+					},{
+						ref: 'dayStreak'
+					}]
+				}]
+			},{
+				className: 'flex',
+				children: [{
+					className: 'lastCourses',
+					children: [{
+						nodeName: 'h4',
+						textContent: i18n._('Last courses')
+					},{
+						className: 'courseList',
+						ref: 'coursesList'
+					}]
+				},{
+					className: 'lastAdventure',
+					children: [{
+						nodeName: 'h4',
+						textContent: i18n._('Last adventures')
+					},{
+						className: 'adventures',
+						ref: 'adventures'
+					}]
+				}]
+			}]
+		}, this);
+
+		this.init();
+	}
+
+	async init() {
+		const courses = await REST.GET(`courses/list`);
+		const adventure = await REST.GET(`adventures/list`)
+		const learnedMinutes = await REST.GET(`statistics/learning_time`);
+		const knownWords = await REST.GET(`statistics/words_known`);
+		const dayStreak = await REST.GET(`statistics/daystreak`);
+
+		console.log(DataManager.languages);
+
+		for (const c of courses) {
+			console.log(c)
+			this.append({
+				'on:click': () => ROUTER.pushRoute(`courses/list`),
+				children: [{
+					nodeName: 'h5',
+					textContent: c.name
+				},{ //
+					textContent: DataManager.findLanguage(c.language).name
+				}]
+			}, null, this.coursesList)
+		}
+
+		for (const a of adventure) {
+			this.append({ //
+				'on:click': () => ROUTER.pushRoute(`adventure/list`),
+				children: [{
+					nodeName: 'h5',
+					textContent: a.name
+				},{
+					textContent: DataManager.findLanguage(a.language).name
+					/* },{
+                        textContent: a.level */
+				}]
+			}, null, this.adventures)
+		}
+		this.knownWords.textContent = knownWords;
+		this.dayStreak.textContent = dayStreak;
+
+	}
+}
