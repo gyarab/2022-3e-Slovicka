@@ -476,7 +476,7 @@ class TestWords extends Sword {
 		this.notKnown = [];
 
 		for (const w of this.words) {
-			if (Number(w.known_times) === this.course.number_of_completion) {
+			if (!w.known_times || Number(w.known_times) === this.course.number_of_completion) {
 				this.notKnown.push(w);
 			}
 		}
