@@ -4,7 +4,7 @@ const {Unauthorized} = require("./utils/aexpress");
 const {parseId} = require("./utils/utils");
 const {courseTypes} = require("./constants");
 const {validateAdventureCourse} = require("./adventures-administration");
-const {prepareCoursesRatingsInteractionsQuery} = require("./courses");
+const {prepareCoursesRatingsInteractionsQuery, validateUserHasAccessToNode} = require("./courses");
 
 const app = express();
 const db = new SQLBuilder();
@@ -63,5 +63,17 @@ app.get_json('/adventures/:id([0-9]+)/nodes', async req => {
 		.more('ORDER BY level')
 		.getList();
 });
+
+app.get_json('/adventures/:id([0-9]+)/nodes/:node([0-9]+)', async req => {
+	const id = parseId(req.params.id);
+	const nodeId = parseId(req.params.node);
+
+	const {course, node} = await validateUserHasAccessToNode(id, nodeId, req.session.id);
+
+	return {
+		...course,
+		node: node.id
+	}
+})
 
 module.exports = {app};

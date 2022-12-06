@@ -130,6 +130,7 @@ const Routes = {
 	tutorial: '/tutorial',
 	flipCards: '/courses/{course:int}/flip-cards',
 	testWordsCourses: '/courses/{course:int}/test-words',
+	testWordsAdventures: '/adventures/{course:int}/test-words/{node:int}',
 	wordsGoThrewModeSelect: '/courses/{course:int}/mode'
 }
 new Startup(async match => {
@@ -249,8 +250,19 @@ new Startup(async match => {
 	path: Routes.testWordsCourses,
 	async handler({captures}) {
 		APP.show({
-			class: TestWords,
-			id: captures.course
+			class: TestWordsCourses,
+			id: captures.course,
+		})
+	}
+},{
+	studying: true,
+	group: 'auth',
+	path: Routes.testWordsAdventures,
+	async handler({captures}) {
+		APP.show({
+			class: TestWordsAdventures,
+			id: captures.course,
+			node: captures.node
 		})
 	}
 }, {

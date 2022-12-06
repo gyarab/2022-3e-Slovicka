@@ -456,6 +456,8 @@ class CourseCompleted extends Sword {
 }
 
 class TestWords extends Sword {
+	id;
+
 	async render() {
 		this.el = this.createElement({
 			children: [{
@@ -470,9 +472,10 @@ class TestWords extends Sword {
 		this.renderBody();
 	}
 
+	getData() {}
+
 	async init() {
-		this.course = await REST.GET(`courses/${this.id}`);
-		this.words = await REST.GET(`courses/${this.id}/nodes/${this.course.node}/words`)
+		await this.getData();
 		this.notKnown = [];
 
 		for (const w of this.words) {
@@ -602,5 +605,19 @@ class TestWords extends Sword {
 
 			this.wordCount.textContent = 1 + (this.words.length - this.notKnown.length);
 		}
+	}
+}
+
+class TestWordsCourses extends TestWords {
+	async getData() {
+		this.course = await REST.GET(`courses/${this.id}`);
+		this.words = await REST.GET(`courses/${this.id}/nodes/${this.course.node}/words`)
+	}
+}
+
+class TestWordsAdventures extends TestWords {
+	async getData() {
+		this.course = await REST.GET(`adventures/${this.id}/nodes/${this.node}`);
+		this.words = await REST.GET(`courses/${this.id}/nodes/${this.course.node}/words`)
 	}
 }

@@ -436,6 +436,8 @@ async function validateUserHasAccessToNode(courseId, nodeId, userId) {
 
 	if (course.type === courseTypes.USER.description) {
 		await validateUserHasAccessToCourse(courseId, userId);
+
+		return {course, node};
 	} else {
 		if (course.state !== 'published' || node.state === 'creating') {
 			throw new Unauthorized();
@@ -444,6 +446,8 @@ async function validateUserHasAccessToNode(courseId, nodeId, userId) {
 		if (node.level > 0) {
 			await validateUserHasAccessToAdventureNode(courseId, node.level);
 		}
+
+		return {course, node};
 	}
 }
 
@@ -476,7 +480,7 @@ app.post_json('/courses/:id([0-9]+)/words/:group([0-9]+)/state', async req => {
 			)
 			.where('cns."user" = ?', req.session.id)
 			.where('cn.id = ?', group.course_node)
-			.oneOrNone()).number_of_completion;
+			.oneOrNone())?.number_of_completion || 0;
 
 		const numberOfCompletionOfWord = Number((await db.select()
 			.fields('COUNT(*) AS word_completion')
@@ -489,7 +493,7 @@ app.post_json('/courses/:id([0-9]+)/words/:group([0-9]+)/state', async req => {
 			.where('cn.id = ?', group.course_node)
 			.where('word_group = ?', groupId)
 			.where('word_state.state = ?', 'known')
-			.oneOrNone()).word_completion);
+			.oneOrNone())?.word_completion || 0);
 
 		if (numberOfCompletionOfWord !== numberOfCompletions) {
 			throw new BadRequest('Cannot complete same word again', 'inserting_same_word');
@@ -544,5 +548,6 @@ module.exports = {
 	getWords,
 	validateNodeBelongsToCourse,
 	validateUserHasAccessToCourse,
-	prepareCoursesRatingsInteractionsQuery
+	prepareCoursesRatingsInteractionsQuery,
+	validateUserHasAccessToNode
 };
