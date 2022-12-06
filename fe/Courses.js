@@ -915,7 +915,7 @@ class Dashboard extends Sword {
 
 		for (const a of adventure) {
 			this.append({
-				'on:click': () => ROUTER.pushRoute(`adventure/list`),
+				'on:click': () => ROUTER.pushRoute(Routes.adventures + '/' + a.id),
 				children: [{
 					nodeName: 'h5',
 					textContent: a.name
@@ -950,7 +950,7 @@ class Dashboard extends Sword {
 
 		for (const c of this.courses) {
 			this.append({
-				'on:click': () => ROUTER.pushRoute(`courses/list`),
+				'on:click': () => ROUTER.pushRoute(`/courses/${c.id}/mode`),
 				children: [{
 					nodeName: 'h5',
 					textContent: c.name
