@@ -94,8 +94,13 @@ function startSocketServer(server) {
 				await db.insert('course_study_time', {
 					course: id,
 					"user": socket.session.id
-				}).run()
+				}).run();
 			}
+
+			await db.insert('last_course_interaction', {
+				"user": socket.session.id,
+				course: id
+			}).run()
 		})
 
 		socket.onX('course_end_studying', async () => {

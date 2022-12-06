@@ -901,8 +901,8 @@ class Dashboard extends Sword {
 		const today = new Date();
 		const dateFormatted = [today.getMonth() + 1, today.getDate(), today.getFullYear()].join('-');
 
-		this.courses = await REST.GET(`courses/list`);
-		const adventure = await REST.GET(`adventures/list`);
+		this.courses = await REST.GET(`courses/list?interactions=true&limit=5`);
+		const adventure = await REST.GET(`adventures/list?interactions=true&limit=5`);
 		this.learningTime = await REST.GET(`statistics/learning_time?from=${dateFormatted}`);
 		const knownWords = await REST.GET(`statistics/words_known`);
 		const dayStreak = await REST.GET(`statistics/daystreak`);

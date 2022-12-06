@@ -4,6 +4,7 @@ const {Unauthorized} = require("./utils/aexpress");
 const {parseId} = require("./utils/utils");
 const {courseTypes} = require("./constants");
 const {validateAdventureCourse} = require("./adventures-administration");
+const {prepareCoursesRatingsInteractionsQuery} = require("./courses");
 
 const app = express();
 const db = new SQLBuilder();
@@ -20,6 +21,8 @@ async function validateUserCanAccessAdventure(id) {
 
 app.get_json('/adventures/list', async req => {
 	const withRatings =  Boolean(req.query.withRatings) === true;
+	const orderByInteractions = Boolean(req.query.interactions) === true;
+	const limit = req.query.limit && parseId(req.query.limit);
 
 	const query = db.select()
 		.fields('courses.*')
@@ -27,14 +30,17 @@ app.get_json('/adventures/list', async req => {
 		.where('type = ?', courseTypes.ADVENTURE.description)
 		.where('state = ?', 'published');
 
+	prepareCoursesRatingsInteractionsQuery(req.session.id, query, {
+		withRatings,
+		orderByInteractions,
+		limit
+	});
+
 	if (withRatings) {
-		query
-			.fields('AVG(cr.value)::numeric(2, 1) AS rating')
-			.from('LEFT JOIN course_ratings AS cr ON cr.course = courses.id')
-			.more('GROUP BY courses.id')
+		query.more('GROUP BY courses.id');
 	}
 
-	return query.getList();
+	return await query.getList();
 });
 
 app.get_json('/adventures/:id([0-9]+)', async req => {

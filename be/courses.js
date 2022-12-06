@@ -294,6 +294,29 @@ async function validateNodeBelongsToCourse(id, nodeId, state) {
 	return {node, course}
 }
 
+function prepareCoursesRatingsInteractionsQuery(userId, query, {withRatings, orderByInteractions, limit}) {
+	if (withRatings) {
+		query
+			.fields('AVG(cr.value)::numeric(2, 1) AS rating')
+			.from('LEFT JOIN course_ratings AS cr ON cr.course = courses.id');
+	}
+
+	if (orderByInteractions) {
+		query
+			.from(
+				`LEFT JOIN last_course_interaction AS lci ON lci.course = courses.id AND "user" = ${userId}`
+			)
+			.where('(lci.interaction IS NULL OR lci.interaction = (SELECT MAX(interaction) FROM last_course_interaction WHERE course = courses.id AND "user" = ?))', userId)
+			.more('ORDER BY lci.interaction DESC NULLS LAST');
+	}
+
+	if (limit) {
+		query.more('LIMIT ?', limit)
+	}
+
+	return query;
+}
+
 app.post_json('/courses', async req => {
 	const course = await saveCourse(req.session.id, false, req.body)
 
@@ -349,28 +372,32 @@ app.put_json('/courses/:id([0-9]+)/visibility', async req => {
 app.get_json('/courses/list', async req => {
 	const editable = Boolean(req.query.onlyMy) === true;
 	const withRatings = Boolean(req.query.withRatings) === true;
+	const orderByInteractions = Boolean(req.query.interactions) === true;
+	const limit = req.query.limit && parseId(req.query.limit);
 
-	const query = await db.select()
-		.fields('courses.*, cn.id AS node')
+	const query = db.select()
 		.from(
 			'courses',
 			'INNER JOIN course_nodes AS cn ON cn.course = courses.id'
 		)
-		.where('courses.type = ?', courseTypes.USER.description)
+		.fields('courses.*, cn.id AS node');
+
+	prepareCoursesRatingsInteractionsQuery(req.session.id, query, {
+		limit,
+		orderByInteractions,
+		withRatings
+	});
 
 	if (withRatings) {
-		query
-			.fields('AVG(cr.value)::numeric(2, 1) AS rating')
-			.from('LEFT JOIN course_ratings AS cr ON cr.course = courses.id')
-			.more('GROUP BY courses.id, cn.id');
+		query.more('GROUP BY courses.id, cn.id')
 	}
 
 	if (editable) {
 		query.where('owner = ?', req.session.id);
 	} else {
 		query.where(
-			'(visible_to = ? AND courses.state = ?) OR ' +
-			'(owner = ? AND visible_to = ?)', 'EVERYONE', 'published', req.session.id, 'ME');
+			'((visible_to = ? AND courses.state = ?) OR (owner = ? AND visible_to = ?))',
+			'EVERYONE', 'published', req.session.id, 'ME');
 	}
 
 	return await query.getList();
@@ -516,5 +543,6 @@ module.exports = {
 	deleteWord,
 	getWords,
 	validateNodeBelongsToCourse,
-	validateUserHasAccessToCourse
+	validateUserHasAccessToCourse,
+	prepareCoursesRatingsInteractionsQuery
 };
