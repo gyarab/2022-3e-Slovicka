@@ -605,7 +605,6 @@ class FlipCards extends Sword {
 		this.course = await REST.GET(`courses/${this.id}`);
 		this.words = await REST.GET(`courses/${this.id}/nodes/${this.course.node}/words`);
 		const actualWord = 0;
-		const me = this;
 
 		this.append({
 			children: [{
@@ -624,18 +623,9 @@ class FlipCards extends Sword {
 						textContent: '/' + this.words.length
 					}]
 				},{
-					nodeName: 'button',
-					className: 'rate secondary icon-left',
-					ref: 'ratingBtn',
-					children: [this.course.rating ? this.course.rating + '' : '-', 'icon:star', i18n._('rate')],
-					'on:click': () => new CourseRating(document.body, {
-						id: this.course.id,
-						rating: this.course.rating,
-						'on:success': (obj, rating) => {
-							this.course.rating = rating;
-							me.replaceChildren([this.course.rating ? this.course.rating + '' : '-', 'icon:star', i18n._('rate')], null, this.ratingBtn)
-						}
-					})
+					class: CourseRatingBtn,
+					id: this.course.id,
+					rating: this.course.rating
 				},{
 					render: DataManager.session.id === this.course.owner,
 					nodeName: 'button',

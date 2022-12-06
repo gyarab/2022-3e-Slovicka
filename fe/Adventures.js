@@ -128,6 +128,29 @@ class AdventureNodeEditor extends CourseNodeEditor {
 	}
 }
 
+class CourseRatingBtn extends Sword {
+	id;
+	rating;
+
+	render() {
+		const me = this;
+
+		this.el = this.createElement({
+			nodeName: 'button',
+			className: 'rate secondary icon-left',
+			children: [this.rating ? this.rating + '' : '-', 'icon:star', i18n._('rate')],
+			'on:click': () => new CourseRating(document.body, {
+				id: this.id,
+				rating: this.rating,
+				'on:success': (obj, rating) => {
+					this.rating = rating;
+					me.replaceChildren([this.rating ? this.rating + '' : '-', 'icon:star', i18n._('rate')], null, this.el)
+				}
+			})
+		});
+	}
+}
+
 class AdventureNodesEditor extends Sword {
 	id = null;
 
@@ -236,6 +259,7 @@ class AdventureNodes extends Sword {
 			children: [{
 				class: AppHeader
 			},{
+				className: 'nodes-header',
 				ref: 'header'
 			},{
 				className: 'nodes',
@@ -251,7 +275,14 @@ class AdventureNodes extends Sword {
 			this.adventure = await REST.GET(`adventures/${this.id}`);
 			this.nodes = await REST.GET(`adventures/${this.id}/nodes`);
 
-			this.header = this.adventure.name;
+			this.replaceChildren([{
+				nodeName: 'h5',
+				textContent: this.adventure.name
+			},{
+				class: CourseRatingBtn,
+				id: this.adventure.id,
+				rating: this.adventure.rating
+			}], null, this.header);
 
 			this.renderNodes();
 		} catch (ex) {
@@ -275,11 +306,16 @@ class AdventureNodes extends Sword {
 			nodes[n.level] ??= [];
 			nodes[n.level].push({
 				children: [{
-					children: [this.useIcon(levelCompleted ? 'success' : (unlocked ? 'un' : '') + 'lock')]
-				},{
-					textContent: n.name
-				},{
-					textContent: completed + '/' + n.number_of_completion
+					className: 'node',
+					'on:click': () => ROUTER.pushRoute(`/adventures/${this.id}/test-words${n.id}`),
+					children: [{
+						className: 'state-icon',
+						children: [this.useIcon(levelCompleted ? 'success' : (unlocked ? 'un' : '') + 'lock')]
+					},{
+						textContent: n.name
+					},{
+						textContent: completed + '/' + n.number_of_completion
+					}]
 				}]
 			});
 		}
@@ -411,7 +447,10 @@ class WordKnownFailDialog extends Sword {
 class CourseCompleted extends Sword {
 	render() {
 		this.el = this.createElement({
-			'on:click': () => this.destroy(),
+			'on:click': () => {
+				this.fire('go-again');
+				this.destroy();
+			},
 			is: CUSTOM_ELEMENT.DIV,
 			children: [{
 				className: 'wrap',
@@ -488,8 +527,6 @@ class TestWords extends Sword {
 	}
 
 	renderBody() {
-		const me = this;
-
 		this.append({
 			children: [{
 				className: 'header',
@@ -507,18 +544,9 @@ class TestWords extends Sword {
 						textContent: '/' + this.words.length
 					}]
 				},{
-					nodeName: 'button',
-					className: 'rate secondary icon-left',
-					ref: 'ratingBtn',
-					children: [this.course.rating ? this.course.rating + '' : '-', 'icon:star', i18n._('rate')],
-					'on:click': () => new CourseRating(document.body, {
-						id: this.course.id,
-						rating: this.course.rating,
-						'on:success': (obj, rating) => {
-							this.course.rating = rating;
-							me.replaceChildren([this.course.rating ? this.course.rating + '' : '-', 'icon:star', i18n._('rate')], null, this.ratingBtn)
-						}
-					})
+					class: CourseRatingBtn,
+					id: this.course.id,
+					rating: this.course.rating
 				},{
 					render: DataManager.session.id === this.course.owner,
 					nodeName: 'button',
