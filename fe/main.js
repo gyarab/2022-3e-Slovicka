@@ -67,25 +67,6 @@ class WillBeAdded extends Sword {
 	}
 }
 
-/*class Dashboard extends Sword {
-	render() {
-		this.el = this.createElement({
-			children: [{
-				className: 'go-to-tutorial',
-				children: [{
-					nodeName: 'h5',
-					textContent: i18n._('Don\'t know where to go?')
-				},{
-					nodeName: 'button',
-					className: 'primary',
-					textContent: i18n._('Go quickly threw our tutorial')
-				}],
-				'on:click': () => ROUTER.pushRoute(Routes.tutorial)
-			}]
-		})
-	}
-}*/
-
 class Home extends SectionScreen {
 	beforeRender() {
 		this.defaultSection = Routes.dashboard;

@@ -898,42 +898,66 @@ class Dashboard extends Sword {
 	}
 
 	async init() {
-		const courses = await REST.GET(`courses/list`);
-		const adventure = await REST.GET(`adventures/list`)
-		const learnedMinutes = await REST.GET(`statistics/learning_time`);
+		const today = new Date();
+		const dateFormatted = [today.getMonth() + 1, today.getDate(), today.getFullYear()].join('-');
+
+		this.courses = await REST.GET(`courses/list`);
+		const adventure = await REST.GET(`adventures/list`);
+		this.learningTime = await REST.GET(`statistics/learning_time?from=${dateFormatted}`);
 		const knownWords = await REST.GET(`statistics/words_known`);
 		const dayStreak = await REST.GET(`statistics/daystreak`);
 
-		console.log(DataManager.languages);
+		this.knownWords.textContent = knownWords;
+		this.dayStreak.textContent = dayStreak;
 
-		for (const c of courses) {
-			console.log(c)
-			this.append({
-				'on:click': () => ROUTER.pushRoute(`courses/list`),
-				children: [{
-					nodeName: 'h5',
-					textContent: c.name
-				},{ //
-					textContent: DataManager.findLanguage(c.language).name
-				}]
-			}, null, this.coursesList)
-		}
+		this.renderCourses();
+		this.renderLearnedMinutes();
 
 		for (const a of adventure) {
-			this.append({ //
+			this.append({
 				'on:click': () => ROUTER.pushRoute(`adventure/list`),
 				children: [{
 					nodeName: 'h5',
 					textContent: a.name
 				},{
 					textContent: DataManager.findLanguage(a.language).name
-					/* },{
-                        textContent: a.level */
 				}]
 			}, null, this.adventures)
 		}
-		this.knownWords.textContent = knownWords;
-		this.dayStreak.textContent = dayStreak;
+	}
 
+	renderLearnedMinutes() {
+		this.learnedMinutes.textContent = !this.learningTime ?
+			i18n._('You have not learned yet') :
+			`${((this.learningTime.hours || 0) * 60 + (this.learningTime.minutes || 0) + (this.learningTime.seconds || 0) / 60).toFixed(2)} ${i18n._('minutes')}`;
+	}
+
+	renderCourses() {
+		if (this.courses.isEmpty()) {
+			this.append({
+				className: 'go-to-tutorial',
+				children: [{
+					nodeName: 'h5',
+					textContent: i18n._('Don\'t know where to go?')
+				}, {
+					nodeName: 'button',
+					className: 'primary',
+					textContent: i18n._('Go quickly threw our tutorial')
+				}],
+				'on:click': () => ROUTER.pushRoute(Routes.tutorial)
+			}, null, this.coursesList);
+		}
+
+		for (const c of this.courses) {
+			this.append({
+				'on:click': () => ROUTER.pushRoute(`courses/list`),
+				children: [{
+					nodeName: 'h5',
+					textContent: c.name
+				}, {
+					textContent: DataManager.findLanguage(c.language).name
+				}]
+			}, null, this.coursesList)
+		}
 	}
 }

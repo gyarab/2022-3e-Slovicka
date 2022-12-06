@@ -53,6 +53,16 @@ app.get_json('/statistics/daystreak', async req => {
 
 app.get_json('/statistics/learning_time', async req => {
 	const courseId = req.query.course && parseId(req.query.course);
+	let from = req.query.from ? new Date(req.query.from) : new Date(0), to = req.query.to;
+
+	validateValidDate(from);
+
+	if (to) {
+		validateValidDate(to);
+	}
+
+	to ??= new Date();
+
 
 	if (courseId) {
 		await validateUserHasAccessToCourse(courseId, req.session.id);
@@ -60,7 +70,9 @@ app.get_json('/statistics/learning_time', async req => {
 
 	const query = db.select(`course_study_time`)
 		.fields('SUM("to" - "from") AS learning')
-		.where('"user" = ?', 1);
+		.where('"user" = ?', req.session.id)
+		.where('"from" >= ?', from)
+		.where('"from" <= ?', to)
 
 	if (courseId) {
 		query.where('course = ?', courseId)
