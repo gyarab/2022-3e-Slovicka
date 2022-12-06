@@ -307,7 +307,13 @@ class AdventureNodes extends Sword {
 			nodes[n.level].push({
 				children: [{
 					className: 'node',
-					'on:click': () => ROUTER.pushRoute(`/adventures/${this.id}/test-words${n.id}`),
+					'on:click': () => {
+						if (levelCompleted) {
+							ROUTER.pushRoute(`/adventures/${this.id}/test-words/${n.id}`);
+						} else {
+							NOTIFICATION.showStandardizedINFO(i18n._(`You have to complete level before first.`))
+						}
+					},
 					children: [{
 						className: 'state-icon',
 						children: [this.useIcon(levelCompleted ? 'success' : (unlocked ? 'un' : '') + 'lock')]

@@ -330,8 +330,12 @@ class I18n {
 				'courses': 'Courses',
 				'dashboard': 'Dashboard',
 				'adventures': 'Adventures',
-				'administration': 'Administration'
+				'administration': 'Administration',
 
+				/**
+				 * AdventureNodes
+ 				 */
+				'You have to complete level before first.': 'You have to complete level before first.'
 			}
 		},
 		'cz': {
@@ -659,8 +663,12 @@ class I18n {
 				'courses': 'Kurzy',
 				'dashboard': 'Nástěnka',
 				'adventures': 'Adventures',
-				'administration': 'Administrace'
+				'administration': 'Administrace',
 
+				/**
+				 * AdventureNodes
+				 */
+				'You have to complete level before first.': 'Nejdříve musíte dokončit úroveň před touto.'
 			}
 		}
 	}
