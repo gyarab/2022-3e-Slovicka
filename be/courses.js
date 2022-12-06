@@ -511,9 +511,19 @@ app.post_json('/courses/:id([0-9]+)/words/:group([0-9]+)/state', async req => {
 app.post_json('/courses/:id([0-9]+)/ratings', async req => {
 	const id = parseId(req.params.id);
 	const {rating} = req.body;
-
-	await validateUserHasAccessToCourse(id, req.session.id);
 	validateType(rating, 'number');
+
+	const course = await validateCourseExists(id);
+
+	if (course.type === courseTypes.USER.description) {
+		if (!(course.owner === req.session.id || course.visible_to === 'EVERYONE' && course.state === 'published')) {
+			throw new Unauthorized();
+		}
+	} else {
+		if (course.state !== 'published') {
+			throw new Unauthorized();
+		}
+	}
 
 	if (!Number.isInteger(rating)) {
 		throw new BadRequest('Rating is not integer', 'rating_integer');
