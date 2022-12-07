@@ -250,8 +250,7 @@ class I18n {
 				 * Courses
 				 */
 				'create_new_course': 'Create new course',
-				'Don\'t know where to go?': 'Don\'t know where to go?',
-				'Go quickly threw our tutorial': 'Go quickly threw our tutorial',
+				'no_word': 'No word',
 
 				/**
 				 * Tutorial
@@ -302,8 +301,28 @@ class I18n {
 				'Thank you for rating this course': 'Thank you for rating this course',
 
 				/**
+				 * Words Go Threw Mode Select
+				 */
+				'Select mode of going threw words': 'Select mode of going threw words',
+
+				/**
+				 * Dashboard
+				 */
+				'Learned minutes today': 'Learned minutes today',
+				'Number of known words today': 'Number of known words today',
+				'Day streak': 'Day sreak',
+				'Last courses': 'Last courses',
+				'Last adventures': 'Last adventures',
+				'You have not learned yet': 'You have not learned yet',
+				'minutes': 'Minutes',
+				'Don\'t know where to go?': 'Don\'t know where to go?',
+				'Go quickly threw our tutorial': 'Go quickly threw our tutorial',
+
+				/**
 				 * Adventure Node Editor
 				 */
+				'Node saved': 'Node saved',
+				'Node updated': 'Node updated',
 				'There can be only three nodes at one level': 'There can be only three nodes at one level',
 				'Number of completions must be higher than 0': 'Number of completions must be higher than 0',
 				'Level cannot be lower than 0': 'Level cannot be lower than 0',
@@ -319,10 +338,38 @@ class I18n {
 				'publish': 'Publish',
 
 				/**
-				 * Adventure Nodes Editor
+				 * Adventure nodes editor
 				 */
 				'We are really sorry but this adventure does not seem to exist.': 'We are really sorry but this adventure does not seem to exist.',
 				'Go back on adventures administration': 'Go back on adventures administration',
+
+				/**
+				 * Course rating btn
+				 */
+				'rate': 'Rate',
+
+				/**
+				 * AdventureNodes
+				 */
+				'You have to complete level before first.': 'You have to complete level before first.',
+
+				/**
+				 * Completed popup
+				 */
+				'Congratulations!!!': 'Congratulations!!!',
+
+				/**
+				 * Course completed
+				 */
+				'Go again threw course': 'Go again threw course',
+				'go-again': 'Go again',
+
+				/**
+				 * Adventure completed
+				 */
+				'Go again threw node': 'Go again threw node',
+				'Go to adventure nodes': 'Go to adventure nodes',
+				'Go to adventures list': 'Go to adventures list',
 
 				/**
 				 * App Header
@@ -332,11 +379,7 @@ class I18n {
 				'adventures': 'Adventures',
 				'administration': 'Administration',
 
-				/**
-				 * AdventureNodes
- 				 */
-				'You have to complete level before first.': 'You have to complete level before first.'
-			}
+	}
 		},
 		'cz': {
 			'translation': {
@@ -589,8 +632,7 @@ class I18n {
 				 * Courses
 				 */
 				'create_new_course': 'Vytvořit nový kurz',
-				'Don\'t know where to go?': 'Nevíte, kam dál?',
-				'Go quickly threw our tutorial': 'Podívejte se do našeho tutoriálu',
+				'no_word': 'Žádná slova',
 
 				/**
 				 * Tutorial
@@ -636,8 +678,28 @@ class I18n {
 				'Thank you for rating this course': 'Děkujeme za ohodnocení tohoto kurzu',
 
 				/**
+				 * Words Go Threw Mode Select
+				 */
+				'Select mode of going threw words': 'Vyberte mod na procházení slovíček',
+
+				/**
+				 * Dashboard
+				 */
+				'Learned minutes today': 'Dnešní hodiny strávené učením',
+				'Number of known words today': 'Dnešní počet známých slov',
+				'Day streak': 'Denní streak',
+				'Last courses': 'Poslední kurzy',
+				'Last adventures': 'Poslední adventures',
+				'You have not learned yet': 'Zatím jste nezačal s učením',
+				'minutes': 'Minuty',
+				'Don\'t know where to go?': 'Nevíte, kam dál?',
+				'Go quickly threw our tutorial': 'Podívejte se do našeho tutoriálu',
+
+				/**
 				 * Adventure Node Editor
 				 */
+				'Node saved': 'Uzel uložen',
+				'Node updated': 'Uzel aktualizován',
 				'There can be only three nodes at one level': 'Zde mohou být pouze tři uzly v jednom levelu',
 				'Number of completions must be higher than 0': 'Číslo dokončených musí být větší než 0',
 				'Level cannot be lower than 0': 'Level nemůže být menší než 0',
@@ -658,17 +720,40 @@ class I18n {
 				'Go back on adventures administration': 'Zpět k administraci adventures',
 
 				/**
+				 * Course rating btn
+				 */
+				'rate': 'Ohodnotit',
+
+				/**
+				 * AdventureNodes
+				 */
+				'You have to complete level before first.': 'Nejdříve musíte dokončit level',
+
+				/**
+				 * Completed popup
+				 */
+				'Congratulations!!!': 'Gratulujeme!!!',
+
+				/**
+				 * Course completed
+				 */
+				'Go again threw course': 'Zpět na kurz',
+				'go-again': 'Znova',
+
+				/**
+				 * Adventure completed
+				 */
+				'Go again threw node': 'Zpět na uzel',
+				'Go to adventure nodes': 'Zpět na avdenture mody',
+				'Go to adventures list': 'Zpět na seznam adventure',
+
+				/**
 				 * App Header
 				 */
 				'courses': 'Kurzy',
 				'dashboard': 'Nástěnka',
 				'adventures': 'Adventures',
 				'administration': 'Administrace',
-
-				/**
-				 * AdventureNodes
-				 */
-				'You have to complete level before first.': 'Nejdříve musíte dokončit úroveň před touto.'
 			}
 		}
 	}
