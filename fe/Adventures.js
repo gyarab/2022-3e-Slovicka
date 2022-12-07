@@ -316,7 +316,7 @@ class AdventureNodes extends Sword {
 					},
 					children: [{
 						className: 'state-icon',
-						children: [this.useIcon(levelCompleted ? 'success' : (unlocked ? 'un' : '') + 'lock')]
+						children: [this.useIcon(levelCompleted ? 'check' : (unlocked ? 'un' : '') + 'lock')]
 					},{
 						textContent: n.name
 					},{
@@ -450,7 +450,10 @@ class WordKnownFailDialog extends Sword {
 	}
 }
 
-class CourseCompleted extends Sword {
+class CompletedPopup extends Sword {
+	mainText;
+	buttons;
+
 	render() {
 		this.el = this.createElement({
 			'on:click': () => {
@@ -465,23 +468,10 @@ class CourseCompleted extends Sword {
 					textContent: i18n._('Congratulations!!!')
 				},{
 					nodeName: 'h4',
-					textContent: i18n._('You have successfully completed course \n Where do you want to go?')
+					textContent: i18n._(this.mainText)
 				},{
 					className: 'actions',
-					children: [{
-						nodeName: 'button',
-						className: 'primary back-to-courses',
-						textContent: i18n._('Go again threw course'),
-						'on:click': () => {
-							this.fire('go-again');
-							this.destroy();
-						}
-					},{
-						nodeName: 'button',
-						className: 'primary back-to-courses',
-						textContent: i18n._('Go back to courses list'),
-						'on:click': () => ROUTER.pushRoute(Routes.courses)
-					}]
+					children: this.buttons
 				},{
 					className: 'canvas',
 					nodeName: 'canvas',
@@ -497,6 +487,55 @@ class CourseCompleted extends Sword {
 			max: 120
 		});
 		confetti.render();
+	}
+}
+
+class CourseCompleted extends CompletedPopup {
+	beforeRender() {
+		this.buttons = [{
+			nodeName: 'button',
+			className: 'primary back-to-courses',
+			textContent: i18n._('Go again threw course'),
+			'on:click': () => {
+				this.fire('go-again');
+				this.destroy();
+			}
+		},{
+			nodeName: 'button',
+			className: 'primary back-to-courses',
+			textContent: i18n._('Go back to courses list'),
+			'on:click': () => ROUTER.pushRoute(Routes.courses)
+		}];
+		this.mainText = 'You have successfully completed course \n Where do you want to go?';
+	}
+}
+
+class AdventureCompleted extends CompletedPopup {
+	beforeRender() {
+		const completed = this.completed === this.required;
+
+		this.buttons = [{
+			nodeName: 'button',
+			className: 'primary back-to-courses',
+			textContent: i18n._('Go again threw node'),
+			'on:click': () => {
+				this.fire('go-again');
+				this.destroy();
+			}
+		},{
+			nodeName: 'button',
+			className: 'primary back-to-courses',
+			textContent: i18n._('Go to adventure nodes'),
+			'on:click': () => ROUTER.pushRoute(`/home/adventures/${this.id}`)
+		},{
+			nodeName: 'button',
+			className: 'primary back-to-courses',
+			textContent: i18n._('Go to adventures list'),
+			'on:click': () => ROUTER.pushRoute(Routes.adventures)
+		}];
+		this.mainText = completed ?
+			'You have successfully completed adventure node \n Where do you want to go?' :
+			`You have successfully completed adventure node ${this.completed}/${this.required} times`;
 	}
 }
 
@@ -518,6 +557,7 @@ class TestWords extends Sword {
 	}
 
 	getData() {}
+	showEndingPopup() {}
 
 	async init() {
 		await this.getData();
@@ -627,11 +667,10 @@ class TestWords extends Sword {
 
 	wordSelectedSuccessfully() {
 		this.notKnown.shift();
+		this.course.number_of_completion++;
 
 		if (this.notKnown.length === 0) {
-			new CourseCompleted(document.body, {
-				'on:go-again': () => this.reset()
-			});
+			this.showEndingPopup();
 		} else {
 			new WordKnownSuccessDialog(document.body, {
 				cb: () => this.renderCard(this.notKnown[0])
@@ -647,11 +686,26 @@ class TestWordsCourses extends TestWords {
 		this.course = await REST.GET(`courses/${this.id}`);
 		this.words = await REST.GET(`courses/${this.id}/nodes/${this.course.node}/words`)
 	}
+
+	showEndingPopup() {
+		new CourseCompleted(document.body, {
+			'on:go-again': () => this.reset()
+		});
+	}
 }
 
 class TestWordsAdventures extends TestWords {
 	async getData() {
 		this.course = await REST.GET(`adventures/${this.id}/nodes/${this.node}`);
 		this.words = await REST.GET(`courses/${this.id}/nodes/${this.course.node}/words`)
+	}
+
+	showEndingPopup() {
+		new AdventureCompleted(document.body, {
+			'on:go-again': () => this.reset(),
+			id: this.id,
+			completed: this.course.number_of_completion,
+			required: this.course.required_number_of_completion
+		});
 	}
 }
