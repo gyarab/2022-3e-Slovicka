@@ -72,7 +72,8 @@ app.get_json('/adventures/:id([0-9]+)/nodes/:node([0-9]+)', async req => {
 
 	return {
 		...course,
-		node: node.id
+		node: node.id,
+		number_of_completion: node.number_of_completion
 	}
 })
 
