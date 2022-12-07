@@ -68,12 +68,18 @@ app.get_json('/adventures/:id([0-9]+)/nodes/:node([0-9]+)', async req => {
 	const id = parseId(req.params.id);
 	const nodeId = parseId(req.params.node);
 
-	const {course, node} = await validateUserHasAccessToNode(id, nodeId, req.session.id);
+	const {course} = await validateUserHasAccessToNode(id, nodeId, req.session.id);
+	const node = await db.select()
+		.from('course_nodes AS cn', 'LEFT JOIN course_node_state cns on cns.course_nodes = cn.id')
+		.fields('cn.number_of_completion AS required, cns.number_of_completion AS number_of_completion')
+		.whereId(nodeId)
+		.oneOrNone()
 
 	return {
 		...course,
-		node: node.id,
-		number_of_completion: node.number_of_completion
+		node: nodeId,
+		number_of_completion: node.number_of_completion,
+		required_number_of_completion: node.required
 	}
 })
 
