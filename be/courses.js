@@ -374,6 +374,7 @@ app.get_json('/courses/list', async req => {
 	const withRatings = Boolean(req.query.withRatings) === true;
 	const orderByInteractions = Boolean(req.query.interactions) === true;
 	const limit = req.query.limit && parseId(req.query.limit);
+	const withWordCount = Boolean(req.query.withWordCount) === true;
 
 	const query = db.select()
 		.from(
@@ -387,6 +388,10 @@ app.get_json('/courses/list', async req => {
 		orderByInteractions,
 		withRatings
 	});
+
+	if (withWordCount) {
+		query.from('LEFT JOIN word_groups AS wg ON wg.course_node = cn.id').fields('COUNT(wg.*)::int AS words');
+	}
 
 	if (withRatings) {
 		query.more('GROUP BY courses.id, cn.id')

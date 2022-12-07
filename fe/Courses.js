@@ -413,7 +413,7 @@ class Courses extends Sword {
 	}
 
 	async loadCourses() {
-		this.courses = await REST.GET('courses/list?withRatings=true');
+		this.courses = await REST.GET('courses/list?withRatings=true&withWordCount=true');
 
 		for (const c of this.courses) {
 			c.language = DataManager.findLanguage(Number(c.language)).name;
@@ -445,6 +445,9 @@ class Courses extends Sword {
 						className: 'course',
 						'on:click': () => ROUTER.pushRoute(`/courses/${c.id}/mode`),
 						children: [{
+							className: 'word-count',
+							textContent: `${c.words} ${i18n._(!c.words ? 'no_word' : `word${c.words === 1 ? '' : 's'}`)}`
+						},{
 							className: 'rating',
 							children: [{textContent: `(${c.rating || '-'})`}, 'icon:star']
 						},{
