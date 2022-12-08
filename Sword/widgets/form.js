@@ -131,7 +131,7 @@ class TextField extends FormField {
 			autocomplete: this.autocomplete,
 			autofocus: this.autofocus,
 			placeholder: this.placeholder,
-			'on:input': () => this.fire('change'),
+			'on:input': e => this.fire('change', e),
 			'on:blur': () => this.fixup(),
 			'on:keydown': e => this.handleKeydown(e)
 		};
