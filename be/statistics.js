@@ -14,6 +14,7 @@ const validateValidDate = date => {
 
 app.get_json('/statistics/words_known', async req => {
 	let from = req.query.from ? new Date(req.query.from) : new Date(0), to = req.query.to;
+	const asGraph = Boolean(req.query.asGraph);
 
 	validateValidDate(from);
 
@@ -23,13 +24,21 @@ app.get_json('/statistics/words_known', async req => {
 
 	to ??= new Date();
 
-	return Number((await db.select('word_state')
+	const query = db.select('word_state')
 		.fields('COUNT(*)')
 		.where('"user" = ?', req.session.id)
 		.where('state = ?', 'known')
 		.where('changed >= ?', from)
-		.where('changed <= ?', to)
-		.oneOrNone()).count);
+		.where('changed <= ?', to);
+
+	if (asGraph) {
+		return await query
+			.fields('COUNT(*), changed::date')
+			.more('GROUP BY changed::date')
+			.getList();
+	} else {
+		return Number((await query.fields('COUNT(*)').oneOrNone()).count);
+	}
 });
 
 app.get_json('/statistics/daystreak', async req => {
@@ -54,6 +63,7 @@ app.get_json('/statistics/daystreak', async req => {
 app.get_json('/statistics/learning_time', async req => {
 	const courseId = req.query.course && parseId(req.query.course);
 	let from = req.query.from ? new Date(req.query.from) : new Date(0), to = req.query.to;
+	const asGraph = Boolean(req.query.asGraph);
 
 	validateValidDate(from);
 
@@ -69,7 +79,6 @@ app.get_json('/statistics/learning_time', async req => {
 	}
 
 	const query = db.select(`course_study_time`)
-		.fields('SUM("to" - "from") AS learning')
 		.where('"user" = ?', req.session.id)
 		.where('"from" >= ?', from)
 		.where('"from" <= ?', to)
@@ -78,7 +87,16 @@ app.get_json('/statistics/learning_time', async req => {
 		query.where('course = ?', courseId)
 	}
 
-	return (await query.oneOrNone()).learning;
+	if (asGraph) {
+		return await query
+			.fields('SUM("to" - "from") AS learning, "from"::date')
+			.more('GROUP BY "from"::date').getList();
+	} else {
+		return (await query
+			.fields('SUM("to" - "from") AS learning')
+			.oneOrNone()
+		).learning;
+	}
 })
 
 module.exports = {app};
