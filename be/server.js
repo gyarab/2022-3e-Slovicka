@@ -18,6 +18,7 @@ const SQLBuilder = require('./utils/SQLBuilder');
 const adventuresPublic = require('./adventures-public');
 const statistics = require('./statistics')
 const {startSocketServer} = require("./socket-actions");
+const adventureNodePictures = require('./adventure-node-pictures');
 
 startup.startUp();
 
@@ -77,6 +78,7 @@ app.all_json('/api/*', async req => {
 })
 
 app.use('/api', usersAdministration.app);
+app.use('/api', adventureNodePictures.app);
 
 /**
  * Static files must be served in main file

@@ -5,6 +5,8 @@ const {parseId} = require("./utils/utils");
 const {courseTypes} = require("./constants");
 const {validateAdventureCourse} = require("./adventures-administration");
 const {prepareCoursesRatingsInteractionsQuery, validateUserHasAccessToNode} = require("./courses");
+const fs = require("fs");
+const {validateAdventureNodePictureExists} = require("./adventure-node-pictures");
 
 const app = express();
 const db = new SQLBuilder();
@@ -53,10 +55,12 @@ app.get_json('/adventures/:id([0-9]+)/nodes', async req => {
 	await validateUserCanAccessAdventure(id);
 
 	return await db.select()
-		.fields('cn.*, cns.number_of_completion AS completed')
+		.fields('cn.*, cns.number_of_completion AS completed, anp.name, files.storage_path')
 		.from(
 			'course_nodes AS cn',
-			'LEFT JOIN course_node_state AS cns ON cns.course_nodes = cn.id'
+			'LEFT JOIN course_node_state AS cns ON cns.course_nodes = cn.id',
+			'LEFT JOIN adventure_node_pictures AS anp ON anp.id = cn.picture',
+			'LEFT JOIN files ON anp.file = files.id'
 		)
 		.where('cn.state = ?', 'published')
 		.where('course = ?', id)
@@ -81,6 +85,27 @@ app.get_json('/adventures/:id([0-9]+)/nodes/:node([0-9]+)', async req => {
 		number_of_completion: node.number_of_completion,
 		required_number_of_completion: node.required
 	}
-})
+});
+
+app.get_file('/adventures/node-picture/:id([0-9]+)', async (req, res) => {
+	const id = parseId(req.params.id);
+	const file = await validateAdventureNodePictureExists(id);
+
+	const stream = fs.createReadStream(file.storage_path)
+
+	const range = (req.headers.range || 'bytes=0-');
+	const positions = range.replace(/bytes=/, "").split("-");
+	const start = parseInt(positions[0], 10);
+	const end = positions[1] !== '' ? parseInt(positions[1], 10) : file.size - 1;
+
+	res.writeHead(file.type.includes('video') ? 206 : 200, {
+		"Content-Range": `bytes ${start}-${end}/${file.size}`,
+		"Accept-Ranges": "bytes",
+		"Content-Length": (end - start) + 1,
+		"Content-Type": file.type
+	});
+	stream.pipe(res);
+});
+
 
 module.exports = {app};

@@ -7,6 +7,7 @@ const {saveCourse, updateCourse, validateCourseExists, updateCourseState, saveWo
 	deleteWord, getWords, updateWord, validateNodeBelongsToCourse
 } = require("./courses");
 const {courseTypes} = require("./constants");
+const {validateAdventureNodePictureExists} = require("./adventure-node-pictures");
 
 const app = express();
 const db = new SQLBuilder();
@@ -25,6 +26,18 @@ async function getNodesAtLevel(id, level) {
 		.oneOrNone()).count);
 }
 
+async function getNodeWithPicture(id) {
+	return await db.select()
+		.fields('course_nodes.*, anp.name, files.storage_path')
+		.from(
+			'course_nodes',
+			'LEFT JOIN adventure_node_pictures AS anp ON anp.id = course_nodes.picture',
+			'LEFT JOIN files ON anp.file = files.id'
+		)
+		.where('course_nodes.id = ?', id)
+		.oneOrNone();
+}
+
 app.post_json('/adventures', async req => await saveCourse(req.session.id, true, req.body));
 
 app.put_json('/adventures/:id([0-9]+)', async req => await updateCourse(parseId(req.params.id), req.body, true));
@@ -39,12 +52,13 @@ app.get_json('/adventures/administration/list', async req => {
 
 app.post_json('/adventures/:id([0-9]+)/node', async req => {
 	const id = parseId(req.params.id);
-	const {name, description, number_of_completion, level} = req.body;
+	const {name, description, number_of_completion, level, picture} = req.body;
 
 	validateStringNotEmpty(name, 'Name');
 	validateStringNotEmpty(description, 'Description');
 	validateType(number_of_completion, 'number');
 	validateType(level, 'number');
+	await validateAdventureNodePictureExists(picture);
 
 	if (level < 0) {
 		throw new BadRequest('Level cannot be lower than 0', 'negative_level')
@@ -62,22 +76,30 @@ app.post_json('/adventures/:id([0-9]+)/node', async req => {
 		throw new BadRequest('Number of completion cannot be smaller than 1', 'number_of_completion_min');
 	}
 
-	return await db.insert('course_nodes', {
+	const node = await db.insert('course_nodes', {
 		course: id,
 		state: 'creating',
 		name,
 		description,
 		number_of_completion,
-		level
-	})
-		.oneOrNone();
+		level,
+		picture
+	}).oneOrNone();
+
+	return await getNodeWithPicture(node.id);
 });
 
 app.get_json('/adventures/:id([0-9]+)/node/list', async req => {
 	const id = parseId(req.params.id);
 	await validateAdventureCourse(id);
 
-	return await db.select('course_nodes')
+	return await db.select()
+		.fields('course_nodes.*, anp.name, files.storage_path')
+		.from(
+			'course_nodes',
+			'LEFT JOIN adventure_node_pictures AS anp ON anp.id = course_nodes.picture',
+			'LEFT JOIN files ON anp.file = files.id'
+		)
 		.where('course = ?', id)
 		.more('ORDER BY level')
 		.getList();
@@ -86,19 +108,20 @@ app.get_json('/adventures/:id([0-9]+)/node/list', async req => {
 app.get_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 	const id = parseId(req.params.id);
 	const nodeId = parseId(req.params.node);
-	const {node} = await validateNodeBelongsToAdventure(id, nodeId);
+	await validateNodeBelongsToAdventure(id, nodeId);
 
-	return node;
+	return await getNodeWithPicture(nodeId);
 })
 
 app.put_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 	const id = parseId(req.params.id);
 	const node = parseId(req.params.node);
-	const {name, description, number_of_completion} = req.body;
+	const {name, description, number_of_completion, picture} = req.body;
 
 	validateStringNotEmpty(name, 'Name');
 	validateStringNotEmpty(description, 'Description');
 	validateType(number_of_completion, 'number');
+	await validateAdventureNodePictureExists(picture);
 
 	if (number_of_completion < 1) {
 		throw new BadRequest('Number of completion cannot be smaller than 1');
@@ -106,14 +129,17 @@ app.put_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 
 	await validateNodeBelongsToAdventure(id, node);
 
-	return await db.update('course_nodes')
+	await db.update('course_nodes')
 		.set({
 			name,
 			description,
-			number_of_completion
+			number_of_completion,
+			picture
 		})
 		.whereId(node)
 		.oneOrNone();
+
+	return await getNodeWithPicture(node);
 });
 
 app.delete_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
