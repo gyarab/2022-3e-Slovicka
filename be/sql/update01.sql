@@ -25,15 +25,10 @@ BEGIN
     WHERE word_groups.course_node = node;
 
     IF NEW.state = 'known' AND MOD(words_in_node, words_known) = 0 THEN
-        SELECT cns.number_of_completion INTO number_of_completion_count FROM course_node_state AS cns
-        WHERE "user" = NEW."user" AND course_nodes = node;
+        SELECT SUM(cns.number_of_completion) INTO number_of_completion_count FROM course_node_state AS cns
+            WHERE "user" = NEW."user" AND course_nodes = node GROUP BY "user", course_nodes;
 
-        IF number_of_completion_count IS NULL THEN
-            INSERT INTO course_node_state ("user", "course_nodes", "number_of_completion") VALUES (NEW."user", node, 1);
-        ELSE
-            UPDATE course_node_state AS cns SET number_of_completion = number_of_completion_count + 1
-            WHERE "user" = NEW."user" AND course_nodes = node;
-        END IF;
+        INSERT INTO course_node_state ("user", "course_nodes", "number_of_completion") VALUES (NEW."user", node, 1);
         return NULL;
     END IF;
 

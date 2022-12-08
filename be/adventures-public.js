@@ -55,10 +55,12 @@ app.get_json('/adventures/:id([0-9]+)/nodes', async req => {
 	await validateUserCanAccessAdventure(id);
 
 	return await db.select()
-		.fields('cn.*, cns.number_of_completion AS completed, anp.name, files.storage_path')
+		.fields('cn.*, states.completed, anp.name, files.storage_path')
 		.from(
 			'course_nodes AS cn',
-			'LEFT JOIN course_node_state AS cns ON cns.course_nodes = cn.id',
+			`LEFT JOIN (SELECT SUM(cns.number_of_completion) AS completed, course_nodes FROM course_node_state AS cns
+		       WHERE cns."user" = ${req.session.id} GROUP BY "user", course_nodes
+	        ) AS states ON states.course_nodes = cn.id`,
 			'LEFT JOIN adventure_node_pictures AS anp ON anp.id = cn.picture',
 			'LEFT JOIN files ON anp.file = files.id'
 		)
@@ -74,8 +76,12 @@ app.get_json('/adventures/:id([0-9]+)/nodes/:node([0-9]+)', async req => {
 
 	const {course} = await validateUserHasAccessToNode(id, nodeId, req.session.id);
 	const node = await db.select()
-		.from('course_nodes AS cn', 'LEFT JOIN course_node_state cns on cns.course_nodes = cn.id')
-		.fields('cn.number_of_completion AS required, cns.number_of_completion AS number_of_completion')
+		.from('course_nodes AS cn',
+			`LEFT JOIN (SELECT SUM(cns.number_of_completion)::int AS number_of_completion, course_nodes FROM course_node_state AS cns
+		       WHERE cns."user" = ${req.session.id} GROUP BY "user", course_nodes
+	        ) AS states ON states.course_nodes = cn.id`
+		)
+		.fields('cn.number_of_completion AS required, states.number_of_completion AS number_of_completion')
 		.whereId(nodeId)
 		.oneOrNone()
 

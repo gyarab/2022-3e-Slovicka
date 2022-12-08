@@ -250,7 +250,9 @@ async function getCourseWithRootNode(id, sessionId) {
 	const node = await db.select('course_nodes')
 		.from(
 			'course_nodes',
-			'LEFT JOIN course_node_state AS cns ON cns.course_nodes = course_nodes.id'
+			`LEFT JOIN (SELECT SUM(cns.number_of_completion)::int AS number_of_completion, course_nodes FROM course_node_state AS cns
+		       WHERE cns."user" = ${sessionId} GROUP BY "user", course_nodes
+	        ) AS states ON states.course_nodes = course_nodes.id`
 		)
 		.where('course = ?', id)
 		.oneOrNone();
@@ -421,10 +423,14 @@ app.delete_json('/courses/:id([0-9]+)/words/:group([0-9]+)', async req => await 
 	await validateUserHasRightsToEditNode(nodeId, courseId, userId);
 }));
 
-async function validateUserHasAccessToAdventureNode(courseId, level) {
+async function validateUserHasAccessToAdventureNode(courseId, level, sessionId) {
 	const nodes = await db.select()
-		.from('course_nodes AS cn', 'LEFT JOIN course_node_state cns on cns.course_nodes = cn.id')
-		.fields('cn.number_of_completion AS required, cns.number_of_completion AS completed')
+		.from('course_nodes AS cn',
+			`LEFT JOIN (SELECT SUM(cns.number_of_completion)::int AS completed, course_nodes FROM course_node_state AS cns
+		       WHERE cns."user" = ${sessionId} GROUP BY "user", course_nodes
+	        ) AS states ON states.course_nodes = cn.id`
+		)
+		.fields('cn.number_of_completion AS required, states.completed')
 		.where('cn.course = ?', courseId)
 		.where('level = ?', level - 1)
 		.getList();
@@ -449,7 +455,7 @@ async function validateUserHasAccessToNode(courseId, nodeId, userId) {
 		}
 
 		if (node.level > 0) {
-			await validateUserHasAccessToAdventureNode(courseId, node.level);
+			await validateUserHasAccessToAdventureNode(courseId, node.level, userId);
 		}
 
 		return {course, node};
@@ -478,17 +484,18 @@ app.post_json('/courses/:id([0-9]+)/words/:group([0-9]+)/state', async req => {
 
 	if (course.type === courseTypes.ADVENTURE.description) {
 		const numberOfCompletions = (await db.select()
-			.fields('cns.number_of_completion')
+			.fields('SUM(cns.number_of_completion)::int AS number_of_completion')
 			.from(
 				'course_node_state AS cns',
 				'INNER JOIN course_nodes cn on cn.id = cns.course_nodes'
 			)
 			.where('cns."user" = ?', req.session.id)
 			.where('cn.id = ?', group.course_node)
+			.more('GROUP BY "user", cn.id')
 			.oneOrNone())?.number_of_completion || 0;
 
 		const numberOfCompletionOfWord = Number((await db.select()
-			.fields('COUNT(*) AS word_completion')
+			.fields('COUNT(*)::int AS word_completion')
 			.from(
 				'word_state',
 				'INNER JOIN word_groups wg on wg.id = word_state.word_group',

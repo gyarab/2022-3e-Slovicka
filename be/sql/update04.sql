@@ -16,7 +16,9 @@ BEGIN
                          THEN 0
                      ELSE cns.number_of_completion END) INTO course_node_completion
         FROM course_nodes AS cn
-                 LEFT JOIN course_node_state cns on cn.id = cns.course_nodes
+                LEFT JOIN (SELECT SUM(cns.number_of_completion) AS number_of_completion, "user", course_nodes FROM course_node_state AS cns
+                   WHERE cns."user" = NEW."user" GROUP BY "user", course_nodes
+                ) AS cns ON cns.course_nodes = cn.id
         WHERE cn.id = node AND (CASE WHEN "user" IS NOT NULL THEN cns."user" = NEW."user" ELSE TRUE END);
 
         SELECT COUNT(*) INTO word_known_count
