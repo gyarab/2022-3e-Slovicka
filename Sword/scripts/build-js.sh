@@ -24,10 +24,12 @@ SWORD_CORE=(
 
 MAIN_PKG=(
     node_modules/confetti-js/dist/index.min.js
+    node_modules/chart.js/dist/chart.umd.js
 	"${SWORD_CORE[@]}"
 	fe/I18n.js
     fe/Data.js
     fe/Forms.js
+	fe/Statistics.js
     fe/MyProfile.js
     node_modules/socket.io/client-dist/socket.io.js
     fe/Administration.js

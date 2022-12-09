@@ -19,6 +19,7 @@ app.get_json('/statistics/words_known', async req => {
 	validateValidDate(from);
 
 	if (to) {
+		to = new Date(to);
 		validateValidDate(to);
 	}
 
@@ -34,7 +35,7 @@ app.get_json('/statistics/words_known', async req => {
 	if (asGraph) {
 		return await query
 			.fields('COUNT(*), changed::date')
-			.more('GROUP BY changed::date')
+			.more('GROUP BY changed::date ORDER BY changed')
 			.getList();
 	} else {
 		return Number((await query.fields('COUNT(*)').oneOrNone()).count);

@@ -40,6 +40,11 @@ class AppHeader extends Sword {
 						activeOnRoutes: [Routes.adventures]
 					},{
 						class: NavigationLink,
+						text: i18n._('statistics'),
+						href: Routes.statistics,
+						activeOnRoutes: [Routes.statistics]
+					},{
+						class: NavigationLink,
 						text: i18n._('courses'),
 						href: Routes.courses,
 						activeOnRoutes: [Routes.courses]
@@ -131,7 +136,12 @@ const Routes = {
 	flipCards: '/courses/{course:int}/flip-cards',
 	testWordsCourses: '/courses/{course:int}/test-words',
 	testWordsAdventures: '/adventures/{course:int}/test-words/{node:int}',
-	wordsGoThrewModeSelect: '/courses/{course:int}/mode'
+	wordsGoThrewModeSelect: '/courses/{course:int}/mode',
+
+	statistics: '/statistics',
+	statisticsWordsKnown: '/statistics/word-known',
+	statisticsLearningTime: '/statistics/learning-time',
+	statisticsCoursesCompleted: '/statistics/courses-completed',
 }
 new Startup(async match => {
 	if (match.route.group === 'public') {
@@ -182,6 +192,23 @@ new Startup(async match => {
 	async handler({captures}) {
 		APP.show({
 			class: Home,
+			section: captures.section
+		})
+	}
+},{
+	group: 'auth',
+	path: Routes.statistics,
+	async handler({captures}) {
+		APP.show({
+			class: Statistics
+		})
+	}
+},{
+	group: 'auth',
+	path: Routes.statistics + '/{section:str}',
+	async handler({captures}) {
+		APP.show({
+			class: Statistics,
 			section: captures.section
 		})
 	}

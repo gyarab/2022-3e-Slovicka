@@ -29,9 +29,11 @@ const SWORD_CORE = [
 
 const MAIN_PKG=[
 	'node_modules/confetti-js/dist/index.min.js',
+	'node_modules/chart.js/dist/chart.umd.js',
 	'fe/I18n.js',
     'fe/Data.js',
     'fe/Forms.js',
+	'fe/Statistics.js',
     'fe/MyProfile.js',
     'fe/Administration.js',
     'fe/Courses.js',
