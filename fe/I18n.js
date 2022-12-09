@@ -379,7 +379,34 @@ class I18n {
 				'adventures': 'Adventures',
 				'administration': 'Administration',
 
-	}
+				/**
+				 * Statistics
+				 */
+				'words_known': 'Words known',
+				'learning_time': 'Learning time',
+				'courses_completed': 'Courses completed',
+
+				/**
+				 * CompletedCoursesStatistics
+				 */
+				'courses_completed_count': 'Number of completed courses',
+
+				/**
+				 * LearnedTimeStatistics
+				 */
+				'learning_time_minutes': 'Learned time (in minutes)',
+
+				/**
+				 * WordsKnown
+				 */
+				'number_of_known_words': 'Number of known words',
+
+				/**
+				 * StatisticsScreen
+				 */
+				'from': 'From',
+				'to': 'To'
+			}
 		},
 		'cz': {
 			'translation': {
@@ -754,6 +781,34 @@ class I18n {
 				'dashboard': 'Nástěnka',
 				'adventures': 'Adventures',
 				'administration': 'Administrace',
+
+				/**
+				 * Statistics
+				 */
+				'words_known': 'Naučená slovíčka',
+				'learning_time': 'Čas učení',
+				'courses_completed': 'Dokončené lekce',
+
+				/**
+				 * CompletedCoursesStatistics
+				 */
+				'courses_completed_count': 'Počet dokončených lekcí',
+
+				/**
+				 * LearnedTimeStatistics
+				 */
+				'learning_time_minutes': 'Čas učení (v minutách)',
+
+				/**
+				 * WordsKnown
+				 */
+				'number_of_known_words': 'Počet naučených slovíček',
+
+				/**
+				 * StatisticsScreen
+				 */
+				'from': 'Od',
+				'to': 'Do'
 			}
 		}
 	}

@@ -72,8 +72,8 @@ class StatisticsScreen extends Sword {
 
 class WordsKnown extends StatisticsScreen {
 	beforeRender() {
-		this.title = 'Known words';
-		this.chartLabel = 'Number of known words';
+		this.title = 'words_known';
+		this.chartLabel = 'number_of_known_words';
 	}
 
 	async prepareChartData(from, to) {
@@ -96,8 +96,8 @@ class WordsKnown extends StatisticsScreen {
 
 class LearnedTimeStatistics extends StatisticsScreen {
 	beforeRender() {
-		this.title = 'Learned time';
-		this.chartLabel = 'Learned time (in minutes)';
+		this.title = 'learning_time';
+		this.chartLabel = 'learning_time_minutes';
 	}
 
 	async prepareChartData(from, to) {
@@ -123,8 +123,8 @@ class LearnedTimeStatistics extends StatisticsScreen {
 
 class CompletedCoursesStatistics extends StatisticsScreen {
 	beforeRender() {
-		this.title = 'Completed courses';
-		this.chartLabel = 'Completed courses';
+		this.title = 'courses_completed';
+		this.chartLabel = 'courses_completed_count';
 	}
 
 	async prepareChartData(from, to) {
