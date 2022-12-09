@@ -121,6 +121,28 @@ class LearnedTimeStatistics extends StatisticsScreen {
 	}
 }
 
+class CompletedCoursesStatistics extends StatisticsScreen {
+	beforeRender() {
+		this.title = 'Completed courses';
+		this.chartLabel = 'Completed courses';
+	}
+
+	async prepareChartData(from, to) {
+		const fromFormatted = from ? '&from=' + from : '';
+		const toFormatted = to ? '&to=' + to : '';
+
+		const data = await REST.GET(`statistics/course-nodes-completion?${fromFormatted + toFormatted}`);
+		const dates = [], counts = [];
+
+		for (const r of data) {
+			const d = new Date(r.when);
+			dates.push(`${d.getDate()}. ${d.getMonth() + 1}. ${d.getFullYear()}`);
+			counts.push(r.number_of_completion);
+		}
+
+		return [dates, counts];
+	}
+}
 
 class Statistics extends SectionScreen {
 	beforeRender() {
@@ -159,7 +181,7 @@ class Statistics extends SectionScreen {
 			className: 'item',
 			children: [this.useIcon('users'), i18n._('courses_completed')],
 			href: Routes.statisticsCoursesCompleted,
-			screen: WillBeAdded
+			screen: CompletedCoursesStatistics
 		}]
 	}
 }
