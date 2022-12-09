@@ -13,17 +13,12 @@ const validateValidDate = date => {
 };
 
 app.get_json('/statistics/words_known', async req => {
-	let from = req.query.from ? new Date(req.query.from) : new Date(0), to = req.query.to;
+	let from = req.query.from ? new Date(req.query.from) : new Date(0)
+	const to = req.query.to ? new Date(req.query.to) : new Date();
 	const asGraph = Boolean(req.query.asGraph);
 
 	validateValidDate(from);
-
-	if (to) {
-		to = new Date(to);
-		validateValidDate(to);
-	}
-
-	to ??= new Date();
+	validateValidDate(to);
 
 	const query = db.select('word_state')
 		.fields('COUNT(*)')
@@ -63,17 +58,12 @@ app.get_json('/statistics/daystreak', async req => {
 
 app.get_json('/statistics/learning_time', async req => {
 	const courseId = req.query.course && parseId(req.query.course);
-	let from = req.query.from ? new Date(req.query.from) : new Date(0), to = req.query.to;
+	let from = req.query.from ? new Date(req.query.from) : new Date(0)
+	const to = req.query.to ? new Date(req.query.to) : new Date();
 	const asGraph = Boolean(req.query.asGraph);
 
 	validateValidDate(from);
-
-	if (to) {
-		validateValidDate(to);
-	}
-
-	to ??= new Date();
-
+	validateValidDate(to);
 
 	if (courseId) {
 		await validateUserHasAccessToCourse(courseId, req.session.id);
@@ -91,7 +81,7 @@ app.get_json('/statistics/learning_time', async req => {
 	if (asGraph) {
 		return await query
 			.fields('SUM("to" - "from") AS learning, "from"::date')
-			.more('GROUP BY "from"::date').getList();
+			.more('GROUP BY "from"::date ORDER BY "from"').getList();
 	} else {
 		return (await query
 			.fields('SUM("to" - "from") AS learning')
