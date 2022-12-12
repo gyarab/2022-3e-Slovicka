@@ -434,17 +434,22 @@ class AddImage extends ValidateChangesFormDialog {
 
 	getFormFields() {
 		return [{
-			className: 'svg',
-			textContent: i18n._('paste_svg')
-		},{
-			render: this.data?.id,
-			nodeName: 'img',
-			src: `/api/adventures/node-picture/${this.data?.id}`
+			render: !!this.data?.id,
+			children: [{
+				nodeName: 'label',
+				className: 'image-label',
+				textContent: i18n._('paste_svg')
+			},{
+				className: 'image',
+				nodeName: 'img',
+				src: `/api/adventures/node-picture/${this.data?.id}`
+			}]
 		},{
 			ref: 'fileInput',
 			class: TextField,
-			label: i18n._('name'),
+			label: i18n._('picture'),
 			type: 'file',
+			required: false,
 			'on:change': (obj, e) => {
 				this.img = e.target.files;
 			}
@@ -458,15 +463,16 @@ class AddImage extends ValidateChangesFormDialog {
 	}
 
 	async onSave(data) {
-		if (!this.img) {
+		if (!this.img && !this.data?.id) {
 			NOTIFICATION.showStandardizedError(i18n._('non-upload_picture'));
 			return;
 		}
 
-		console.log(data)
+		if (this.img) {
+			this.data = await Uploads.uploadFile(`/api/adventure-node-pictures${this.data.id ? '/' + this.data.id : ''}`, this.img);
+		}
 
-		let pic = await Uploads.uploadFile(`adventure-node-pictures${'/' + this.data.id}`, this.img);
-		pic = await REST.PUT('adventure-node-pictures/' + pic.id, data);
+		const pic = await REST.PUT('adventure-node-pictures/' + this.data.id, data);
 		this.fire('success', pic);
 	}
 
@@ -493,7 +499,7 @@ class ImageList extends Sword {
 					className: 'primary icon-left',
 					'on:click': () => new AddImage(document.body, {
 						'on:success': (obj, pic) => {
-							me.images.updateByIndex(pic, p => p.id === pic.id);
+							me.images.push(pic);
 							me.renderImages();
 						}
 					})
@@ -514,6 +520,7 @@ class ImageList extends Sword {
 	}
 
 	renderImages() {
+		this.list.innerHTML = '';
 		const me = this;
 
 		for (const i of this.images) {
@@ -532,7 +539,7 @@ class ImageList extends Sword {
 					'on:click': () => new AddImage(document.body, {
 						data: i,
 						'on:success': (obj, pic) => {
-							me.images.updateByIndex(pic, p => p.id === pic.id);
+							me.images.updateByIndex(pic, p => p.id === i.id);
 							me.renderImages();
 						}
 					})
