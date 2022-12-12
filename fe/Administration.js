@@ -424,6 +424,128 @@ class AdventuresSection extends Sword {
 		this.table.setData(this.adventures);
 	}
 }
+class AddImage extends ValidateChangesFormDialog {
+	beforeRender() {
+		this.data ??= {};
+		this.submitText =  i18n._(this.data.id ? 'save' : 'add_picture');
+		this.title =  i18n._(this.data.id ? 'edit_picture' : 'add_picture');
+		this.allowCloseButton = true;
+	}
+
+	getFormFields() {
+		return [{
+			className: 'svg',
+			textContent: i18n._('paste_svg')
+		},{
+			render: this.data?.id,
+			nodeName: 'img',
+			src: `/api/adventures/node-picture/${this.data?.id}`
+		},{
+			ref: 'fileInput',
+			class: TextField,
+			label: i18n._('name'),
+			type: 'file',
+			'on:change': (obj, e) => {
+				this.img = e.target.files;
+			}
+		},{
+			class: TextField,
+			name: 'name',
+			label: i18n._('name'),
+			value: this.data?.name,
+			autofocus: !this.data?.group
+		}]
+	}
+
+	async onSave(data) {
+		if (!this.img) {
+			NOTIFICATION.showStandardizedError(i18n._('non-upload_picture'));
+			return;
+		}
+
+		console.log(data)
+
+		let pic;
+		if (!this.data.id) {
+			pic = await Uploads.uploadFile('adventure-node-pictures', this.img);
+		}
+
+		pic = await REST.PUT('adventure-node-pictures/' + pic.id, data);
+		this.fire('success', pic);
+	}
+
+	handleError(ex) {
+		NOTIFICATION.showStandardizedError({
+			'wrong_image_format': i18n._('wrong_image_format'),
+		}[ex.code]);
+	}
+}
+
+class ImageList extends Sword {
+	render() {
+		const me = this;
+
+		this.el = this.createElement({
+			children: [{
+				className: 'header',
+				children: [{
+					textContent: 'Node pictures'
+				},{
+					nodeName: 'button',
+					textContent: 'Add picture',
+					'on:click': () => new AddImage(document.body, {
+						'on:success': (obj, pic) => {
+							me.images.updateByIndex(pic, p => p.id === pic.id);
+							me.renderImages();
+						}
+					})
+				}]
+			},{
+				ref: 'list'
+			}]
+		}, this);
+
+		this.init();
+	}
+
+	async init() {
+		this.images = await REST.GET('adventure-node-pictures/list');
+
+		for (const i of images) {
+			this.append({
+				'on:click': () => ROUTER.pushRoute(Routes.administration_images + '/' + a.id),
+				children: [{
+					//icon of this picture
+				},{
+					textContent: i.name
+				}]
+			}, null, this.images)
+		}
+		this.renderImages();
+	}
+
+	renderImages() {
+		const me = this;
+
+		for (const i of this.images) {
+			this.append({
+				children: [{
+					//...
+				},{
+					nodeName: 'button',
+					textContent: 'Edit',
+					'on:click': () => new AddImage(document.body, {
+						data: i,
+						'on:success': (obj, pic) => {
+							me.images.updateByIndex(pic, p => p.id === pic.id);
+							me.renderImages();
+						}
+					})
+				}]
+			}, null, this.list);
+		}
+	}
+}
 
 class Administration extends SectionScreen {
 	beforeRender() {
@@ -438,6 +560,7 @@ class Administration extends SectionScreen {
 
 		if (DataManager.userIsAdmin()) {
 			routes["users"] = Routes.administration_users;
+			routes.images = Routes.administration_images;
 		}
 
 		return routes
@@ -465,6 +588,13 @@ class Administration extends SectionScreen {
 			children: [this.useIcon('users'), i18n._('users')],
 			href: Routes.administration_users,
 			screen: UsersSection
+		},{
+			render: DataManager.userIsAdmin(),
+			nodeName: 'a',
+			className: 'item',
+			children: [this.useIcon('image'), i18n._('images')],
+			href: Routes.administration_images,
+			screen: AddImage
 		}]
 	}
 
