@@ -424,6 +424,159 @@ class AdventuresSection extends Sword {
 		this.table.setData(this.adventures);
 	}
 }
+class AddImage extends ValidateChangesFormDialog {
+	beforeRender() {
+		this.data ??= {};
+		this.submitText =  i18n._(this.data.id ? 'save' : 'add_picture');
+		this.title =  i18n._(this.data.id ? 'edit_picture' : 'add_picture');
+		this.allowCloseButton = true;
+	}
+
+	getFormFields() {
+		return [{
+			render: !!this.data?.id,
+			children: [{
+				nodeName: 'label',
+				className: 'image-label',
+				textContent: i18n._('paste_svg')
+			},{
+				className: 'image',
+				nodeName: 'img',
+				src: `/api/adventures/node-picture/${this.data?.id}`
+			}]
+		},{
+			ref: 'fileInput',
+			class: TextField,
+			label: i18n._('picture'),
+			type: 'file',
+			required: false,
+			'on:change': (obj, e) => {
+				this.img = e.target.files;
+			}
+		},{
+			class: TextField,
+			name: 'name',
+			label: i18n._('name'),
+			value: this.data?.name,
+			autofocus: !this.data?.group
+		}]
+	}
+
+	async onSave(data) {
+		if (!this.img && !this.data?.id) {
+			NOTIFICATION.showStandardizedError(i18n._('non-upload_picture'));
+			return;
+		}
+
+		if (this.img) {
+			this.data = await Uploads.uploadFile(`/api/adventure-node-pictures${this.data.id ? '/' + this.data.id : ''}`, this.img);
+		}
+
+		const pic = await REST.PUT('adventure-node-pictures/' + this.data.id, data);
+		this.fire('success', pic);
+	}
+
+	handleError(ex) {
+		NOTIFICATION.showStandardizedError({
+			'wrong_image_format': i18n._('wrong_image_format'),
+		}[ex.code]);
+	}
+}
+
+class ImageList extends Sword {
+	render() {
+		const me = this;
+
+		this.el = this.createElement({
+			children: [{
+				className: 'header',
+				children: [{
+					nodeName: 'h3',
+					textContent: i18n._('node_pictures')
+				},{
+					nodeName: 'button',
+					children: ['icon:plus', i18n._('add_picture')],
+					className: 'primary icon-left',
+					'on:click': () => new AddImage(document.body, {
+						'on:success': (obj, pic) => {
+							me.images.push(pic);
+							me.renderImages();
+						}
+					})
+				}]
+			},{
+				className: 'images',
+				ref: 'list'
+			}]
+		}, this);
+
+		this.init();
+	}
+
+	async init() {
+		this.images = await REST.GET('adventure-node-pictures/list');
+
+		this.renderImages();
+	}
+
+	deleteImage(image) {
+		const me = this;
+
+		new ConfirmDialog(document.body, {
+			title: i18n._('Are you sure you want to delete this image?'),
+			confirmText: i18n._('yes'),
+			cancelText: i18n._('no'),
+			async onSave() {
+				try {
+					await REST.DELETE(`adventure-node-pictures/${image.id}`);
+					me.images.deleteByIndex(im => im.id === image.id);
+					me.renderImages();
+
+					NOTIFICATION.showStandardizedSuccess(i18n._(`Image has been successfully deleted.`));
+				} catch (ex) {
+					NOTIFICATION.showStandardizedError({
+						404: i18n._('Image not found')
+					}[ex.status]);
+				}
+			}
+		})
+	}
+
+	renderImages() {
+		this.list.innerHTML = '';
+		const me = this;
+
+		for (const i of this.images) {
+			this.append({
+				className: 'image',
+				children: [{
+					nodeName: 'img',
+					src: `/api/adventures/node-picture/${i.id}`
+				},{
+					textContent: i.name
+				},{
+					className: 'delete',
+					nodeName: 'button',
+					children: ['icon:bin'],
+					title: i18n._('delete'),
+					'on:click': async () => this.deleteImage(i)
+				},{
+					className: 'edit',
+					nodeName: 'button',
+					children: ['icon:pencil'],
+					title: i18n._('edit'),
+					'on:click': () => new AddImage(document.body, {
+						data: i,
+						'on:success': (obj, pic) => {
+							me.images.updateByIndex(pic, p => p.id === i.id);
+							me.renderImages();
+						}
+					})
+				}]
+			}, null, this.list);
+		}
+	}
+}
 
 class Administration extends SectionScreen {
 	beforeRender() {
@@ -438,6 +591,7 @@ class Administration extends SectionScreen {
 
 		if (DataManager.userIsAdmin()) {
 			routes["users"] = Routes.administration_users;
+			routes.images = Routes.administration_images;
 		}
 
 		return routes
@@ -465,6 +619,13 @@ class Administration extends SectionScreen {
 			children: [this.useIcon('users'), i18n._('users')],
 			href: Routes.administration_users,
 			screen: UsersSection
+		},{
+			render: DataManager.userIsAdmin(),
+			nodeName: 'a',
+			className: 'item',
+			children: [this.useIcon('image'), i18n._('images')],
+			href: Routes.administration_images,
+			screen: ImageList
 		}]
 	}
 

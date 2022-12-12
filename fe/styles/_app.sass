@@ -767,3 +767,58 @@ nav.header
 			.mode
 				> div
 					width: 350px
+
+[sword-comp=ImageList]
+	.header
+		display: flex
+		justify-content: space-between
+		margin-bottom: 50px
+
+		h3
+			flex: 1
+			padding: 0
+			margin: 0
+
+	.images
+		display: flex
+		gap: 10px
+		flex-wrap: wrap
+
+		.image
+			padding: 32px 40px 10px
+			border: 1px solid #B9C0DA
+			position: relative
+			border-radius: 8px
+
+			img
+				width: 40px
+				height: 40px
+				margin-bottom: 5px
+
+			.edit
+				right: 0
+
+			.delete
+				right: 24px
+
+			.edit, .delete
+				top: 1px
+				position: absolute
+				background: none
+				border: none
+
+				svg
+					width: 20px
+					height: 20px
+
+[sword-comp=AddImage]
+	.image-label
+		display: block
+		margin-bottom: 4px
+		font-size: var(--font-size-base)
+
+	.image
+		display: block
+		margin: 0 auto
+		width: 100px
+		height: 100px
