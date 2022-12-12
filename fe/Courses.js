@@ -640,6 +640,23 @@ class FlipCards extends Sword {
 				ref: 'word',
 				className: `word ${this.words.length === 0 ? 'no-words' : ''}`
 			},{
+				className: 'words-actions',
+				children: [{
+					nodeName: 'button',
+					className: 'secondary icon-left',
+					children: ['icon:reset', i18n._('reset')],
+					'on:click': () => this.showWord(0)
+				},{
+					nodeName: 'button',
+					className: 'secondary icon-left',
+					children: ['icon:refresh', i18n._('shuffle')],
+					'on:click': () => {
+						this.words = shuffle(this.words);
+						this.showWord(0);
+						NOTIFICATION.showStandardizedINFO(i18n._('Words have been shuffled'));
+					}
+				}]
+			},{
 				ref: 'courseCompleted',
 				className: 'course-completed'
 			}]

@@ -1,3 +1,14 @@
+function shuffle(arr) {
+	for (let i = 0; i < arr.length; i++) {
+		const idx = Math.floor(Math.random() * arr.length);
+		const itemA = arr[idx];
+		arr[idx] = arr[i];
+		arr[i] = itemA;
+	}
+
+	return arr;
+}
+
 class AdventureNodeEditor extends CourseNodeEditor {
 	beforeRender() {
 		this.wordEndpointPrefix = 'adventures';
@@ -569,7 +580,7 @@ class TestWords extends Sword {
 			}
 		}
 
-		this.notKnown = this.shuffle(this.notKnown);
+		this.notKnown = shuffle(this.notKnown);
 	}
 
 	renderBody() {
@@ -609,17 +620,6 @@ class TestWords extends Sword {
 		this.renderCard(this.notKnown[0]);
 	}
 
-	shuffle(arr) {
-		for (let i = 0; i < arr.length; i++) {
-			const idx = Math.floor(Math.random() * arr.length);
-			const itemA = arr[idx];
-			arr[idx] = arr[i];
-			arr[i] = itemA;
-		}
-
-		return arr;
-	}
-
 	reset() {
 		this.notKnown = [...this.words];
 		this.wordCount.textContent = 1;
@@ -628,7 +628,7 @@ class TestWords extends Sword {
 
 	renderCard(word) {
 		const getRandomWord = () => this.words[Math.floor(Math.random() * this.words.length)];
-		const randomAnswers = this.shuffle([word, getRandomWord(), getRandomWord(), getRandomWord()]);
+		const randomAnswers = shuffle([word, getRandomWord(), getRandomWord(), getRandomWord()]);
 
 		this.replaceChildren([{
 			className: 'word',
