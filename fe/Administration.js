@@ -492,10 +492,10 @@ class ImageList extends Sword {
 				className: 'header',
 				children: [{
 					nodeName: 'h3',
-					textContent: 'Node pictures'
+					textContent: i18n._('node_pictures')
 				},{
 					nodeName: 'button',
-					children: ['icon:plus', i18n._('Add picture')],
+					children: ['icon:plus', i18n._('add_picture')],
 					className: 'primary icon-left',
 					'on:click': () => new AddImage(document.body, {
 						'on:success': (obj, pic) => {

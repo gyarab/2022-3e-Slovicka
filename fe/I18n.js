@@ -405,7 +405,25 @@ class I18n {
 				 * StatisticsScreen
 				 */
 				'from': 'From',
-				'to': 'To'
+				'to': 'To',
+
+				/**
+				 * ImageList
+				 */
+				'add_picture': 'Add picture',
+				'node_pictures': 'Node pictures',
+				'Are you sure you want to delete this image?': 'Are you sure you want to delete this image?',
+				'Image has been successfully deleted.': 'Image has been successfully deleted.',
+				'Image not found': 'Image not found',
+
+				/**
+				 * AddImage
+				 */
+				'edit_picture': 'Edit picture',
+				'paste_svg': 'Upload SVG image',
+				'picture': 'picture',
+				'wrong_image_format': 'Wrong image format, only allowed format is SVG',
+				'non-upload_picture': 'Image not added'
 			}
 		},
 		'cz': {
@@ -808,7 +826,25 @@ class I18n {
 				 * StatisticsScreen
 				 */
 				'from': 'Od',
-				'to': 'Do'
+				'to': 'Do',
+
+				/**
+				 * ImageList
+				 */
+				'add_picture': 'Přidat obrázek',
+				'node_pictures': 'Obrázky uzlů',
+				'Are you sure you want to delete this image?': 'Jste si jisti, že chcete tento obrázek smazat?',
+				'Image has been successfully deleted.': 'Obrázek byl úspěšně smazán.',
+				'Image not found': 'Obrázek nenalezen',
+
+				/**
+				 * AddImage
+				 */
+				'edit_picture': 'Upravit obrázek',
+				'paste_svg': 'Nahrajte SVG obrázek',
+				'picture': 'Obrázek',
+				'wrong_image_format': 'Špatný formát obrázku, jediný povolený formát je SVG',
+				'non-upload_picture': 'Obrázek nepřidán'
 			}
 		}
 	}
