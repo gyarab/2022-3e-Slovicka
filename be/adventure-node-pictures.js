@@ -7,7 +7,6 @@ const {parseId} = require("./utils/utils");
 const {NotFound, BadRequest} = require("./utils/aexpress");
 const {validateStringNotEmpty} = require("./utils/validations");
 const fs = require("fs");
-const {ca} = require("chart.js/dist/chunks/helpers.core");
 const upload = multer({ dest: env.datadir })
 
 const app = express();
