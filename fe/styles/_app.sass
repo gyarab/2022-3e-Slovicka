@@ -785,9 +785,10 @@ nav.header
 		flex-wrap: wrap
 
 		.image
-			padding: 20px 40px 10px
+			padding: 32px 40px 10px
 			border: 1px solid #B9C0DA
 			position: relative
+			border-radius: 8px
 
 			img
 				width: 40px
@@ -795,10 +796,14 @@ nav.header
 				margin-bottom: 5px
 
 			.edit
-				position: absolute
-				top: 0
 				right: 0
-				gap: 2px
+
+			.delete
+				right: 24px
+
+			.edit, .delete
+				top: 1px
+				position: absolute
 				background: none
 				border: none
 

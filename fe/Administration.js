@@ -519,6 +519,29 @@ class ImageList extends Sword {
 		this.renderImages();
 	}
 
+	deleteImage(image) {
+		const me = this;
+
+		new ConfirmDialog(document.body, {
+			title: i18n._('Are you sure you want to delete this image?'),
+			confirmText: i18n._('yes'),
+			cancelText: i18n._('no'),
+			async onSave() {
+				try {
+					await REST.DELETE(`adventure-node-pictures/${image.id}`);
+					me.images.deleteByIndex(im => im.id === image.id);
+					me.renderImages();
+
+					NOTIFICATION.showStandardizedSuccess(i18n._(`Image has been successfully deleted.`));
+				} catch (ex) {
+					NOTIFICATION.showStandardizedError({
+						404: i18n._('Image not found')
+					}[ex.status]);
+				}
+			}
+		})
+	}
+
 	renderImages() {
 		this.list.innerHTML = '';
 		const me = this;
@@ -532,10 +555,16 @@ class ImageList extends Sword {
 				},{
 					textContent: i.name
 				},{
+					className: 'delete',
+					nodeName: 'button',
+					children: ['icon:bin'],
+					title: i18n._('delete'),
+					'on:click': async () => this.deleteImage(i)
+				},{
 					className: 'edit',
 					nodeName: 'button',
 					children: ['icon:pencil'],
-					title: 'Edit',
+					title: i18n._('edit'),
 					'on:click': () => new AddImage(document.body, {
 						data: i,
 						'on:success': (obj, pic) => {

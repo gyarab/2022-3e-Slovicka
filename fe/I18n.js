@@ -651,7 +651,7 @@ class I18n {
 				'Course saved': 'Kurz uložen',
 				'Course updated': 'Kurz aktualizován',
 				'Course not found': 'Kurz nenalezen',
-				'Are you sure you want to delete this course?': 'Jste si jisti, že chcete smazat tento soubor?',
+				'Are you sure you want to delete this course?': 'Jste si jisti, že chcete smazat tuto lekci?',
 				'ME': 'JÁ',
 				'EVERYONE': 'VŠICHNI',
 
