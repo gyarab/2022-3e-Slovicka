@@ -52,13 +52,16 @@ app.get_json('/adventures/administration/list', async req => {
 
 app.post_json('/adventures/:id([0-9]+)/node', async req => {
 	const id = parseId(req.params.id);
-	const {name, description, number_of_completion, level, picture} = req.body;
+	let {name, description, number_of_completion, level, picture} = req.body;
 
 	validateStringNotEmpty(name, 'Name');
 	validateStringNotEmpty(description, 'Description');
 	validateType(number_of_completion, 'number');
 	validateType(level, 'number');
-	await validateAdventureNodePictureExists(picture);
+	if (picture) {
+		picture = parseId(picture);
+		await validateAdventureNodePictureExists(picture);
+	}
 
 	if (level < 0) {
 		throw new BadRequest('Level cannot be lower than 0', 'negative_level')
@@ -116,12 +119,15 @@ app.get_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 app.put_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 	const id = parseId(req.params.id);
 	const node = parseId(req.params.node);
-	const {name, description, number_of_completion, picture} = req.body;
+	let {name, description, number_of_completion, picture} = req.body;
 
 	validateStringNotEmpty(name, 'Name');
 	validateStringNotEmpty(description, 'Description');
 	validateType(number_of_completion, 'number');
-	await validateAdventureNodePictureExists(picture);
+	if (picture) {
+		picture = parseId(picture);
+		await validateAdventureNodePictureExists(picture);
+	}
 
 	if (number_of_completion < 1) {
 		throw new BadRequest('Number of completion cannot be smaller than 1');
