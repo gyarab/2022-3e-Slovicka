@@ -465,11 +465,7 @@ class AddImage extends ValidateChangesFormDialog {
 
 		console.log(data)
 
-		let pic;
-		if (!this.data.id) {
-			pic = await Uploads.uploadFile('adventure-node-pictures', this.img);
-		}
-
+		let pic = await Uploads.uploadFile(`adventure-node-pictures${'/' + this.data.id}`, this.img);
 		pic = await REST.PUT('adventure-node-pictures/' + pic.id, data);
 		this.fire('success', pic);
 	}
@@ -489,10 +485,12 @@ class ImageList extends Sword {
 			children: [{
 				className: 'header',
 				children: [{
+					nodeName: 'h3',
 					textContent: 'Node pictures'
 				},{
 					nodeName: 'button',
-					textContent: 'Add picture',
+					children: ['icon:plus', i18n._('Add picture')],
+					className: 'primary icon-left',
 					'on:click': () => new AddImage(document.body, {
 						'on:success': (obj, pic) => {
 							me.images.updateByIndex(pic, p => p.id === pic.id);
@@ -501,6 +499,7 @@ class ImageList extends Sword {
 					})
 				}]
 			},{
+				className: 'images',
 				ref: 'list'
 			}]
 		}, this);
@@ -511,16 +510,6 @@ class ImageList extends Sword {
 	async init() {
 		this.images = await REST.GET('adventure-node-pictures/list');
 
-		for (const i of images) {
-			this.append({
-				'on:click': () => ROUTER.pushRoute(Routes.administration_images + '/' + a.id),
-				children: [{
-					//icon of this picture
-				},{
-					textContent: i.name
-				}]
-			}, null, this.images)
-		}
 		this.renderImages();
 	}
 
@@ -529,11 +518,17 @@ class ImageList extends Sword {
 
 		for (const i of this.images) {
 			this.append({
+				className: 'image',
 				children: [{
-					//...
+					nodeName: 'img',
+					src: `/api/adventures/node-picture/${i.id}`
 				},{
+					textContent: i.name
+				},{
+					className: 'edit',
 					nodeName: 'button',
-					textContent: 'Edit',
+					children: ['icon:pencil'],
+					title: 'Edit',
 					'on:click': () => new AddImage(document.body, {
 						data: i,
 						'on:success': (obj, pic) => {
@@ -594,7 +589,7 @@ class Administration extends SectionScreen {
 			className: 'item',
 			children: [this.useIcon('image'), i18n._('images')],
 			href: Routes.administration_images,
-			screen: AddImage
+			screen: ImageList
 		}]
 	}
 
