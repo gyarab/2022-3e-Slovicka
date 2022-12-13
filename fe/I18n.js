@@ -423,7 +423,12 @@ class I18n {
 				'paste_svg': 'Upload SVG image',
 				'picture': 'picture',
 				'wrong_image_format': 'Wrong image format, only allowed format is SVG',
-				'non-upload_picture': 'Image not added'
+				'non-upload_picture': 'Image not added',
+
+				/**
+				 * AdventureNodeEditor
+				 */
+				'Published node cannot be edited': 'Published node cannot be edited'
 			}
 		},
 		'cz': {
@@ -844,7 +849,12 @@ class I18n {
 				'paste_svg': 'Nahrajte SVG obrázek',
 				'picture': 'Obrázek',
 				'wrong_image_format': 'Špatný formát obrázku, jediný povolený formát je SVG',
-				'non-upload_picture': 'Obrázek nepřidán'
+				'non-upload_picture': 'Obrázek nepřidán',
+
+				/**
+				 * AdventureNodeEditor
+				 */
+				'Published node cannot be edited': 'Publikovaný uzel nejde upravovat'
 			}
 		}
 	}

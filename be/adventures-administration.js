@@ -1,7 +1,7 @@
 const express = require('express');
 const SQLBuilder = require('./utils/SQLBuilder');
 const {validateStringNotEmpty, validateType} = require("./utils/validations");
-const {BadRequest, NotFound} = require("./utils/aexpress");
+const {BadRequest, Unauthorized} = require("./utils/aexpress");
 const {parseId} = require("./utils/utils");
 const {saveCourse, updateCourse, validateCourseExists, updateCourseState, saveWordHandler,
 	deleteWord, getWords, updateWord, validateNodeBelongsToCourse
@@ -28,7 +28,7 @@ async function getNodesAtLevel(id, level) {
 
 async function getNodeWithPicture(id) {
 	return await db.select()
-		.fields('course_nodes.*, anp.name, files.storage_path')
+		.fields('course_nodes.*, anp.name AS img_name, files.storage_path')
 		.from(
 			'course_nodes',
 			'LEFT JOIN adventure_node_pictures AS anp ON anp.id = course_nodes.picture',
@@ -118,7 +118,7 @@ app.get_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 
 app.put_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 	const id = parseId(req.params.id);
-	const node = parseId(req.params.node);
+	const nodeId = parseId(req.params.node);
 	let {name, description, number_of_completion, picture} = req.body;
 
 	validateStringNotEmpty(name, 'Name');
@@ -133,7 +133,11 @@ app.put_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 		throw new BadRequest('Number of completion cannot be smaller than 1');
 	}
 
-	await validateNodeBelongsToAdventure(id, node);
+	const {node} = await validateNodeBelongsToAdventure(id, nodeId);
+
+	if (node.state === 'published') {
+		throw new Unauthorized('Published nodes cannot be edited', 'published_node');
+	}
 
 	await db.update('course_nodes')
 		.set({
@@ -142,10 +146,10 @@ app.put_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 			number_of_completion,
 			picture
 		})
-		.whereId(node)
+		.whereId(nodeId)
 		.oneOrNone();
 
-	return await getNodeWithPicture(node);
+	return await getNodeWithPicture(nodeId);
 });
 
 app.delete_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
@@ -159,6 +163,9 @@ app.delete_json('/adventures/:id([0-9]+)/node/:node([0-9]+)', async req => {
 		throw new BadRequest('Cannot delete last node at the level', 'last_node');
 	}
 
+	await db.delete('word_groups')
+		.where('course_node = ?', nodeId)
+		.run();
 	await db.deleteById('course_nodes', nodeId);
 });
 
@@ -173,17 +180,30 @@ app.put_json('/adventures/:id([0-9]+)/node/:node([0-9]+)/publish', async req => 
 		.oneOrNone();
 });
 
-app.post_json('/adventures/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => saveWordHandler(req, async (node, courseId, userId) => {
-	const {course} = await validateNodeBelongsToAdventure(courseId, node);
+app.post_json('/adventures/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => saveWordHandler(req, async (nodeId, courseId, userId) => {
+	const {course, node} = await validateNodeBelongsToAdventure(courseId, nodeId);
+
+	if (node.state === 'published') {
+		throw new Unauthorized('Published nodes cannot be edited', 'published_node');
+	}
+
 	return course;
 }));
 
 app.put_json('/adventures/:id([0-9]+)/words/:group([0-9]+)', async req => await updateWord(req, async (nodeId, courseId, userId) => {
-	await validateNodeBelongsToAdventure(courseId, nodeId);
+	const {node} = await validateNodeBelongsToAdventure(courseId, nodeId);
+
+	if (node.state === 'published') {
+		throw new Unauthorized('Published nodes cannot be edited', 'published_node');
+	}
 }));
 
 app.delete_json('/adventures/:id([0-9]+)/words/:group([0-9]+)', async req => await deleteWord(req, async (nodeId, courseId, userId) => {
-	await validateNodeBelongsToAdventure(courseId, nodeId);
+	const {node} = await validateNodeBelongsToAdventure(courseId, nodeId);
+
+	if (node.state === 'published') {
+		throw new Unauthorized('Published nodes cannot be edited', 'published_node');
+	}
 }));
 
 app.get_json('/adventures/:id([0-9]+)/nodes/:node([0-9]+)/words', async req => await getWords(req, async (node, courseId, userId) => {

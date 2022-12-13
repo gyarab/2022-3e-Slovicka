@@ -49,7 +49,8 @@ class AdventureNodeEditor extends CourseNodeEditor {
 		NOTIFICATION.showStandardizedError({
 			max_nodes_level: i18n._('There can be only three nodes at one level'),
 			number_of_completion_min: i18n._('Number of completions must be higher than 0'),
-			negative_level: i18n._('Level cannot be lower than 0')
+			negative_level: i18n._('Level cannot be lower than 0'),
+			published_node: i18n._('Published node cannot be edited')
 		}[ex.code]);
 	}
 

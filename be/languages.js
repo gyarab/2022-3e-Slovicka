@@ -1,7 +1,7 @@
 const express = require('express');
 const SQLBuilder = require('./utils/SQLBuilder');
 const {validateStringNotEmpty} = require("./utils/validations");
-const {ApiError} = require("./utils/aexpress");
+const {ApiError, NotFound} = require("./utils/aexpress");
 const {parseId} = require("./utils/utils");
 
 const app = express();
@@ -11,7 +11,7 @@ async function validateLanguageExists(id) {
 	const lang = await db.oneOrNoneById('languages', id);
 
 	if (!lang) {
-		throw new ApiError(404);
+		throw new NotFound('Language not found', 'language_not_found');
 	}
 
 	return lang;
