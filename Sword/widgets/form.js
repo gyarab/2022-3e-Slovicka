@@ -1007,9 +1007,13 @@ class Form extends Sword {
 	}
 
 	disableForm(disable) {
-		this.traverseComponentChildren(child => {
-			child.validOnly && child.setEnabled && child.setEnabled(!disable);
-		});
+		this.traverseComponentChildren(child => child.setDisabled && child.setDisabled(disable));
+
+		for (const child of this.buttonsCreated.children) {
+			if (child.nodeName === 'BUTTON') {
+				child.disabled = disable;
+			}
+		}
 	}
 
 	getFormValues() {

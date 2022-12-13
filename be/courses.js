@@ -20,7 +20,7 @@ async function validateCourseExists(id, state) {
 	course = await course.oneOrNone();
 
 	if (!course) {
-		throw new NotFound();
+		throw new NotFound('Course does not exist', 'course_not_found');
 	}
 
 	return course;

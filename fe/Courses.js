@@ -73,9 +73,10 @@ class WordCreateDialog extends ValidateChangesFormDialog {
 
 	handleError(ex) {
 		NOTIFICATION.showStandardizedError({
-			404: i18n._('Language not found'),
-			401: i18n._('You don\'t have access to this course')
-		}[ex.status]);
+			language_not_found: i18n._('Language not found'),
+			course_not_found: i18n._('You don\'t have access to this course'),
+			published_node: i18n._('Published node cannot be edited')
+		}[ex.code]);
 	}
 }
 
@@ -147,6 +148,7 @@ class CourseNodeEditor extends Sword {
 									'on:success': (obj, word) => {
 										me.words.push(word);
 										me.renderWord(word)
+										me.onWordInsert();
 									}
 								})
 							}
@@ -162,6 +164,7 @@ class CourseNodeEditor extends Sword {
 		this.init();
 	}
 
+	onWordInsert() {}
 	onSave() {}
 	loadData() {}
 	handleError() {}
@@ -172,6 +175,11 @@ class CourseNodeEditor extends Sword {
 		await this.loadData();
 		this.renderHeader();
 		this.addWordBtn.disabled = !this.data?.id;
+
+		if (this.data?.state === 'published') {
+			this.nodeInfo.disableForm(true);
+			this.addWordBtn.disabled = true;
+		}
 	}
 
 	async loadWords() {
@@ -221,6 +229,7 @@ class CourseNodeEditor extends Sword {
 					className: 'word-name',
 					textContent: word.word
 				},{
+					render: this.data?.state !== 'published',
 					className: 'edit',
 					children: ['icon:pencil'],
 					'on:click': () => new WordCreateDialog(document.body, {
@@ -236,6 +245,7 @@ class CourseNodeEditor extends Sword {
 						}
 					})
 				},{
+					render: this.data?.state !== 'published',
 					className: 'delete',
 					children: ['icon:delete'],
 					'on:click': () => this.deleteWordDialog(word)

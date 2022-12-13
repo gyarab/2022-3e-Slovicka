@@ -24,6 +24,12 @@ class AdventureNodeEditor extends CourseNodeEditor {
 		} catch (ignored) {}
 	}
 
+	disableWhenPublished() {
+		this.addWordBtn.disabled = true;
+		this.nodeInfo.disableForm(true);
+		this.renderWords();
+	}
+
 	async onSave(data) {
 		const id = this.data?.id;
 		const newNode = !id;
@@ -40,7 +46,6 @@ class AdventureNodeEditor extends CourseNodeEditor {
 			const url = new URL(Routes.adventure_node_editor + '/' + this.data.course + '/' + this.data.id, location.href)
 			history.pushState({}, '', url.toString());
 
-			this.publishBtn.disabled = false;
 			this.deleteBtn.disabled = false;
 		}
 	}
@@ -90,6 +95,10 @@ class AdventureNodeEditor extends CourseNodeEditor {
 		})
 	}
 
+	onWordInsert() {
+		this.publishBtn.disabled = false;
+	}
+
 	publishNodeDialog() {
 		const me = this;
 
@@ -101,7 +110,9 @@ class AdventureNodeEditor extends CourseNodeEditor {
 			async onSave() {
 				await REST.PUT(`adventures/${me.data.course}/node/${me.data.id}/publish`);
 
+				me.data.state = 'published';
 				me.publishBtn.remove();
+				me.disableWhenPublished();
 			},
 			handleError(ex) {
 				NOTIFICATION.showStandardizedError({
