@@ -91,18 +91,24 @@ app.get_json('/statistics/learning_time', async req => {
 });
 
 app.get_json('/statistics/course-nodes-completion', async req => {
+	const asGraph = Boolean(req.query.asGraph);
 	let from = req.query.from ? new Date(req.query.from) : new Date(0)
 	const to = req.query.to ? new Date(req.query.to) : new Date();
 
 	validateValidDate(from);
 	validateValidDate(to);
 
-	return await db.select(`course_node_state`)
+	const query = await db.select(`course_node_state`) // TODO make is as count endpoint
 		.where('"user" = ?', req.session.id)
 		.where('"when" >= ?', from)
 		.where('"when" <= ?', to)
-		.fields('SUM(number_of_completion) AS number_of_completion, "when"::date')
-		.more('GROUP BY "when"::date ORDER BY "when"').getList();
+
+	if (asGraph) {
+		return await query.fields('SUM(number_of_completion) AS number_of_completion, "when"::date')
+			.more('GROUP BY "when"::date ORDER BY "when"').getList();
+	} else {
+		return (await query.fields('SUM(number_of_completion)::int AS count').oneOrNone()).count;
+	}
 });
 
 module.exports = {app};
