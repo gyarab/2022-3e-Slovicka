@@ -39,6 +39,7 @@ async function endCourseStudyTime(userId) {
 
 	await db.update('course_study_time')
 		.set({to: new Date()})
+		.where('"to" IS NULL')
 		.where('"user" = ?', userId)
 		.run();
 }

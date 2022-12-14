@@ -141,6 +141,7 @@ const Routes = {
 
 	statistics: '/statistics',
 	statisticsWordsKnown: '/statistics/word-known',
+	statisticsTrophies: '/statistics/trophies',
 	statisticsLearningTime: '/statistics/learning-time',
 	statisticsCoursesCompleted: '/statistics/courses-completed',
 }

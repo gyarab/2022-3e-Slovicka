@@ -121,6 +121,62 @@ class LearnedTimeStatistics extends StatisticsScreen {
 	}
 }
 
+class TrophyScreen extends Sword {
+	render() {
+		this.wordsKnownCounts = [100, 500, 1000, 5000];
+		this.hoursLearned = this.coursesCompleted = [1, 5, 10, 100];
+
+		this.el = this.createElement({
+			children: [{
+				nodeName: 'h2',
+				textContent: i18n._('Trophies')
+			},{
+				children: this.renderSection('Words known', 'wordsKnown', this.wordsKnownCounts).concat(
+					this.renderSection('Hours learned', 'hoursLearned', this.hoursLearned),
+					this.renderSection('Courses completed', 'coursesCompleted', this.coursesCompleted),
+				)
+			}]
+		}, this);
+
+		this.getStatistics();
+	}
+
+	activateStatistics(prefix, counts, count) {
+		for (const c of counts) {
+			if (c <= count) {
+				this[prefix + c].style.opacity = 1;
+			}
+		}
+	}
+
+	async getStatistics() {
+		const wordsKnown = await REST.GET(`statistics/words_known`);
+		this.activateStatistics('wordsKnown', this.wordsKnownCounts, wordsKnown);
+
+		const coursesCompleted = await REST.GET(`statistics/course-nodes-completion`);
+		this.activateStatistics('coursesCompleted', this.coursesCompleted, coursesCompleted);
+
+		const learningTime = await REST.GET(`statistics/learning_time`);
+		const hours = (learningTime.days || 0) * 24 + (learningTime.hours || 0);
+		this.activateStatistics('hoursLearned', this.hoursLearned, hours);
+	}
+
+	renderSection(title, prefix, counts) {
+		return [{
+			nodeName: 'h4',
+			textContent: i18n._(title)
+		},{
+			className: 'trophies-list',
+			children: counts.map(count => ({
+				ref: prefix + count,
+				className: 'trophy',
+				nodeName: 'img',
+				src: `/images/achievement_${count}.svg`
+			}))
+		}]
+	}
+}
+
 class CompletedCoursesStatistics extends StatisticsScreen {
 	beforeRender() {
 		this.title = 'courses_completed';
@@ -131,7 +187,7 @@ class CompletedCoursesStatistics extends StatisticsScreen {
 		const fromFormatted = from ? '&from=' + from : '';
 		const toFormatted = to ? '&to=' + to : '';
 
-		const data = await REST.GET(`statistics/course-nodes-completion?${fromFormatted + toFormatted}`);
+		const data = await REST.GET(`statistics/course-nodes-completion?asGraph=true&${fromFormatted + toFormatted}`);
 		const dates = [], counts = [];
 
 		for (const r of data) {
@@ -146,12 +202,13 @@ class CompletedCoursesStatistics extends StatisticsScreen {
 
 class Statistics extends SectionScreen {
 	beforeRender() {
-		this.defaultSection = Routes.statisticsWordsKnown;
+		this.defaultSection = Routes.statisticsTrophies;
 	}
 
 	getRoutes() {
 		return {
 			'word-known': Routes.statisticsWordsKnown,
+			'trophies': Routes.statisticsTrophies,
 			'learning-time': Routes.statisticsLearningTime,
 			'courses-completed': Routes.statisticsCoursesCompleted
 		};
@@ -165,6 +222,12 @@ class Statistics extends SectionScreen {
 
 	getSidebarMenu() {
 		return [{
+			nodeName: 'a',
+			className: 'item',
+			children: [this.useIcon('book'), i18n._('trophies')],
+			href: Routes.statisticsTrophies,
+			screen: TrophyScreen
+		},{
 			nodeName: 'a',
 			className: 'item',
 			children: [this.useIcon('book'), i18n._('words_known')],
