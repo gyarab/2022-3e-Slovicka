@@ -182,11 +182,13 @@ class AdventureNodesEditor extends Sword {
 			children: [{
 				class: AppHeader,
 			},{
+				ref: 'adventureHeader'
+			},{
 				className: 'body',
 				children: [{
 					textContent: i18n._('')
 				},{
-					className: 'nodes-list',
+					className: 'nodes',
 					ref: 'nodesList'
 				}]
 			}]
@@ -197,6 +199,7 @@ class AdventureNodesEditor extends Sword {
 
 	async loadAdventure() {
 		try {
+			this.adventure = await REST.GET(`adventures/${this.id}`);
 			const nodes = await REST.GET(`adventures/${this.id}/node/list`);
 			this.nodes = {};
 
@@ -206,6 +209,7 @@ class AdventureNodesEditor extends Sword {
 			}
 
 			this.renderNodes();
+			this.renderHeader();
 		} catch (ex) {
 			new ConfirmDialog(document.body, {
 				title: i18n._('Course not found'),
@@ -217,21 +221,55 @@ class AdventureNodesEditor extends Sword {
 		}
 	}
 
+	renderHeader() {
+		const me = this;
+
+		this.append({
+			className: 'adventure-header',
+			children: [{
+				nodeName: 'button',
+				type: 'button',
+				children: ['icon:arrow-left', {textContent: i18n._('back')}],
+				className: 'primary icon-left',
+				'on:click': () => ROUTER.pushRoute(Routes.administration_adventures)
+			},{
+				nodeName: 'h5',
+				textContent: this.adventure.name,
+				ref: 'adventureName'
+			},{
+				nodeName: 'button',
+				type: 'button',
+				children: ['icon:pencil', {textContent: i18n._('edit_adventure')}],
+				className: 'primary icon-left',
+				'on:click': async () => new AdventureAdministrationFrom(document.body, {
+					data: this.adventure,
+					'on:success': (obj, adventure) => {
+						me.adventure = adventure;
+						me.adventureName.textContent = adventure.name;
+					}
+				})
+			}]
+		}, me, this.adventureHeader);
+	}
+
 	getNewNodeConf(level) {
 		return {
 			children: [{
-				className: 'icon',
-				children: ['icon:plus']
-			}],
-			'on:click': () => ROUTER.route({
-				path: `${Routes.adventure_node_editor}/${this.id}`,
-				paramsFn: () => {
-					const params = new URLSearchParams();
-					params.append('level', level);
-					return params;
-				},
-				mode: 'push',
-			})
+				className: 'node',
+				children: [{
+					className: 'state-icon',
+					children: ['icon:plus']
+				}],
+				'on:click': () => ROUTER.route({
+					path: `${Routes.adventure_node_editor}/${this.id}`,
+					paramsFn: () => {
+						const params = new URLSearchParams();
+						params.append('level', level);
+						return params;
+					},
+					mode: 'push',
+				})
+			}]
 		};
 	}
 
@@ -245,12 +283,15 @@ class AdventureNodesEditor extends Sword {
 				const n = row[i];
 
 				children.push({
-					'on:click': () => ROUTER.pushRoute(`${Routes.adventure_node_editor}/${this.id}/${n.id}`),
 					children: [{
-						className: 'icon',
-						children: ['icon:pencil']
-					}, {
-						textContent: n.name
+						className: 'node',
+						'on:click': () => ROUTER.pushRoute(`${Routes.adventure_node_editor}/${this.id}/${n.id}`),
+						children: [{
+							className: 'state-icon',
+							children: ['icon:pencil']
+						}, {
+							textContent: n.name
+						}]
 					}]
 				})
 			}
@@ -264,13 +305,13 @@ class AdventureNodesEditor extends Sword {
 			}
 
 			this.append({
-				className: 'row',
+				className: 'level',
 				children
 			}, null, this.nodesList);
 		}
 
 		this.append({
-			className: 'row',
+			className: 'level',
 			children: Array(3).fill(this.getNewNodeConf(Object.keys(this.nodes).length))
 		}, null, this.nodesList);
 	}

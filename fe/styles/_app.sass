@@ -409,7 +409,7 @@ nav.header
 				padding: 25px 50px
 
 
-[sword-comp=AdventureNodesEditor]
+//[sword-comp=AdventureNodesEditor]
 	.nodes-list
 		.row
 			display: grid
@@ -464,8 +464,9 @@ nav.header
 
 		.next:first-child
 			margin-left: auto
-[sword-comp=AdventureNodes]
-	.nodes-header
+
+[sword-comp=AdventureNodes], [sword-comp=AdventureNodesEditor]
+	.nodes-header, .adventure-header
 		display: flex
 		margin: 20px auto
 		align-items: center
@@ -474,6 +475,14 @@ nav.header
 
 		h5
 			margin-bottom: 0
+
+	.adventure-header
+		width: 650px
+		justify-content: normal
+
+		h5
+			margin: 0 20px
+			flex: 1
 
 	.nodes
 		width: 500px
