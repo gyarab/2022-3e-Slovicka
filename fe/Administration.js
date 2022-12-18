@@ -424,6 +424,52 @@ class AdventuresSection extends Sword {
 		this.table.setData(this.adventures);
 	}
 }
+
+class AddImageCourseNode extends Dialog {
+	beforeRender() {
+		this.title = i18n._('Select a picture');
+		this.allowCloseButton = true;
+	}
+
+	async renderBody() {
+		this.images = await REST.GET('adventure-node-pictures/list');
+
+		this.replaceChildren([{
+			textContent: i18n._('Click on image for selecting it')
+		},{
+			className: 'images',
+			ref: 'imagesEl',
+			children: this.images.map(i => ({
+				className: 'image',
+				children: [{
+					nodeName: 'img',
+					src: `/api/adventures/node-picture/${i.id}`
+				},{
+					textContent: i.name
+				}],
+				'on:click': ({target}) => {
+					const activeEl = this.imagesEl.querySelector('.active');
+					activeEl?.classList.remove('active');
+					target.closest('.image').classList.add('active');
+					this.selectedImage = i;
+				}
+			}))
+		},{
+			nodeName: 'button',
+			type: 'submit',
+			className: 'primary save-button',
+			textContent: i18n._('select'),
+			'on:click': () => {
+				this.fire('image', {
+					id: this.selectedImage.id,
+					name: this.selectedImage.name
+				});
+				this.close();
+			}
+		}], this, this.bodyEl);
+	}
+}
+
 class AddImage extends ValidateChangesFormDialog {
 	beforeRender() {
 		this.data ??= {};

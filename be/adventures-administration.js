@@ -28,7 +28,7 @@ async function getNodesAtLevel(id, level) {
 
 async function getNodeWithPicture(id) {
 	return await db.select()
-		.fields('course_nodes.*, anp.name AS img_name, files.storage_path')
+		.fields('course_nodes.*, anp.name AS picture_name, anp.file AS picture, files.storage_path')
 		.from(
 			'course_nodes',
 			'LEFT JOIN adventure_node_pictures AS anp ON anp.id = course_nodes.picture',

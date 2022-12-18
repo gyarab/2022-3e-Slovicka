@@ -6,7 +6,7 @@ class FormField extends Sword {
 		if (this.label != null || this.label === " ") {
 			this.el = this.createElement({
 				className: 'form-field',
-				'attr:data-name': this.name,
+				'data-name': this.name,
 				children: [{
 					ref: 'labelEl',
 					render: !!this.label,

@@ -428,7 +428,15 @@ class I18n {
 				/**
 				 * AdventureNodeEditor
 				 */
-				'Published node cannot be edited': 'Published node cannot be edited'
+				'Published node cannot be edited': 'Published node cannot be edited',
+				'Click for selecting node image': 'Click for selecting node image',
+
+				/**
+				 * AddImageCourseNode
+				 */
+				'Select a picture': 'Select a picture',
+				'Click on image for selecting it': 'Click on image for selecting it',
+				'select': 'Select'
 			}
 		},
 		'cz': {
@@ -854,7 +862,15 @@ class I18n {
 				/**
 				 * AdventureNodeEditor
 				 */
-				'Published node cannot be edited': 'Publikovaný uzel nejde upravovat'
+				'Published node cannot be edited': 'Publikovaný uzel nejde upravovat',
+				'Click for selecting node image': 'Klikněte pro vybrání obrázku uzle',
+
+				/**
+				 * AddImageCourseNode
+				 */
+				'Select a picture': 'Vyberte obrázek',
+				'Click on image for selecting it': 'Klikněte na obrázek pro jeho vybrání',
+				'select': 'Vybrat'
 			}
 		}
 	}

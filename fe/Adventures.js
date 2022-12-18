@@ -21,6 +21,11 @@ class AdventureNodeEditor extends CourseNodeEditor {
 				this.nodeInfo.setFormValues(this.data);
 				await this.loadWords();
 			}
+
+			this.setNodeImage({
+				id: this.data?.picture,
+				name: this.data?.picture_name
+			});
 		} catch (ignored) {}
 	}
 
@@ -38,7 +43,10 @@ class AdventureNodeEditor extends CourseNodeEditor {
 			data.level = Number(this.level) || 0;
 		}
 
-		this.data = await REST[id ? 'PUT' : 'POST'](`adventures/${this.course}/node${id ? '/' + id : ''}`, data);
+		this.data = await REST[id ? 'PUT' : 'POST'](`adventures/${this.course}/node${id ? '/' + id : ''}`, {
+			...data,
+			picture: this.selectedImage.id
+		});
 
 		NOTIFICATION.showStandardizedSuccess(i18n._(newNode ? 'Node saved' : 'Node updated'));
 
@@ -70,7 +78,32 @@ class AdventureNodeEditor extends CourseNodeEditor {
 					e.preventDefault();
 				}
 			}
+		},{
+			'on:click': () => new AddImageCourseNode(document.body, {
+				'on:image': (obj, image) => {
+					this.selectedImage = image;
+					this.setNodeImage(this.selectedImage);
+				}
+			}),
+			ref: 'nodeImage',
+ 			className: 'adventure-node-picture',
 		}]
+	}
+
+	setNodeImage(picture) {
+		if (!picture.id) {
+			this.replaceChildren([{
+				textContent: i18n._('Click for selecting node image')
+			}], null, this.nodeInfo.nodeImage)
+			return;
+		}
+
+		this.replaceChildren([{
+			nodeName: 'img',
+			src: `/api/adventures/node-picture/${picture.id}`
+		},{
+			textContent: picture.name
+		}], null, this.nodeInfo.nodeImage);
 	}
 
 	deleteNodeDialog() {
