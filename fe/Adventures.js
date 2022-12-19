@@ -731,7 +731,7 @@ class TestWords extends Sword {
 	next(word) {
 		const getRandomWord = () => this.words[Math.floor(Math.random() * this.words.length)];
 
-		const gameMode = ['truth', 'translate', 'select'][Math.floor(Math.random() * 2)];
+		const gameMode = ['truth', 'translate', 'select'][Math.floor(Math.random() * 3)];
 
 		if (gameMode === 'truth') {
 			const randomWord = getRandomWord();

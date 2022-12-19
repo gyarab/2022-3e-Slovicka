@@ -230,14 +230,14 @@ async function getWords(req, validate) {
                COALESCE(gr.sentence, wo.sentence) AS sentence, known_times, ws.state
             FROM word_groups AS gr
 			INNER JOIN words AS wo ON gr.word = wo.id
-			LEFT JOIN word_state AS ws ON ws.word_group = gr.id
+			LEFT JOIN word_state AS ws ON ws.word_group = gr.id AND ws."user" = ?
 			LEFT JOIN (
 	            SELECT MAX(changed), count(CASE when state = 'known' then 1 end) AS known_times, word_group FROM word_state
 	            WHERE "user" = ? GROUP BY ("user", "word_group")
 	        ) states ON states.word_group = gr.id
         WHERE course_node = ? AND
             (case when ws.state IS NULL THEN TRUE ELSE ws."user" = ? AND changed = states.max END);
-	`, [req.session.id, node, req.session.id]));
+	`, [req.session.id, req.session.id, node, req.session.id]));
 }
 
 async function getCourseWithRootNode(id, sessionId) {
