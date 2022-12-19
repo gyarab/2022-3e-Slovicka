@@ -719,39 +719,66 @@ class TestWords extends Sword {
 			}]
 		}, this, this.body);
 
-		this.renderCard(this.notKnown[0]);
+		this.next(this.notKnown[0]);
 	}
 
 	reset() {
 		this.notKnown = [...this.words];
 		this.wordCount.textContent = 1;
-		this.renderCard(this.notKnown[0]);
+		this.next(this.notKnown[0]);
 	}
 
-	renderCard(word) {
+	next(word) {
 		const getRandomWord = () => this.words[Math.floor(Math.random() * this.words.length)];
-		const randomAnswers = shuffle([word, getRandomWord(), getRandomWord(), getRandomWord()]);
 
+		const gameMode = ['truth', 'select'][Math.floor(Math.random() * 2)];
+
+		if (gameMode === 'truth') {
+			const randomWord = getRandomWord();
+
+			const question = i18n._('Is translation {translation} for word {word} correct?')
+				.replace('{translation}', randomWord.translation)
+				.replace('{word}', word.word);
+
+			const isCorrect = randomWord.id === word.id;
+
+			this.renderCard(word.group, question, [{
+				text: i18n._('yes'),
+				correct: isCorrect
+			}, {
+				text: i18n._('no'),
+				correct: !isCorrect
+			}])
+		} else {
+			const randomAnswers = shuffle([word, getRandomWord(), getRandomWord(), getRandomWord()]).map(w => ({
+				text: w.translation,
+				correct: w.id === word.id
+			}));
+			this.renderCard(word.group, word.word, randomAnswers);
+		}
+
+	}
+
+	renderCard(wordGroup, text, answers) {
 		this.replaceChildren([{
 			className: 'word',
-			textContent: word.word
+			textContent: text
 		},{
 			className: 'translations',
-			children: randomAnswers.map(a => ({
+			children: answers.map(a => ({
 				nodeName: 'button',
-				render: !!a.translation,
+				render: !!a.text,
 				className: 'translation',
-				textContent: a.translation,
+				textContent: a.text,
 				'on:click': async e => {
-					const notKnown = word.id !== a.id;
-					await REST.POST(`courses/${this.id}/words/${word.group}/state`, {
-						state: notKnown ? 'unknown' : 'known'
+					await REST.POST(`courses/${this.id}/words/${wordGroup}/state`, {
+						state: a.correct ? 'known' : 'unknown'
 					});
 
-					if (notKnown) {
-						this.wordSelectedUnsuccessfully();
-					} else {
+					if (a.correct) {
 						this.wordSelectedSuccessfully();
+					} else {
+						this.wordSelectedUnsuccessfully();
 					}
 				}
 			}))
@@ -762,7 +789,7 @@ class TestWords extends Sword {
 		const testedWord = this.notKnown.shift();
 
 		new WordKnownFailDialog(document.body, {
-			cb: () => this.renderCard(this.notKnown[0])
+			cb: () => this.next(this.notKnown[0])
 		});
 		this.notKnown.push(testedWord);
 	}
@@ -775,7 +802,7 @@ class TestWords extends Sword {
 			this.showEndingPopup();
 		} else {
 			new WordKnownSuccessDialog(document.body, {
-				cb: () => this.renderCard(this.notKnown[0])
+				cb: () => this.next(this.notKnown[0])
 			});
 
 			this.wordCount.textContent = 1 + (this.words.length - this.notKnown.length);

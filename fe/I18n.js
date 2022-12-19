@@ -436,7 +436,12 @@ class I18n {
 				 */
 				'Select a picture': 'Select a picture',
 				'Click on image for selecting it': 'Click on image for selecting it',
-				'select': 'Select'
+				'select': 'Select',
+
+				/**
+				 * TestWords
+				 */
+				'Is translation {translation} for word {word} correct?': 'Is translation {translation} for word {word} correct?'
 			}
 		},
 		'cz': {
@@ -870,7 +875,12 @@ class I18n {
 				 */
 				'Select a picture': 'Vyberte obrázek',
 				'Click on image for selecting it': 'Klikněte na obrázek pro jeho vybrání',
-				'select': 'Vybrat'
+				'select': 'Vybrat',
+
+				/**
+				 * TestWords
+				 */
+				'Is translation {translation} for word {word} correct?': 'Je překlad {translation} slova {word} správný?'
 			}
 		}
 	}
