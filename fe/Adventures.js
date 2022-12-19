@@ -731,7 +731,7 @@ class TestWords extends Sword {
 	next(word) {
 		const getRandomWord = () => this.words[Math.floor(Math.random() * this.words.length)];
 
-		const gameMode = ['truth', 'select'][Math.floor(Math.random() * 2)];
+		const gameMode = ['truth', 'translate', 'select'][Math.floor(Math.random() * 2)];
 
 		if (gameMode === 'truth') {
 			const randomWord = getRandomWord();
@@ -749,6 +749,8 @@ class TestWords extends Sword {
 				text: i18n._('no'),
 				correct: !isCorrect
 			}])
+		} else if (gameMode === 'translate') {
+			this.renderWordTranslate(word);
 		} else {
 			const randomAnswers = shuffle([word, getRandomWord(), getRandomWord(), getRandomWord()]).map(w => ({
 				text: w.translation,
@@ -756,7 +758,43 @@ class TestWords extends Sword {
 			}));
 			this.renderCard(word.group, word.word, randomAnswers);
 		}
+	}
 
+	renderWordTranslate(word) {
+		this.replaceChildren([{
+			className: 'word',
+			textContent: word.word
+		},{
+			className: 'translation-field',
+			children: [{
+				class: TextField,
+				label: i18n._('translation (must exactly match)'),
+				ref: 'translation',
+				handleKeydown: e => {
+					if (e.key === 'Enter') {
+						this.attemptBtn.click();
+					}
+				}
+			},{
+				ref: 'attemptBtn',
+				nodeName: 'button',
+				textContent: i18n._('attempt'),
+				className: 'primary',
+				'on:click': async e => this.saveWordState(word.group, this.translation.getValue() === word.translation)
+			}]
+		}], this, this.card);
+	}
+
+	async saveWordState(wordGroup, known) {
+		await REST.POST(`courses/${this.id}/words/${wordGroup}/state`, {
+			state: known ? 'known' : 'unknown'
+		});
+
+		if (known) {
+			this.wordSelectedSuccessfully();
+		} else {
+			this.wordSelectedUnsuccessfully();
+		}
 	}
 
 	renderCard(wordGroup, text, answers) {
@@ -770,17 +808,7 @@ class TestWords extends Sword {
 				render: !!a.text,
 				className: 'translation',
 				textContent: a.text,
-				'on:click': async e => {
-					await REST.POST(`courses/${this.id}/words/${wordGroup}/state`, {
-						state: a.correct ? 'known' : 'unknown'
-					});
-
-					if (a.correct) {
-						this.wordSelectedSuccessfully();
-					} else {
-						this.wordSelectedUnsuccessfully();
-					}
-				}
+				'on:click': async e => this.saveWordState(wordGroup, a.correct)
 			}))
 		}], this, this.card);
 	}

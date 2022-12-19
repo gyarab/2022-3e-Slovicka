@@ -441,7 +441,9 @@ class I18n {
 				/**
 				 * TestWords
 				 */
-				'Is translation {translation} for word {word} correct?': 'Is translation {translation} for word {word} correct?'
+				'Is translation {translation} for word {word} correct?': 'Is translation {translation} for word {word} correct?',
+				'translation (must exactly match)': 'Translation (must exactly match)',
+				'attempt': 'Attempt'
 			}
 		},
 		'cz': {
@@ -880,7 +882,9 @@ class I18n {
 				/**
 				 * TestWords
 				 */
-				'Is translation {translation} for word {word} correct?': 'Je překlad {translation} slova {word} správný?'
+				'Is translation {translation} for word {word} correct?': 'Je překlad {translation} slova {word} správný?',
+				'translation (must exactly match)': 'Překlad (musí se přesně shodovat)',
+				'attempt': 'Zkusit'
 			}
 		}
 	}
