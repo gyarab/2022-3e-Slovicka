@@ -96,13 +96,8 @@ app.get_json('/adventures/:id([0-9]+)/node/list', async req => {
 	const id = parseId(req.params.id);
 	await validateAdventureCourse(id);
 
-	return await db.select()
-		.fields('course_nodes.*, anp.name, files.storage_path')
-		.from(
-			'course_nodes',
-			'LEFT JOIN adventure_node_pictures AS anp ON anp.id = course_nodes.picture',
-			'LEFT JOIN files ON anp.file = files.id'
-		)
+	return await db.select('course_nodes')
+		.fields('course_nodes.*')
 		.where('course = ?', id)
 		.more('ORDER BY level')
 		.getList();

@@ -55,7 +55,7 @@ app.get_json('/adventures/:id([0-9]+)/nodes', async req => {
 	await validateUserCanAccessAdventure(id);
 
 	return await db.select()
-		.fields('cn.*, states.completed, anp.name, files.storage_path')
+		.fields('cn.*, states.completed, anp.name')
 		.from(
 			'course_nodes AS cn',
 			`LEFT JOIN (SELECT SUM(cns.number_of_completion) AS completed, course_nodes FROM course_node_state AS cns

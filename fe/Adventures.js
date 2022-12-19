@@ -320,6 +320,14 @@ class AdventureNodesEditor extends Sword {
 						className: 'node',
 						'on:click': () => ROUTER.pushRoute(`${Routes.adventure_node_editor}/${this.id}/${n.id}`),
 						children: [{
+							render: !!n.picture,
+							className: 'state-icon',
+							children: [{
+								nodeName: 'img',
+								src: `/api/adventures/node-picture/${n.picture}`
+							}]
+						},{
+							render: !n.picture,
 							className: 'state-icon',
 							children: ['icon:pencil']
 						}, {
@@ -412,6 +420,14 @@ class AdventureNodes extends Sword {
 						}
 					},
 					children: [{
+						render: !!n.picture,
+						className: 'state-icon',
+						children: [{
+							nodeName: 'img',
+							src: `/api/adventures/node-picture/${n.picture}`
+						}]
+					},{
+						render: !n.picture,
 						className: 'state-icon',
 						children: [this.useIcon(levelCompleted ? 'check' : (unlocked ? 'un' : '') + 'lock')]
 					},{
