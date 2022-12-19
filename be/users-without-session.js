@@ -1,11 +1,12 @@
 const {validateObjectNotEmpty, validateStringNotEmpty} = require('./utils/validations.js');
 const {ApiError} = require("./utils/aexpress.js");
 const express = require('express');
-const mailer = require("./extensions/sendgrid.js");
+const mailer = require("./utils/mailer.js");
 const tokens = require("./utils/tokens.js");
 const env = require ("./env.js");
 const {hash_password, getUserByEmail, getUserInternal} = require("./sessions.js");
 const SQLBuilder = require('./utils/SQLBuilder');
+const {I18n} = require("./utils/I18n");
 
 let app = express();
 const db = new SQLBuilder();
@@ -30,7 +31,7 @@ app.post_json('/users/signup', async (req) => {
 	const update = {
 		email: user.email,
 		password: passwordHash,
-		role: 'CLIENT',
+		role: 'USER',
 		name: user.name,
 		surname: user.surname,
 		verified: !env.users.verify_email_address
@@ -52,7 +53,10 @@ app.post_json('/users/signup', async (req) => {
 			purpose: 'account-activation'
 		})
 
-		await mailer.sendEmail(env.sendgrid.templates.signup_confirmation, userCreated.email, {
+		const translations = I18n.translations.en.signup_confirmation;
+
+		await mailer.useSendgridTemplate('signup-confirmation', translations.title, userCreated.email, {
+			...translations,
 			url: `${env.url}/account-activate?account-activate=${token.code}`
 		});
 	}
@@ -87,6 +91,13 @@ app.post_json('/users/account-activate', async (req) => {
 		.run();
 
 	await tokens.cancelToken(tokenCode);
+
+	const translations = I18n.translations.en.welcome_email;
+
+	await mailer.useSendgridTemplate('welcome-email', translations.title, user.email, {
+		...translations,
+		url: `${env.url}`
+	});
 });
 
 app.post_json('/users/resend-activation-email', async (req) => {
@@ -105,7 +116,10 @@ app.post_json('/users/resend-activation-email', async (req) => {
 
 	const token = await tokens.getTokenByPurposeAndUser(user.id, 'account-activation');
 
-	await mailer.sendEmail(env.sendgrid.templates.signup_confirmation, email, {
+	const translations = I18n.translations.en.signup_confirmation;
+
+	await mailer.useSendgridTemplate('signup-confirmation', translations.title, email, {
+		...translations,
 		url: `${env.url}/account-activate?account-activate=${token.code}`
 	});
 
@@ -134,7 +148,10 @@ app.post_json('/users/restore-password', async (req) => {
 		purpose: 'password-restore'
 	})
 
-	await mailer.sendEmail(env.sendgrid.templates.password_recovery, email, {
+	const translations = I18n.translations[user.lang].password_reset;
+
+	await mailer.useSendgridTemplate('password-recovery', translations.title, email, {
+		...translations,
 		url: `${env.url}/password-restore?password-restore=${token.code}`
 	});
 });

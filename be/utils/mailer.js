@@ -53,6 +53,21 @@ class Mailer {
 		}
 		return html;
 	}
+
+	async useSendgridTemplate(name, subject, to, values) {
+		let html = fs.readFileSync(`be/templates/sendgrid-email-templates/${name}.html`).toString();
+
+		for (const [k, v] of Object.entries(values)) {
+			html = html.replaceAll('{{{' + k + '}}}', v);
+		}
+
+		await this.transporter.sendMail({
+			from: `"Team ${env.title}" ${env.mailer.email}`,
+			to,
+			subject,
+			html
+		});
+	}
 }
 
 const mailer = new Mailer();
