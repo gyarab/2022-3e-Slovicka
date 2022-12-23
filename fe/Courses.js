@@ -1022,7 +1022,7 @@ class Dashboard extends Sword {
 					textContent: i18n._('Your folders')
 				},{
 					className: 'list',
-					ref: 'folders'
+					ref: 'foldersList'
 				}]
 			},{
 				className: 'flex',
@@ -1060,28 +1060,14 @@ class Dashboard extends Sword {
 		this.learningTime = await REST.GET(`statistics/learning_time?from=${dateFormatted}`);
 		const knownWords = await REST.GET(`statistics/words_known`);
 		const dayStreak = await REST.GET(`statistics/daystreak`);
-		const folders = await REST.GET(`folders`);
+		this.folders = await REST.GET(`folders`);
 
 		this.knownWords.textContent = knownWords;
 		this.dayStreak.textContent = dayStreak;
 
 		this.renderCourses();
+		this.renderFolders();
 		this.renderLearnedMinutes();
-
-		for (const f of folders) {
-			this.append({
-				className: 'folder',
-				children: [{
-					textContent: f.name,
-					'on:click': () => new FolderDialog(document.body, {
-						folder: f
-					})
-				},{
-					className: 'courses-count',
-					textContent: i18n._(`{courses} ${f.courses === 1 ? 'course' : 'courses'}`).replace('{courses}', f.courses || 0)
-				}]
-			}, null, this.folders);
-		}
 
 		for (const a of adventure) {
 			this.append({
@@ -1093,6 +1079,31 @@ class Dashboard extends Sword {
 					textContent: DataManager.findLanguage(a.language).name
 				}]
 			}, null, this.adventures)
+		}
+	}
+
+	renderFolders() {
+		if (this.folders.isEmpty()) {
+			this.append({
+				className: 'no-folders',
+				textContent: i18n._('You don\' have any folders yet')
+			}, null, this.foldersList);
+			return;
+		}
+
+		for (const f of this.folders) {
+			this.append({
+				className: 'folder',
+				children: [{
+					textContent: f.name,
+					'on:click': () => new FolderDialog(document.body, {
+						folder: f
+					})
+				},{
+					className: 'courses-count',
+					textContent: i18n._(`{courses} ${f.courses === 1 ? 'course' : 'courses'}`).replace('{courses}', f.courses || 0)
+				}]
+			}, null, this.foldersList);
 		}
 	}
 

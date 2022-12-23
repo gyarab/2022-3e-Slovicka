@@ -317,6 +317,7 @@ class I18n {
 				'minutes': 'Minutes',
 				'Don\'t know where to go?': 'Don\'t know where to go?',
 				'Go quickly threw our tutorial': 'Go quickly threw our tutorial',
+				'You don\' have any folders yet': 'You don\' have any folders yet',
 
 				/**
 				 * Adventure Node Editor
@@ -778,6 +779,7 @@ class I18n {
 				'minutes': 'Minuty',
 				'Don\'t know where to go?': 'Nevíte, kam dál?',
 				'Go quickly threw our tutorial': 'Podívejte se do našeho tutoriálu',
+				'You don\' have any folders yet': 'Ještě nemáte žádné složky',
 
 				/**
 				 * Adventure Node Editor
