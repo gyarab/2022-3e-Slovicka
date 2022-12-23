@@ -378,6 +378,7 @@ class I18n {
 				'dashboard': 'Dashboard',
 				'adventures': 'Adventures',
 				'administration': 'Administration',
+				'statistics': 'Statistics',
 
 				/**
 				 * Statistics
@@ -443,7 +444,25 @@ class I18n {
 				 */
 				'Is translation {translation} for word {word} correct?': 'Is translation {translation} for word {word} correct?',
 				'translation (must exactly match)': 'Translation (must exactly match)',
-				'attempt': 'Attempt'
+				'attempt': 'Attempt',
+
+				/**
+				 * AddToFolderDialog
+				 */
+				'Add course to folder': 'Add course to folder',
+				'Or': 'Or',
+				'New folder': 'New folder',
+				'Select folder': 'Select folder',
+				'Name must be filled when folder is not selected': 'Name must be filled when folder is not selected',
+				'Course has been saved into folder': 'Course has been saved into folder',
+				'Course is already in folder': 'Course is already in folder',
+
+				/**
+				 * FolderDialog
+				 */
+				'Folder {folder}': 'Folder {folder}',
+				'Folder is empty': 'Folder is empty',
+				'Your folders': 'Your folders'
 			}
 		},
 		'cz': {
@@ -819,6 +838,7 @@ class I18n {
 				'dashboard': 'Nástěnka',
 				'adventures': 'Adventures',
 				'administration': 'Administrace',
+				'statistics': 'Statistiky',
 
 				/**
 				 * Statistics
@@ -884,7 +904,27 @@ class I18n {
 				 */
 				'Is translation {translation} for word {word} correct?': 'Je překlad {translation} slova {word} správný?',
 				'translation (must exactly match)': 'Překlad (musí se přesně shodovat)',
-				'attempt': 'Zkusit'
+				'attempt': 'Zkusit',
+
+				/**
+				 * AddToFolderDialog
+				 */
+				'Add course to folder': 'Přidat lekci do složky',
+				'Or': 'Nebo',
+				'New folder': 'Nová složka',
+				'Select folder': 'Vybrat složku',
+				'Name must be filled when folder is not selected': 'Jméno musí být vyplněno když není vybraná složka',
+				'Course has been saved into folder': 'Lekce byla uložena do složky',
+				'Course is already in folder': 'Lekce už je ve složce',
+
+				/**
+				 * FolderDialog
+				 */
+				'Folder {folder}': 'Složka {folder}',
+				'Folder is empty': 'Složka je prázdná',
+				'Your folders': 'Vaše složky',
+				'{courses} course': '{courses} lekce',
+				'{courses} courses': '{courses} lekcí'
 			}
 		}
 	}

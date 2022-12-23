@@ -409,7 +409,7 @@ nav.header
 						left: 8px
 						font-size: 12px
 
-					.rating
+					.rating, .folder-add
 						font-size: 12px
 						display: flex
 						align-items: center
@@ -419,8 +419,11 @@ nav.header
 						gap: 2px
 
 						svg
-							height: 12px
-							width: 12px
+							height: 14px
+							width: 14px
+
+					.folder-add
+						top: 26px
 
 			.language
 				display: inline-block
@@ -702,6 +705,19 @@ nav.header
 						height: 12px
 						width: 12px
 
+			.folder-add
+				font-size: 12px
+				display: flex
+				align-items: center
+				position: absolute
+				top: 26px
+				right: 8px
+
+				svg
+					height: 14px
+					width: 14px
+
+
 [sword-comp=WordsGoThrewModeSelect]
 	.title
 		margin-bottom: 0
@@ -871,3 +887,21 @@ nav.header
 			&.active
 				img
 					background: rgba(185, 192, 218, 0.4)
+
+[sword-comp=AddToFolderDialog]
+	.divider
+		margin: 0 auto
+		display: flex
+		justify-content: center
+		align-items: center
+		width: 300px
+
+		.line
+			margin: 0 10px
+			flex: 1
+			height: 2px
+			background-color: white
+
+	.new-course
+		display: block
+		margin-left: auto

@@ -40,14 +40,14 @@ class AppHeader extends Sword {
 						activeOnRoutes: [Routes.adventures]
 					},{
 						class: NavigationLink,
-						text: i18n._('statistics'),
-						href: Routes.statistics,
-						activeOnRoutes: [Routes.statistics]
-					},{
-						class: NavigationLink,
 						text: i18n._('courses'),
 						href: Routes.courses,
 						activeOnRoutes: [Routes.courses]
+					},{
+						class: NavigationLink,
+						text: i18n._('statistics'),
+						href: Routes.statistics,
+						activeOnRoutes: [Routes.statistics]
 					},{
 						render: DataManager.userIsAtLeastEditor(),
 						class: NavigationLink,

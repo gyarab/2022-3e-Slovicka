@@ -503,6 +503,15 @@ class Adventures extends Sword {
 						className: 'rating',
 						children: [{textContent: `(${a.rating || '-'})`}, 'icon:star']
 					}]
+				},{
+					className: 'folder-add',
+					children: ['icon:folder-plus'],
+					'on:click': e => {
+						e.stopPropagation();
+						new AddToFolderDialog(document.body, {
+							id: a.id
+						});
+					}
 				}]
 			}, null, this.adventuresEl);
 		}

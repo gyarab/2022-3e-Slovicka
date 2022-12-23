@@ -392,6 +392,69 @@ class CourseEditor extends CourseNodeEditor {
 	}
 }
 
+class AddToFolderDialog extends Dialog {
+	beforeRender() {
+		this.title = i18n._('Add course to folder');
+		this.allowCloseButton = true;
+	}
+
+	async renderBody() {
+		const folders = await REST.GET(`folders`);
+		this.selectedFolder = folders[0].id;
+
+		this.append({
+			children: [{
+				class: TextField,
+				label: i18n._('New folder'),
+				ref: 'newFolderName'
+			},{
+				className: 'divider',
+				children: [{
+					className: 'line'
+				},{
+					className: 'or',
+					textContent: i18n._('Or')
+				},{
+					className: 'line'
+				}]
+			},{
+				class: SelectField,
+				label: i18n._('Select folder'),
+				options: folders.map(f => ({text: f.name, value: f.id})),
+				'on:change': (obj, value) => this.selectedFolder = value
+			},{
+				nodeName: 'button',
+				type: 'button',
+				children: [{textContent: i18n._('save')}],
+				className: 'primary icon-left new-course',
+				'on:click': async () => {
+					try {
+						let folderId = this.selectedFolder;
+						const name = this.newFolderName.getValue();
+
+						if (!folderId && !name) {
+							NOTIFICATION.showStandardizedError(i18n._('Name must be filled when folder is not selected'));
+							return;
+						}
+
+						if (name) {
+							folderId = (await REST.POST(`folders`, {name})).id;
+						}
+
+						await REST.POST(`folders/${folderId}/course/${this.id}`);
+						this.close();
+						NOTIFICATION.showStandardizedSuccess(i18n._(`Course has been saved into folder`));
+					} catch (ex) {
+						if (ex.code === 'course_already_added') {
+							NOTIFICATION.showStandardizedWarning(i18n._('Course is already in folder'));
+						}
+					}
+				}
+			}]
+		}, this, this.bodyEl);
+	}
+}
+
 class Courses extends Sword {
 	render() {
 		this.el = this.createElement({
@@ -460,6 +523,15 @@ class Courses extends Sword {
 						},{
 							className: 'rating',
 							children: [{textContent: `(${c.rating || '-'})`}, 'icon:star']
+						},{
+							className: 'folder-add',
+							children: ['icon:folder-plus'],
+							'on:click': e => {
+								e.stopPropagation();
+								new AddToFolderDialog(document.body, {
+									id: c.id
+								});
+							}
 						},{
 							textContent: c.name
 						}]
@@ -860,6 +932,59 @@ class WordsGoThrewModeSelect extends Sword {
 	}
 }
 
+class FolderDialog extends Dialog {
+	beforeRender() {
+		this.title = i18n._(`Folder {folder}`).replace('{folder}', this.folder.name);
+		this.allowCloseButton = true;
+	}
+
+	noCourses() {
+		this.replaceChildren([{
+			className: 'empty-folder',
+			textContent: i18n._('Folder is empty')
+		}], null, this.bodyEl);
+	}
+
+	async renderBody() {
+		const courses = await REST.GET(`folders/${this.folder.id}/courses`);
+
+		if (courses.isEmpty()) {
+			this.noCourses();
+			return;
+		}
+
+		this.append({
+			className: 'courses',
+			children: courses.map(c => ({
+				ref: `course${c.course_id}`,
+				className: 'course',
+				children: [{
+					textContent: c.name,
+					'on:click': () => {
+						this.close();
+						const route = c.type === 'USER' ?
+							`/courses/${c.course_id}/mode` :
+							`/home/adventures/${c.course_id}`;
+						ROUTER.pushRoute(route);
+					}
+				},{
+					className: 'remove-from-folder',
+					children: ['icon:folder-minus'],
+					'on:click': async () => {
+						await REST.DELETE(`folders/${this.folder.id}/course/${c.course_id}`);
+						this[`course${c.course_id}`].remove();
+						courses.deleteByIndex(c => c.id === c.course_id);
+
+						if (courses.isEmpty()) {
+							this.noCourses();
+						}
+					}
+				}]
+			}))
+		}, this, this.bodyEl);
+	}
+}
+
 class Dashboard extends Sword {
 	render() {
 		this.el = this.createElement({
@@ -889,6 +1014,15 @@ class Dashboard extends Sword {
 					},{
 						ref: 'dayStreak'
 					}]
+				}]
+			},{
+				className: 'folders',
+				children: [{
+					nodeName: 'h4',
+					textContent: i18n._('Your folders')
+				},{
+					className: 'list',
+					ref: 'folders'
 				}]
 			},{
 				className: 'flex',
@@ -926,12 +1060,28 @@ class Dashboard extends Sword {
 		this.learningTime = await REST.GET(`statistics/learning_time?from=${dateFormatted}`);
 		const knownWords = await REST.GET(`statistics/words_known`);
 		const dayStreak = await REST.GET(`statistics/daystreak`);
+		const folders = await REST.GET(`folders`);
 
 		this.knownWords.textContent = knownWords;
 		this.dayStreak.textContent = dayStreak;
 
 		this.renderCourses();
 		this.renderLearnedMinutes();
+
+		for (const f of folders) {
+			this.append({
+				className: 'folder',
+				children: [{
+					textContent: f.name,
+					'on:click': () => new FolderDialog(document.body, {
+						folder: f
+					})
+				},{
+					className: 'courses-count',
+					textContent: i18n._(`{courses} ${f.courses === 1 ? 'course' : 'courses'}`).replace('{courses}', f.courses || 0)
+				}]
+			}, null, this.folders);
+		}
 
 		for (const a of adventure) {
 			this.append({
