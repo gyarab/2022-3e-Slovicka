@@ -945,8 +945,30 @@ class FolderDialog extends Dialog {
 		}], null, this.bodyEl);
 	}
 
+	deleteFolder() {
+		new ConfirmDialog(document.body, {
+			title: i18n._('Are you sure you want to delete this folder?'),
+			confirmText: i18n._('yes'),
+			cancelText: i18n._('no'),
+			onSave: async () => {
+				await REST.DELETE(`folders/${this.folder.id}`);
+				this.close();
+				this.fire('folder-delete', this.folder.id);
+				NOTIFICATION.showStandardizedSuccess(i18n._('Folder has been deleted'));
+			}
+		})
+	}
+
 	async renderBody() {
 		const courses = await REST.GET(`folders/${this.folder.id}/courses`);
+
+		this.append({
+			nodeName: 'button',
+			type: 'button',
+			className: 'secondary',
+			textContent: i18n._('Delete folder'),
+			'on:click': async () => this.deleteFolder()
+		}, null, this.headerCenterCt)
 
 		if (courses.isEmpty()) {
 			this.noCourses();
@@ -1092,12 +1114,13 @@ class Dashboard extends Sword {
 		}
 
 		for (const f of this.folders) {
-			this.append({
+			const folder = this.append({
 				className: 'folder',
 				children: [{
 					textContent: f.name,
 					'on:click': () => new FolderDialog(document.body, {
-						folder: f
+						folder: f,
+						'on:folder-delete': () => folder.remove()
 					})
 				},{
 					className: 'courses-count',
