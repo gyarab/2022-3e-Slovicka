@@ -95,11 +95,12 @@ class CourseNodeEditor extends Sword {
 				children: [{
 					className: 'node-info',
 					children: [{
-						className: 'header',
+						className: 'responsive-header header',
 						ref: 'header'
 					},{
 						ref: 'nodeInfo',
 						class: Form,
+						className: 'information-form',
 						submitText: i18n._('save'),
 						getFormFields() {
 							return [{
@@ -121,7 +122,7 @@ class CourseNodeEditor extends Sword {
 				},{
 					className: 'words',
 					children: [{
-						className: 'header',
+						className: 'responsive-header header',
 						children: [{
 							nodeName: 'h4',
 							className: 'title',
@@ -459,7 +460,7 @@ class Courses extends Sword {
 	render() {
 		this.el = this.createElement({
 			children: [{
-				className: 'header',
+				className: 'responsive-header header',
 				children: [{
 					nodeName: 'h3',
 					textContent: i18n._('courses')
@@ -693,7 +694,7 @@ class FlipCards extends Sword {
 
 		this.append({
 			children: [{
-				className: 'header',
+				className: 'responsive-header header',
 				children: [{
 					nodeName: 'h5',
 					textContent: this.course.name
@@ -1047,7 +1048,7 @@ class Dashboard extends Sword {
 					ref: 'foldersList'
 				}]
 			},{
-				className: 'flex',
+				className: 'courses-adventures flex',
 				children: [{
 					className: 'lastCourses',
 					children: [{

@@ -214,9 +214,12 @@ input:not([type=checkbox]):not([type=radio]), textarea, select, .select-input
 		&:hover
 			border-color: var(--input-border-color)
 
-[data-gw="SearchInput"]
+[sword-comp="SearchInput"]
 	display: inline-block
 	position: relative
+
+	> input[type="search"]
+		width: 100%
 
 	> input[type="search"] + button
 		position: absolute

@@ -8,7 +8,7 @@ class StatisticsScreen extends Sword {
 		this.el = this.createElement({
 			is: CUSTOM_ELEMENT.DIV,
 			children: [{
-				className: 'header',
+				className: 'responsive-header header',
 				children: [{
 					nodeName: 'h3',
 					textContent: i18n._(this.title)

@@ -364,7 +364,7 @@ class AdventureNodes extends Sword {
 			children: [{
 				class: AppHeader
 			},{
-				className: 'nodes-header',
+				className: 'responsive-header nodes-header',
 				ref: 'header'
 			},{
 				className: 'nodes',
@@ -452,7 +452,7 @@ class Adventures extends Sword {
 	render() {
 		this.el = this.createElement({
 			children: [{
-				className: 'header',
+				className: 'responsive-header header',
 				children: [{
 					nodeName: 'h3',
 					textContent: i18n._('adventures')
@@ -697,7 +697,7 @@ class TestWords extends Sword {
 	renderBody() {
 		this.append({
 			children: [{
-				className: 'header',
+				className: 'responsive-header header',
 				children: [{
 					nodeName: 'h5',
 					textContent: this.course.name

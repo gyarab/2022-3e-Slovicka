@@ -751,7 +751,7 @@ class I18n {
 				/**
 				 * Flip Cards
 				 */
-				'This is last word in this course. Do you wanna go?': 'Toto je poslední slovo v tomto kuru. Chcete ho otevřít?',
+				'This is last word in this course. Do you wanna go?': 'Toto je poslední slovo v tomto kurzu. Chcete ho otevřít?',
 				'Go again': 'Znova',
 				'Go back to courses list': 'Zpět na seznam kurzů',
 				'This course is empty': 'Tento kurz je prázdný',

@@ -313,10 +313,10 @@ class PopupManagerObj extends Sword {
 	}
 
 	showMobileUIPopover(p, el, config) {
-		let mask = el.$mobilePopoverMask || document.body.gwCreateChild({
+		let mask = el.$mobilePopoverMask || this.append({
 			'style:will-change': 'opacity',
 			className: 'mobile-mask-overlay',
-		});
+		}, null, document.body)
 
 		let align = config.alignMobileUI || 'bottom';
 		mask.className = 'mobile-mask-overlay align-' + align;
@@ -331,12 +331,12 @@ class PopupManagerObj extends Sword {
 			el.style.transform = 'translate(0, ' + el.offsetHeight + 'px)';
 			mask.style.opacity = 0;
 			mask.offsetWidth;
-			el.gwAnimate({
+			this.animate(el, {
 				transform: 'translate(0, 0)',
 				duration: 0.4,
 				timing: 'ease-out',
 			});
-			mask.gwAnimate({
+			this.animate(mask, {
 				opacity: 1,
 				duration: 0.4,
 				timing: 'ease-out',
@@ -345,12 +345,12 @@ class PopupManagerObj extends Sword {
 			el.style.transform = 'translate(-' + el.offsetWidth + 'px, 0)';
 			mask.style.opacity = 0;
 			mask.offsetWidth;
-			el.gwAnimate({
+			this.animate(el, {
 				transform: 'translate(0, 0)',
 				duration: 0.4,
 				timing: 'ease-out',
 			});
-			mask.gwAnimate({
+			this.animate(mask, {
 				opacity: 1,
 				duration: 0.4,
 				timing: 'ease-out',
@@ -358,7 +358,7 @@ class PopupManagerObj extends Sword {
 		} else if (align == 'fullscreen') {
 			mask.style.opacity = 0;
 			mask.offsetWidth;
-			mask.gwAnimate({
+			this.animate(mask, {
 				opacity: 1,
 				duration: 0.4,
 				timing: 'ease-out',
@@ -387,12 +387,12 @@ class PopupManagerObj extends Sword {
 			async animateHide() {
 				if (align == 'bottom') {
 					await Promise.all([
-						el.gwAnimate({
+						this.animate(el, {
 							transform: 'translate(0, ' + el.offsetHeight + 'px)',
 							duration: 0.4,
 							timing: 'ease-out',
 						}),
-						mask.gwAnimate({
+						this.animate(mask, {
 							opacity: 0,
 							duration: 0.4,
 							timing: 'ease-out',
@@ -400,12 +400,12 @@ class PopupManagerObj extends Sword {
 					]);
 				} else if (align == 'left') {
 					await Promise.all([
-						mask.gwAnimate({
+						this.animate(mask, {
 							opacity: 0,
 							duration: 0.4,
 							timing: 'ease-out',
 						}),
-						el.gwAnimate({
+						this.animate(el, {
 							transform: 'translate(-' + el.offsetWidth + 'px, 0)',
 							duration: 0.4,
 							timing: 'ease-out',
@@ -413,7 +413,7 @@ class PopupManagerObj extends Sword {
 					]);
 				} else if (align == 'fullscreen') {
 					await Promise.all([
-						mask.gwAnimate({
+						this.animate(mask, {
 							opacity: 0,
 							duration: 0.4,
 							timing: 'ease-out',
@@ -446,6 +446,8 @@ class PopupManagerObj extends Sword {
 		}
 
 		let el = this.getPopupLayerElement(p);
+		config.disableMobileUIPopover ??= true;
+
 		if (el) {
 			if (APP?.isMobileUI() && !config.disableMobileUIPopover) {
 				if (p.loadData) {

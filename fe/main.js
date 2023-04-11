@@ -19,15 +19,37 @@ class AppLogo extends Sword {
 
 class AppHeader extends Sword {
 	render() {
+		this.popupNavigationEventListenerId = null;
+		this.tabsHidden = true;
+
 		this.el = this.createElement({
 			nodeName: 'nav',
 			className: 'header',
 			children: [{
 				className: 'page-centered-container',
 				children: [{
-					class: AppLogo
+					className: 'header-row',
+					children: [{
+						class: AppLogo
+					},{
+						render: APP.isMobileUI(),
+						class: UserProfile
+					},{
+						render: APP.isMobileUI(),
+						className: 'hamburger',
+						children: [this.useIcon('hamburger')],
+						'on:click': () => {
+							const changeVisibility = () => {
+								this.tabsHidden = !this.tabsHidden;
+								this.tabSwitcher.classList.toggle('hidden', this.tabsHidden);
+							}
+
+							changeVisibility();
+						}
+					}]
 				},{
-					className: 'tab-switcher',
+					ref: 'tabSwitcher',
+					className: `tab-switcher ${APP.isMobileUI() && 'hidden'}`,
 					children: [{
 						class: NavigationLink,
 						text: i18n._('dashboard'),
@@ -56,10 +78,11 @@ class AppHeader extends Sword {
 						activeOnRoutes: [Routes.administration]
 					}]
 				}, {
+					render: !APP.isMobileUI(),
 					class: UserProfile
 				}],
 			}],
-		})
+		}, this);
 	}
 }
 

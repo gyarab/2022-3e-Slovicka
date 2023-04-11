@@ -74,8 +74,13 @@ class SectionScreen extends Sword {
 
 		for (const item of menu) {
 			if (!item['on:click'] && !item.notAddOnClick) {
-				item['on:click'] = e => {
+				item['on:click'] = async e => {
 					e.preventDefault();
+
+					if (item.href === window.location.pathname) {
+						return;
+					}
+
 					this.bodyEl.innerHTML = '';
 
 					ROUTER.pushRoute(item.href);

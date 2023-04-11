@@ -1,6 +1,8 @@
 class Application extends Sword {
-	isMobileUIValue;
-	inits;
+	beforeRender() {
+		this.isMobileUIValue = null;
+		this.inits = null;
+	}
 
 	render() {
 		this.el = this.createElement({

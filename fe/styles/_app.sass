@@ -373,14 +373,6 @@ nav.header
 			input
 				height: 42px
 
-			button
-				position: absolute
-				right: 3px
-
-				svg
-					width: 20px
-					height: 20px
-
 	.courses
 		margin-top: 25px
 
@@ -470,7 +462,7 @@ nav.header
 		display: flex
 		margin: 20px auto
 		align-items: center
-		width: 600px
+		padding: 0 var(--body-padding)
 		justify-content: space-between
 
 		h5
@@ -485,7 +477,7 @@ nav.header
 			flex: 1
 
 	.nodes
-		width: 500px
+		max-width: 500px
 		height: 100%
 		margin: 0 auto
 
@@ -515,6 +507,7 @@ nav.header
 	.body
 		max-width: 600px
 		margin: 0 auto
+		padding: var(--body-padding)
 
 		.header
 			display: flex
@@ -653,6 +646,7 @@ nav.header
 
 		h3
 			flex: 1
+			margin-bottom: 0
 
 		.search-input
 			position: relative
@@ -905,3 +899,135 @@ nav.header
 	.new-course
 		display: block
 		margin-left: auto
+
+
+@media only screen and (max-width: 600px)
+	.layout
+		grid-template-columns: 1fr
+		grid-template-rows: auto auto 1fr
+		grid-template-areas: 'header' 'sidebar' 'body'
+
+		.sidebar
+			padding: var(--body-padding) var(--body-padding) 0
+
+	[sword-comp=TrophyScreen]
+		h4, h2
+			margin-bottom: 5px
+
+		.trophies-list
+			img
+				width: 80px !important
+				height: 80px !important
+
+	[sword-comp=FlipCards]
+		.word
+			height: 300px !important
+
+	[sword-comp=FlipCards], [sword-comp=TestWordsCourses], [sword-comp=TestWordsAdventures]
+		.header
+			display: grid !important
+			grid-template-columns: 1fr 1fr
+
+			> *
+				grid-column: span 2
+
+			.word-count
+				justify-content: right !important
+				padding-right: 10px
+
+			h5, .word-count
+				grid-row: 1
+				grid-column: unset
+
+	[sword-comp=Statistics]
+		.body
+			padding-top: 10px
+
+			.responsive-header
+				display: grid
+				grid-template-columns: 1fr 1fr
+
+				h3
+					margin-bottom: 0
+					grid-row: 1
+					grid-column: span 2
+
+				.form-field
+					grid-row: 2
+
+	.word-create-dialog .dialog
+		min-width: 98vw
+
+	.responsive-header
+		flex-direction: column
+		gap: 10px
+
+		> *
+			width: 100%
+
+			input[type=search]
+				width: 100%
+
+	[sword-comp=TestWordsCourses]
+		.card
+			.word
+				height: 200px !important
+
+			.translations
+				.translation
+					padding: 15px 50px !important
+
+	[sword-comp=Adventures]
+		.adventures
+			.adventure
+				max-width: unset !important
+
+	.course-editor
+		.information-form
+			.form-fields
+				display: block
+
+	.courses
+		.courses-by-language
+			.language
+				width: 100%
+
+			.course
+				max-width: unset !important
+
+	.app-header
+		.page-centered-container, .tab-switcher
+			display: flex
+			flex-direction: column
+
+			.header-row
+				display: flex
+				align-items: center
+				width: 100%
+
+				.hamburger
+					display: flex
+					align-items: center
+					margin-left: 5px
+
+				.app-logo
+					margin-right: unset !important
+					flex: 1
+
+			.tab-switcher
+				position: absolute
+				top: 56px
+				background: white
+				padding: 10px 20px
+
+				.navigation-link
+					margin: 0
+
+		.tab-switcher
+			width: 100%
+			margin-right: unset
+
+			a
+				width: 100%
+				text-align: center
+

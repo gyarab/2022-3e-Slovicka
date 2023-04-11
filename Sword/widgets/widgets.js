@@ -103,6 +103,7 @@ class PopupMenu extends Sword {
 				anchorEl: option,
 				forceAxis: 'horizontal',
 				preferReadingOrder: true,
+				disableMobileUIPopover: false
 			});
 			return;
 		}
@@ -519,6 +520,7 @@ class UserProfile extends Sword {
 					anchorEl: e.target,
 					forceAxis: 'vertical',
 					preferReadingOrder: true,
+					disableMobileUIPopover: !APP.isMobileUI()
 				});
 			},
 			children: [this.useIcon('user'), {
