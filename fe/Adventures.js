@@ -809,7 +809,9 @@ class TestWords extends Sword {
 	renderCard(wordGroup, text, answers) {
 		this.replaceChildren([{
 			className: 'word',
-			textContent: text
+			children: [{
+				textContent: text
+			}]
 		},{
 			className: 'translations',
 			children: answers.map(a => ({

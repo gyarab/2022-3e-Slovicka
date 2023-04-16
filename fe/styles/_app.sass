@@ -508,6 +508,10 @@ nav.header
 		max-width: 600px
 		margin: 0 auto
 		padding: var(--body-padding)
+		height: calc(100vh - 84px)
+
+		> div
+			height: 100%
 
 		.header
 			display: flex
@@ -541,6 +545,10 @@ nav.header
 				display: flex
 				justify-content: center
 				align-items: center
+
+				> div
+					overflow: auto
+					word-break: break-all
 
 			.translations
 				margin-top: 30px
@@ -909,6 +917,31 @@ nav.header
 
 		.sidebar
 			padding: var(--body-padding) var(--body-padding) 0
+
+	[sword-comp=AdventureCompleted]
+		.actions
+			display: grid !important
+			grid-template-columns: 1fr
+
+	[sword-comp=FlipCards], [sword-comp=TestWordsCourses], [sword-comp=TestWordsAdventures]
+		.card
+			display: flex
+			flex-direction: column
+			height: calc(100% - 100px)
+
+			.word
+				flex: 1
+				height: 150px !important
+
+			.translations
+				grid-template-columns: 1fr !important
+				grid-gap: 15px !important
+
+				.translation
+					width: 100%
+					text-align: center
+					padding: 20px 10px !important
+
 
 	[sword-comp=TrophyScreen]
 		h4, h2
