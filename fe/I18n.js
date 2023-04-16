@@ -364,6 +364,7 @@ class I18n {
 				 */
 				'Go again threw course': 'Go again threw course',
 				'go-again': 'Go again',
+				'course_completed': 'You have successfully completed course \n Where do you want to go?',
 
 				/**
 				 * Adventure completed
@@ -371,6 +372,8 @@ class I18n {
 				'Go again threw node': 'Go again threw node',
 				'Go to adventure nodes': 'Go to adventure nodes',
 				'Go to adventures list': 'Go to adventures list',
+				'adventure_node_completed': 'You have successfully completed adventure node \n Where do you want to go?',
+				'adventure_node_completed_times': 'You have successfully completed adventure node {completion} times',
 
 				/**
 				 * App Header
@@ -825,6 +828,7 @@ class I18n {
 				 */
 				'Go again threw course': 'Zpět na kurz',
 				'go-again': 'Znova',
+				'course_completed': 'Úspěšně jste dokončil lekci \n Kam budete pokračovat?',
 
 				/**
 				 * Adventure completed
@@ -832,6 +836,8 @@ class I18n {
 				'Go again threw node': 'Zpět na uzel',
 				'Go to adventure nodes': 'Zpět na avdenture mody',
 				'Go to adventures list': 'Zpět na seznam adventure',
+				'adventure_node_completed': 'Úspěšně jste dokončil lekci adventure \n Kam budete pokračovat?',
+				'adventure_node_completed_times': 'Úspěšně jste dokončil lekci adveture {completion} krát',
 
 				/**
 				 * App Header

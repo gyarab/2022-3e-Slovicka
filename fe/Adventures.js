@@ -628,7 +628,7 @@ class CourseCompleted extends CompletedPopup {
 			textContent: i18n._('Go back to courses list'),
 			'on:click': () => ROUTER.pushRoute(Routes.courses)
 		}];
-		this.mainText = 'You have successfully completed course \n Where do you want to go?';
+		this.mainText = i18n._('course_completed');
 	}
 }
 
@@ -656,8 +656,8 @@ class AdventureCompleted extends CompletedPopup {
 			'on:click': () => ROUTER.pushRoute(Routes.adventures)
 		}];
 		this.mainText = completed ?
-			'You have successfully completed adventure node \n Where do you want to go?' :
-			`You have successfully completed adventure node ${this.completed}/${this.required} times`;
+			i18n._('adventure_node_completed') :
+			i18n._('adventure_node_completed_times').replace('{completion}', `${this.completed}/${this.required}`)
 	}
 }
 
