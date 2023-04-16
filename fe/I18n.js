@@ -390,6 +390,7 @@ class I18n {
 				'words_known': 'Words known',
 				'learning_time': 'Learning time',
 				'courses_completed': 'Courses completed',
+				'trophies': 'Trophies',
 
 				/**
 				 * CompletedCoursesStatistics
@@ -466,7 +467,15 @@ class I18n {
 				 */
 				'Folder {folder}': 'Folder {folder}',
 				'Folder is empty': 'Folder is empty',
-				'Your folders': 'Your folders'
+				'Your folders': 'Your folders',
+
+				/**
+				 * TrophyScreen
+				 */
+				'Trophies': 'Trophies',
+				'Words known': 'Words known',
+				'Hours learned': 'Hours learned',
+				'Courses completed': 'Courses completed'
 			}
 		},
 		'cz': {
@@ -854,6 +863,7 @@ class I18n {
 				'words_known': 'Naučená slovíčka',
 				'learning_time': 'Čas učení',
 				'courses_completed': 'Dokončené lekce',
+				'trophies': 'Trofeje',
 
 				/**
 				 * CompletedCoursesStatistics
@@ -932,7 +942,15 @@ class I18n {
 				'Folder is empty': 'Složka je prázdná',
 				'Your folders': 'Vaše složky',
 				'{courses} course': '{courses} lekce',
-				'{courses} courses': '{courses} lekcí'
+				'{courses} courses': '{courses} lekcí',
+
+				/**
+				 * TrophyScreen
+				 */
+				'Trophies': 'Trofeje',
+				'Words known': 'Naučená slovíčka',
+				'Hours learned': 'Čas učení (v hodinách)',
+				'Courses completed': 'Počet dokončených lekcí'
 			}
 		}
 	}
