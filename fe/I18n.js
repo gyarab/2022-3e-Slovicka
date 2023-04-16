@@ -783,7 +783,7 @@ class I18n {
 				 * Dashboard
 				 */
 				'Learned minutes today': 'Dnešní hodiny strávené učením',
-				'Number of known words today': 'Dnešní počet známých slov',
+				'Number of known words today': 'Dnešní naučených slov',
 				'Day streak': 'Denní streak',
 				'Last courses': 'Poslední kurzy',
 				'Last adventures': 'Poslední adventures',

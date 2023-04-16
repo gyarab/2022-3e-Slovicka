@@ -496,6 +496,7 @@ class AddImage extends ValidateChangesFormDialog {
 			label: i18n._('picture'),
 			type: 'file',
 			required: false,
+			accept: 'image/svg+xml',
 			'on:change': (obj, e) => {
 				this.img = e.target.files;
 			}
