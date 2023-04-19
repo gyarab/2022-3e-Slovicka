@@ -508,7 +508,7 @@ nav.header
 		max-width: 600px
 		margin: 0 auto
 		padding: var(--body-padding)
-		height: calc(100vh - 84px)
+		height: calc(100vh - 54px)
 
 		> div
 			height: 100%
@@ -724,6 +724,7 @@ nav.header
 	.title
 		margin-bottom: 0
 		text-align: center
+		padding: 0 10px
 
 	.modes
 		max-width: 1200px
@@ -788,6 +789,11 @@ nav.header
 				width: 200px
 				height: 200px
 
+	@media only screen and (max-height: 700px)
+		.course-name
+			width: 180px !important
+			height: 180px !important
+
 	@media only screen and (max-width: 650px)
 		.modes
 			padding: 40px
@@ -795,8 +801,8 @@ nav.header
 			flex-direction: column
 
 			.course-name
-				width: 300px
-				height: 300px
+				width: 250px
+				height: 250px
 
 			.mode
 				> div
@@ -927,7 +933,7 @@ nav.header
 		.card
 			display: flex
 			flex-direction: column
-			height: calc(100% - 100px)
+			height: calc(100% - 184px)
 
 			.word
 				flex: 1
