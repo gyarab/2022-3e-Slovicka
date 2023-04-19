@@ -329,7 +329,7 @@ class SQLBuilder {
 		queryCommand += this.conditions.join('');
 		queryCommand += ' ' + this.moreText;
 
-		const values = this.commandValues;
+		const values = [...this.commandValues];
 
 		this.reset();
 		return {queryCommand, values};
@@ -397,6 +397,7 @@ class SQLBuilder {
 			values,
 			''
 		);
+		this.reset();
 
 		let result;
 		try {
@@ -406,12 +407,11 @@ class SQLBuilder {
 					values
 				);
 		} catch (err) {
+			console.log(err);
 			console.error(err.stack)
 		}
 
 		await client.release();
-
-		this.reset();
 		return result.rows;
 	}
 }
