@@ -101,8 +101,6 @@ class DocumentKeyControllerCl extends SwordExternalEvents {
 				return;
 			}
 		}
-
-		throw new Error(`Listener not found. Id: ${id}`)
 	}
 }
 
