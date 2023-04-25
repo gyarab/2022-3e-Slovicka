@@ -14,7 +14,7 @@ and how to start it.
 To start project run `npm run init` in console (in project root folder) and project should be initialized 
 and ready to run if you have everything configured in `be/env.js`.
 
-After initialization admin user is created. Credentials:
+After initialization admin user is created. Credentials are:
 
 ```json
 {
@@ -26,7 +26,7 @@ After initialization admin user is created. Credentials:
 ## Configuration
 
 You can configure everything in file `be/env.js`. 
-Mainly fields `host, port, url, datadir, useProxy, reload_css_onsave`.
+Main fields `host, port, url, datadir, useProxy, reload_css_onsave`.
 
 ## NPM scripts
 
