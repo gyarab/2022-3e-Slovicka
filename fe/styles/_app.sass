@@ -435,9 +435,27 @@ nav.header
 		padding: 20px
 
 		.head
+			margin-bottom: 20px
 			display: flex
 			justify-content: space-around
 			text-align: center
+
+			.section
+				cursor: pointer
+				width: 100px
+				border: 1px solid gray
+				border-radius: 50%
+				height: 100px
+				display: flex
+				flex-direction: column
+				justify-content: center
+				padding: 10px
+				color: var(--color)
+				text-decoration: none
+
+				&:hover
+					transition: 0.2s
+					background: var(--primary-primary)
 
 	.actions
 		position: sticky

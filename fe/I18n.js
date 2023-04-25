@@ -255,7 +255,7 @@ class I18n {
 				/**
 				 * Tutorial
 				 */
-				'Introduction': 'Introduction',
+				'Introduction': 'Intro',
 				'Courses': 'Courses',
 				'Adventure mode': 'Adventure mode',
 				'back': 'Back',
@@ -266,20 +266,35 @@ class I18n {
 				/**
 				 * Tutorial1
 				 */
+				'tut1_title': 'Intro',
 				'tut1_p1': 'Here will be something about courses',
 				'tut1_p2': 'Introduction will be added later',
+				'tut1_p3': 'Introduction will be added later',
 
 				/**
 				 * Tutorial2
 				 */
-				'tut2_p1': 'Here will be something about courses',
-				'tut2_p2': 'In the courses section you can find courses created by yourself or courses shared by someone else',
+				'tut2_title': 'Courses',
+				'tut2_p1': 'Část aplikace s názvem Kurzy je určená pro procházení slovíček, která si předem vyberete a nahrajete do aplikace. Úžasný nástroj, jak se naučit předem definovaná slovíčka. Skvělé například při učení na test, kdy dostanete seznam, který máte umět. Pak už jenom stačí vložit slovíčka do ??? a můžete začít. Rychlé, jednoduché a efektivní.',
+				'tut2_p2': 'V sekci Kurzy najdete Vaše soukromé kurzy nebo ty, které s Vámi někdo sdílel',
+				'tut2_p3': 'Jak vytvořit novou složku?',
+				'tut2_p4': 'V horním menu vyberete záložku Kurzy. V pravém horním rohu budete mít ikonku plus s textem Vytvořit nový kurz. Po stisknutí toho tlačítka se dostanete na obrazovku, kde už můžete vytvořit nový kurz. Stačí už jen vše správně vyplnit, přidat slovíčka a máte hotovo.',
+				'tut2_p5': 'Jednotlivé složky lze mít soukromně nebo veřejně. Pouze při vytváření kurzy nebo při případné pozdější úpravě vyberte možnost VŠICHNI, namísto předvyplněného JÁ, a můžete se učit společně.',
+				'tut2_p6': 'Po vytvoření nové složky, které si také můžete rozřadit po jednotlivých jazycích pro větší přehlednost, si už můžete začít procházet jednotlivá slovíčka. Když rozkliknete složku, tak se Vám zobrazí dva způsoby učení. ',
+				'tut2_p7': 'Prvním je testování, kdy Vás aplikace testuje třemi různými způsoby – psaní překladu, Ano/Ne a výběr z více možností, které se spouští náhodně. Pokud se při testovacím modu vybere psaní překladu, tak máte k danému zobrazenému slovíčku napsat doslovný překlad, který byl zadán při vytváření složky. Pakliže se otevře Ano/Ne, tak Vám ukáže slovíčko a náhodný překlad a Vy musíte učit, zda je to pravda, či ne. Posledním možností je vybírání z více možností, kdy musíte vybrat ten správný překlad ze čtyř nabízených možností.',
+				'tut2_p8': 'Druhým možným způsobem jsou flip kartičky. Nic nikam nepíšete, pouze si slovíčka v hlavě opakujete. Je to pravděpodobně jeden z nejrychlejších způsobů, protože, oproti ostatním způsobům učení, když Vás správný překlad napadne, můžete rovnou přejít k dalšímu a nezdržovat se psaním překladu. Zobrazí se Vám slovo v cizím jazyce a po kliknutí na něj se objeví překlad, což je příležitost si překlad ověřit. Mezi jednotlivými slovy se lze pohybovat pomocí šipek v dolní části kartičky nebo šipkami na klávesnici.',
+				'tut2_p9': 'Veškeré lekce si můžete ohodnotit pro lepší přehlednost. Stejně tak je zde i vyhledávání, které je vhodné převážně, když už aplikaci nějakou dobu používáte, tudíž máte vytvořených hodně lekcí a chcete najít nějakou jednu konkrétní.',
+				'go_courses_tutorial': 'Courses',
 
 				/**
 				 * Tutorial3
 				 */
-				'tut3_p1': 'Here will be information about adventure mode',
-				'tut3_p2': 'Adventure mode is a great way to learn english',
+				'tut3_title': 'Adventures',
+				'tut3_p1': 'Pokud nemáte předem daný seznam slov, který se máte naučit, ale i přes to se chcete v cizím jazyce nadále zlepšovat, je pro Vás adventure mód tou správnou volbou. Umožní Vám pocházet předpřipravené lekce, tudíž nemusíte přemýšlet, co přesně byste se chtěli učit. ',
+				'tut3_p2': 'Lekce obsahují různá témata a jsou uspořádány do mapy, kdy se Vám následující úroveň odemkne až po dokončení všech předchozích. Díky tomu nebudete moci přeskakovat mezi úrovněmi a můžete mít jistotu, že se naučíte všechna slova hezky popořadě. ',
+				'tut3_p3': 'Každou lekci reprezentuje obrázek typický pro danou lekci, aby bylo zřejmé, co můžete v lekci očekávat. Ať už to bude jídlo, zvířata či nábytek, vždy to poznáte na první pohled.',
+				'tut3_p4': 'Teď už víte vše potřebné a můžete začít. Hodně štěstí!',
+				'go_adventures_tutorial': 'Adventures',
 
 				/**
 				 * Flip Cards Finished
@@ -745,20 +760,35 @@ class I18n {
 				/**
 				 * Tutorial1
 				 */
-				'tut1_p1': 'Zde bude úvod',
-				'tut1_p2': 'Úvod bude přidán později',
+				'tut1_title': 'Úvod',
+				'tut1_p1': 'Vítejte v aplikaci pro jednodušší a rychlejší učení slovíček. Zkrátí Vám dobu strávenou přepisováním slovíček na papír, či vytváření kartiček. Stačí pár kliknutí a můžete se plně ponořit do učení. Namísto spousty různých zápisků a jiného příslušenství teď můžete mít vše na jednom místě ve Vašem telefonu, vždy po ruce.',
+				'tut1_p2': 'Denní cíle, trofeje a další funkce aplikace Vám pomohou udržovat jistý řád v učení a nevypadnout z rytmu. Díky nim budete mít lepší motivaci používat aplikaci co nejčastěji a tím si lépe upevnit naučená slovíčka. Opakování je matka moudrosti.',
+				'tut1_p3': 'Aplikace obsahuje dva základní režimy, jak se slovíčka učit. Prvním je vytváření složek s vlastním obsahem, který ovšem můžete sdílet i mezi ostatními uživateli. Tento způsob je vhodný zejména jako příprava na testy, kdy máte předem definované, co test může obsahovat. Druhým je adventure mode, kde užíváte již předpřipravených lekcí. Tato část je skvělá pro dlouhodobé učení cizího jazyka.',
 
 				/**
 				 * Tutorial2
 				 */
-				'tut2_p1': 'Zde bude něco o kurzech',
+				'tut2_title': 'Kurzy',
+				'tut2_p1': 'Část aplikace s názvem Kurzy je určená pro procházení slovíček, která si předem vyberete a nahrajete do aplikace. Úžasný nástroj, jak se naučit předem definovaná slovíčka. Skvělé například při učení na test, kdy dostanete seznam, který máte umět. Pak už jenom stačí vložit slovíčka do ??? a můžete začít. Rychlé, jednoduché a efektivní.',
 				'tut2_p2': 'V sekci Kurzy najdete Vaše soukromé kurzy nebo ty, které s Vámi někdo sdílel',
+				'tut2_p3': 'Jak vytvořit novou složku?',
+				'tut2_p4': 'V horním menu vyberete záložku Kurzy. V pravém horním rohu budete mít ikonku plus s textem Vytvořit nový kurz. Po stisknutí toho tlačítka se dostanete na obrazovku, kde už můžete vytvořit nový kurz. Stačí už jen vše správně vyplnit, přidat slovíčka a máte hotovo.',
+				'tut2_p5': 'Jednotlivé složky lze mít soukromně nebo veřejně. Pouze při vytváření kurzy nebo při případné pozdější úpravě vyberte možnost VŠICHNI, namísto předvyplněného JÁ, a můžete se učit společně.',
+				'tut2_p6': 'Po vytvoření nové složky, které si také můžete rozřadit po jednotlivých jazycích pro větší přehlednost, si už můžete začít procházet jednotlivá slovíčka. Když rozkliknete složku, tak se Vám zobrazí dva způsoby učení. ',
+				'tut2_p7': 'Prvním je testování, kdy Vás aplikace testuje třemi různými způsoby – psaní překladu, Ano/Ne a výběr z více možností, které se spouští náhodně. Pokud se při testovacím modu vybere psaní překladu, tak máte k danému zobrazenému slovíčku napsat doslovný překlad, který byl zadán při vytváření složky. Pakliže se otevře Ano/Ne, tak Vám ukáže slovíčko a náhodný překlad a Vy musíte učit, zda je to pravda, či ne. Posledním možností je vybírání z více možností, kdy musíte vybrat ten správný překlad ze čtyř nabízených možností.',
+				'tut2_p8': 'Druhým možným způsobem jsou flip kartičky. Nic nikam nepíšete, pouze si slovíčka v hlavě opakujete. Je to pravděpodobně jeden z nejrychlejších způsobů, protože, oproti ostatním způsobům učení, když Vás správný překlad napadne, můžete rovnou přejít k dalšímu a nezdržovat se psaním překladu. Zobrazí se Vám slovo v cizím jazyce a po kliknutí na něj se objeví překlad, což je příležitost si překlad ověřit. Mezi jednotlivými slovy se lze pohybovat pomocí šipek v dolní části kartičky nebo šipkami na klávesnici.',
+				'tut2_p9': 'Veškeré lekce si můžete ohodnotit pro lepší přehlednost. Stejně tak je zde i vyhledávání, které je vhodné převážně, když už aplikaci nějakou dobu používáte, tudíž máte vytvořených hodně lekcí a chcete najít nějakou jednu konkrétní.',
+				'go_courses_tutorial': 'Kurzy',
 
 				/**
 				 * Tutorial3
 				 */
-				'tut3_p1': 'Zde budou informace o adventure modu',
-				'tut3_p2': 'Adventure mode je skvělá cesta, jak se naučit anglicky',
+				'tut3_title': 'Adventures',
+				'tut3_p1': 'Pokud nemáte předem daný seznam slov, který se máte naučit, ale i přes to se chcete v cizím jazyce nadále zlepšovat, je pro Vás adventure mód tou správnou volbou. Umožní Vám pocházet předpřipravené lekce, tudíž nemusíte přemýšlet, co přesně byste se chtěli učit. ',
+				'tut3_p2': 'Lekce obsahují různá témata a jsou uspořádány do mapy, kdy se Vám následující úroveň odemkne až po dokončení všech předchozích. Díky tomu nebudete moci přeskakovat mezi úrovněmi a můžete mít jistotu, že se naučíte všechna slova hezky popořadě. ',
+				'tut3_p3': 'Každou lekci reprezentuje obrázek typický pro danou lekci, aby bylo zřejmé, co můžete v lekci očekávat. Ať už to bude jídlo, zvířata či nábytek, vždy to poznáte na první pohled.',
+				'tut3_p4': 'Teď už víte vše potřebné a můžete začít. Hodně štěstí!',
+				'go_adventures_tutorial': 'Adventures',
 
 				/**
 				 * Flip Cards

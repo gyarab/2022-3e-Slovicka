@@ -568,6 +568,9 @@ class Tutorial extends Sword {
 					className: 'head',
 					children: sections.map((s, i) => {
 						return {
+							nodeName: 'a',
+							href: `/tutorial/${i}`,
+							className: 'section',
 							'on*:click': () => ROUTER.pushRoute(`/tutorial/${i}`),
 							children: [{
 								className: 'order',
@@ -579,6 +582,7 @@ class Tutorial extends Sword {
 						}
 					})
 				},{
+					nodeName: 'h3',
 					className: 'chapter',
 					textContent: this.heading
 				},{
@@ -599,14 +603,14 @@ class Tutorial extends Sword {
                 	render: this.idx === 2,
                     nodeName: 'button',
                     type: 'button',
-                    children: [{textContent: i18n._('go-adventure')}, 'icon:arrow-right'],
+                    children: [{textContent: i18n._('go_adventures_tutorial')}, 'icon:arrow-right'],
                     className: 'primary icon-right go-adventure',
                     'on*:click': () => ROUTER.pushRoute(Routes.adventures)
     		    },{
     		        render: this.idx === 1,
                     nodeName: 'button',
                     type: 'button',
-                    children: [{textContent: i18n._('go-courses')}, 'icon:arrow-right'],
+                    children: [{textContent: i18n._('go_courses_tutorial')}, 'icon:arrow-right'],
                     className: 'primary icon-right go-courses',
                     'on*:click': () => ROUTER.pushRoute(Routes.courses)
 			    },{
@@ -625,39 +629,69 @@ class Tutorial extends Sword {
 
 class Tutorial1 extends Tutorial {
 	beforeRender() {
-		this.heading = 'Introduction';
+		this.heading = i18n._('tut1_title');
 		this.text = [{
 			nodeName: 'p',
 			textContent: i18n._('tut1_p1'),
 		},{
 			nodeName: 'p',
 			textContent: i18n._('tut1_p2'),
+		},{
+			nodeName: 'p',
+			textContent: i18n._('tut1_p3')
 		}];
 		this.idx = 0;
 	}
 }
 class Tutorial2 extends Tutorial {
 	beforeRender() {
-		this.heading = 'Courses';
+		this.heading = i18n._('tut2_title');
 		this.text = [{
         			nodeName: 'p',
         			textContent: i18n._('tut2_p1'),
         		},{
         			nodeName: 'p',
         			textContent: i18n._('tut2_p2'),
+        		},{
+        			nodeName: 'p',
+        			textContent: i18n._('tut2_p3'),
+        		},{
+        			nodeName: 'p',
+        			textContent: i18n._('tut2_p4'),
+        		},{
+        			nodeName: 'p',
+        			textContent: i18n._('tut2_p5'),
+        		},{
+        			nodeName: 'p',
+        			textContent: i18n._('tut2_p6'),
+        		},{
+        			nodeName: 'p',
+        			textContent: i18n._('tut2_p7'),
+        		},{
+        			nodeName: 'p',
+        			textContent: i18n._('tut2_p8'),
+        		},{
+        			nodeName: 'p',
+        			textContent: i18n._('tut2_p9'),
         		}];
 		this.idx = 1;
 	}
 }
 class Tutorial3 extends Tutorial {
 	beforeRender() {
-		this.heading = 'Adventures';
+		this.heading = i18n._('tut3_title');
 		this.text = [{
         			nodeName: 'p',
         			textContent: i18n._('tut3_p1'),
         		},{
         			nodeName: 'p',
         			textContent: i18n._('tut3_p2'),
+        		},{
+        			nodeName: 'p',
+        			textContent: i18n._('tut3_p3'),
+        		},{
+        			nodeName: 'p',
+        			textContent: i18n._('tut3_p4'),
         		}];
 		this.idx = 2;
 	}
