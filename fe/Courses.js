@@ -571,7 +571,10 @@ class Tutorial extends Sword {
 							nodeName: 'a',
 							href: `/tutorial/${i}`,
 							className: 'section',
-							'on*:click': () => ROUTER.pushRoute(`/tutorial/${i}`),
+							'on*:click': e => {
+								e.preventDefault();
+								ROUTER.pushRoute(`/tutorial/${i}`)
+							},
 							children: [{
 								className: 'order',
 								textContent: i18n._(i + 1)

@@ -266,34 +266,34 @@ class I18n {
 				/**
 				 * Tutorial1
 				 */
-				'tut1_title': 'Intro',
-				'tut1_p1': 'Here will be something about courses',
-				'tut1_p2': 'Introduction will be added later',
-				'tut1_p3': 'Introduction will be added later',
+				'tut1_title': 'Introduction',
+				'tut1_p1': 'Welcome to the app ??? for easier and faster vocabulary learning. It will reduce the time you spend transcribing words on paper or creating flip cards. With just a few clicks, you can fully immerse yourself in learning. Instead of lots of different notes and other accessories, you can now have everything in one place on your phone, always easily reachable.',
+				'tut1_p2': 'Daily goals, trophies and other functions of the app will help you maintain a certain order in your learning and keep your daily streak. They will give you a better motivation to use the app as often as possible and help you reinforce the vocabulary you have already learned. Practise makes perfect.',
+				'tut1_p3': 'The app contains two basic modes to learn vocabulary. The first is to create folders with your own content, which you can also share among other users. This mode is particularly useful as test preparation, where you have predefined what the test may contain. The second is adventure mode, where you use pre-prepared lessons. This part is great for long-term learning of a foreign language.',
 
 				/**
 				 * Tutorial2
 				 */
 				'tut2_title': 'Courses',
-				'tut2_p1': 'Část aplikace s názvem Kurzy je určená pro procházení slovíček, která si předem vyberete a nahrajete do aplikace. Úžasný nástroj, jak se naučit předem definovaná slovíčka. Skvělé například při učení na test, kdy dostanete seznam, který máte umět. Pak už jenom stačí vložit slovíčka do ??? a můžete začít. Rychlé, jednoduché a efektivní.',
-				'tut2_p2': 'V sekci Kurzy najdete Vaše soukromé kurzy nebo ty, které s Vámi někdo sdílel',
-				'tut2_p3': 'Jak vytvořit novou složku?',
-				'tut2_p4': 'V horním menu vyberete záložku Kurzy. V pravém horním rohu budete mít ikonku plus s textem Vytvořit nový kurz. Po stisknutí toho tlačítka se dostanete na obrazovku, kde už můžete vytvořit nový kurz. Stačí už jen vše správně vyplnit, přidat slovíčka a máte hotovo.',
-				'tut2_p5': 'Jednotlivé složky lze mít soukromně nebo veřejně. Pouze při vytváření kurzy nebo při případné pozdější úpravě vyberte možnost VŠICHNI, namísto předvyplněného JÁ, a můžete se učit společně.',
-				'tut2_p6': 'Po vytvoření nové složky, které si také můžete rozřadit po jednotlivých jazycích pro větší přehlednost, si už můžete začít procházet jednotlivá slovíčka. Když rozkliknete složku, tak se Vám zobrazí dva způsoby učení. ',
-				'tut2_p7': 'Prvním je testování, kdy Vás aplikace testuje třemi různými způsoby – psaní překladu, Ano/Ne a výběr z více možností, které se spouští náhodně. Pokud se při testovacím modu vybere psaní překladu, tak máte k danému zobrazenému slovíčku napsat doslovný překlad, který byl zadán při vytváření složky. Pakliže se otevře Ano/Ne, tak Vám ukáže slovíčko a náhodný překlad a Vy musíte učit, zda je to pravda, či ne. Posledním možností je vybírání z více možností, kdy musíte vybrat ten správný překlad ze čtyř nabízených možností.',
-				'tut2_p8': 'Druhým možným způsobem jsou flip kartičky. Nic nikam nepíšete, pouze si slovíčka v hlavě opakujete. Je to pravděpodobně jeden z nejrychlejších způsobů, protože, oproti ostatním způsobům učení, když Vás správný překlad napadne, můžete rovnou přejít k dalšímu a nezdržovat se psaním překladu. Zobrazí se Vám slovo v cizím jazyce a po kliknutí na něj se objeví překlad, což je příležitost si překlad ověřit. Mezi jednotlivými slovy se lze pohybovat pomocí šipek v dolní části kartičky nebo šipkami na klávesnici.',
-				'tut2_p9': 'Veškeré lekce si můžete ohodnotit pro lepší přehlednost. Stejně tak je zde i vyhledávání, které je vhodné převážně, když už aplikaci nějakou dobu používáte, tudíž máte vytvořených hodně lekcí a chcete najít nějakou jednu konkrétní.',
+				'tut2_p1': 'The Courses section of the app is for reviewing vocabulary that you select in advance and upload to the app. An amazing tool to learn predefined vocabulary. Great, for example, for studying for a test when you are given a list to learn. Then all you have to do is put the vocabulary into the ??? and you\'re ready to begin. Quick, easy and effective. How to create a new folder?',
+				'tut2_p2': 'Select the Courses tab from the top menu. In the top right corner, you will have a plus icon with the text Create new course. Pressing that button will take you to a screen where you can actually create a new course. All you have to do is fill in everything correctly, add the vocabulary and all is done.',
+				'tut2_p3': 'The individual folders can be shared with friends. The only thing you need to do is select ALL when creating a course or editing it later, instead of the pre-filled ME, and you can learn together.',
+				'tut2_p4': 'Once you have created a new folder, which you can also sort by language for more clarity, you can already start reviewing individual vocabulary. When you click on a folder, you will see two ways to learn.',
+				'tut2_p5': 'The first is testing, where the app tests you in three different ways - typing the translation, Yes/No, and multiple choice, which is chosen randomly. If the test mode selects writing translation, you are asked to write a literal translation for the given displayed vocabulary that was entered when the folder was created. Then if Yes/No is opened, it shows you the word and the random translation and you have to work out if it is true or not. The last option is multiple choice, where you have to select the correct translation from the four given options.',
+				'tut2_p6': 'The second possibility is flip cards. You do not write anything down, you just repeat the words in your head. It is probably one of the fastest ways because, unlike other ways of learning, when the right translation comes to mind, you can go straight to the next word without writing the translation down. A word in a foreign language will be displayed and when you click on it, the translation will appear, giving you the opportunity to check the translation. You can move between words using the arrows at the bottom of the card or the arrow keys on the keyboard.',
+				'tut2_p7': 'You can rate all the lessons for better clarity. Likewise, there is also a search, which is mostly useful if you have been using the app for a while, so you have created many lessons and want to find exact one.',
+				'tut2_p8': '',
+				'tut2_p9': '',
 				'go_courses_tutorial': 'Courses',
 
 				/**
 				 * Tutorial3
 				 */
 				'tut3_title': 'Adventures',
-				'tut3_p1': 'Pokud nemáte předem daný seznam slov, který se máte naučit, ale i přes to se chcete v cizím jazyce nadále zlepšovat, je pro Vás adventure mód tou správnou volbou. Umožní Vám pocházet předpřipravené lekce, tudíž nemusíte přemýšlet, co přesně byste se chtěli učit. ',
-				'tut3_p2': 'Lekce obsahují různá témata a jsou uspořádány do mapy, kdy se Vám následující úroveň odemkne až po dokončení všech předchozích. Díky tomu nebudete moci přeskakovat mezi úrovněmi a můžete mít jistotu, že se naučíte všechna slova hezky popořadě. ',
-				'tut3_p3': 'Každou lekci reprezentuje obrázek typický pro danou lekci, aby bylo zřejmé, co můžete v lekci očekávat. Ať už to bude jídlo, zvířata či nábytek, vždy to poznáte na první pohled.',
-				'tut3_p4': 'Teď už víte vše potřebné a můžete začít. Hodně štěstí!',
+				'tut3_p1': 'If you do not have a predefined list of words to learn, but still want to improve your foreign language skills, adventure mode is the best choice for you. It allows you to get pre-made lessons, so you don\'t have to think about what exactly you want to learn.',
+				'tut3_p2': 'The lessons contain different topics and are organized in a map, where the next level is unlocked only if you have completed all the previous ones. In this way, you will not be able to skip anywhere between levels and you can be sure that you will learn all the words in a sequential order.',
+				'tut3_p3': 'Each lesson is represented by a picture typical for that lesson, so you can easily guess what will be in the lesson. Whether it is food, animals or furniture, you will always know it at the first sight.',
+				'tut3_p4': '',
 				'go_adventures_tutorial': 'Adventures',
 
 				/**
