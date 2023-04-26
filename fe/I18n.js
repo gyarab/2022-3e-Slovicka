@@ -936,7 +936,7 @@ class I18n {
 				'Are you sure you want to delete this image?': 'Jste si jisti, že chcete tento obrázek smazat?',
 				'Image has been successfully deleted.': 'Obrázek byl úspěšně smazán.',
 				'Image not found': 'Obrázek nenalezen',
-				'images': 'Obrázek',
+				'images': 'Obrázky',
 
 				/**
 				 * AddImage
@@ -951,7 +951,7 @@ class I18n {
 				 * AdventureNodeEditor
 				 */
 				'Published node cannot be edited': 'Publikovaný uzel nejde upravovat',
-				'Click for selecting node image': 'Klikněte pro vybrání obrázku uzle',
+				'Click for selecting node image': 'Klikněte pro vybrání obrázku uzlu',
 
 				/**
 				 * AddImageCourseNode
