@@ -243,6 +243,7 @@ class I18n {
 				'Course updated': 'Course updated',
 				'Course not found': 'Course not found',
 				'Are you sure you want to delete this course?': 'Are you sure you want to delete this course?',
+				'Course information': 'Course information',
 				'ME': 'ME',
 				'EVERYONE': 'EVERYONE',
 
@@ -308,6 +309,8 @@ class I18n {
 				'Go again': 'Go again',
 				'Go back to courses list': 'Go back to courses list',
 				'This course is empty': 'This course is empty',
+				'shuffle': 'Shuffle',
+				'reset': 'Reset',
 
 				/**
 				 * Course Rating
@@ -319,6 +322,8 @@ class I18n {
 				 * Words Go Threw Mode Select
 				 */
 				'Select mode of going threw words': 'Select mode of going threw words',
+               			'Flip cards': 'Flip cards',
+                		'Test words': 'Test words',
 
 				/**
 				 * Dashboard
@@ -436,6 +441,7 @@ class I18n {
 				'Are you sure you want to delete this image?': 'Are you sure you want to delete this image?',
 				'Image has been successfully deleted.': 'Image has been successfully deleted.',
 				'Image not found': 'Image not found',
+				'images': 'Images',
 
 				/**
 				 * AddImage
@@ -712,7 +718,7 @@ class I18n {
 				'definition': 'Definice',
 				'translation': 'Překlad',
 				'phonetic': 'Fonetický přepis',
-				'sentence': 'Ve větě',
+				'sentence': 'Užití ve větě',
 				'success': 'Úspěch',
 				'Language not found': 'Jazyk nenalezen',
 				'You don\'t have access to this course': 'K tomuto kurzu nemáte přístup',
@@ -737,6 +743,7 @@ class I18n {
 				'Course updated': 'Kurz aktualizován',
 				'Course not found': 'Kurz nenalezen',
 				'Are you sure you want to delete this course?': 'Jste si jisti, že chcete smazat tuto lekci?',
+				'Course information': 'Informace o kurzu',
 				'ME': 'JÁ',
 				'EVERYONE': 'VŠICHNI',
 
@@ -797,6 +804,8 @@ class I18n {
 				'Go again': 'Znova',
 				'Go back to courses list': 'Zpět na seznam kurzů',
 				'This course is empty': 'Tento kurz je prázdný',
+				'shuffle': 'Zamíchat',
+				'reset': 'Od začátku',
 
 				/**
 				 * Course Rating
@@ -808,12 +817,14 @@ class I18n {
 				 * Words Go Threw Mode Select
 				 */
 				'Select mode of going threw words': 'Vyberte mod na procházení slovíček',
+                		'Test words': 'Testování',
+                		'Flip cards': 'Flip karty',
 
 				/**
 				 * Dashboard
 				 */
 				'Learned minutes today': 'Dnešní hodiny strávené učením',
-				'Number of known words today': 'Dnešní naučených slov',
+				'Number of known words today': 'Počet dnes naučených slov',
 				'Day streak': 'Denní streak',
 				'Last courses': 'Poslední kurzy',
 				'Last adventures': 'Poslední adventures',
@@ -919,11 +930,13 @@ class I18n {
 				/**
 				 * ImageList
 				 */
+
 				'add_picture': 'Přidat obrázek',
 				'node_pictures': 'Obrázky uzlů',
 				'Are you sure you want to delete this image?': 'Jste si jisti, že chcete tento obrázek smazat?',
 				'Image has been successfully deleted.': 'Obrázek byl úspěšně smazán.',
 				'Image not found': 'Obrázek nenalezen',
+				'images': 'Obrázek',
 
 				/**
 				 * AddImage
