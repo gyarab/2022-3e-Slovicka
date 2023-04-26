@@ -948,7 +948,7 @@ class WordsGoThrewModeSelect extends Sword {
 				children: [{
 					className: 'mode',
 					children: [{
-						textContent: 'Test words',
+						textContent: i18n._('Test words'),
 						'on:click': () => ROUTER.pushRoute(`/courses/${this.course}/test-words`)
 					}]
 				},{
@@ -957,7 +957,7 @@ class WordsGoThrewModeSelect extends Sword {
 				},{
 					className: 'mode',
 					children: [{
-						textContent: 'Flip cards',
+						textContent: i18n._('Flip cards'),
 						'on:click': () => ROUTER.pushRoute(`/courses/${this.course}/flip-cards`)
 					}]
 				}]
